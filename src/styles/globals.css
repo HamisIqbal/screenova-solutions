@@ -1,0 +1,45 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+/**
+ * Global base layer only. Anything section- or component-specific belongs
+ * with that component, not here.
+ */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Reserve gutter so pinned/overflow sections don't shift layout. */
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Motion is opt-out at the platform level; JS also checks this via
+     `usePrefersReducedMotion`. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 2px;
+  }
+}

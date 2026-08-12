@@ -1,0 +1,11 @@
+.next/
+node_modules/
+out/
+package-lock.json
+next-env.d.ts
+
+# Vendored Claude Code tooling — not project source.
+.agents/
+.claude/
+.impeccable/
+skills-lock.json

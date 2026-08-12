@@ -1,0 +1,44 @@
+/**
+ * Design tokens.
+ *
+ * Tailwind v4 reads `@theme` and generates utilities from it, so a token added
+ * here (e.g. `--color-accent`) is immediately usable as `bg-accent`/`text-accent`.
+ * Plain custom properties under `:root` are for values consumed by CSS or by
+ * JS animation code rather than by utility classes.
+ *
+ * Keep this file the single source of truth for colour, type, spacing rhythm
+ * and motion timing. Sections should reference tokens, never raw values.
+ */
+
+@theme {
+  /* Colour — intentionally neutral until the visual direction is set. */
+  --color-background: #ffffff;
+  --color-foreground: #0a0a0a;
+  --color-muted: #6b7280;
+  --color-border: #e5e7eb;
+
+  /* Type */
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Layout */
+  --spacing-gutter: 1.5rem;
+  --container-page: 80rem;
+
+  /* Motion — mirrored in `src/animations/tokens.ts` for GSAP/Motion. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --animate-duration-fast: 200ms;
+  --animate-duration-base: 500ms;
+  --animate-duration-slow: 900ms;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #0a0a0a;
+    --color-foreground: #fafafa;
+    --color-muted: #9ca3af;
+    --color-border: #262626;
+  }
+}
