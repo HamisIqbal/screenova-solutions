@@ -4,7 +4,8 @@
  */
 export const siteConfig = {
   name: "Screenova Solutions",
-  description: "",
+  description:
+    "Professional window screen replacement, rescreening, and custom screen installation for homes and businesses throughout the Tampa Bay Area.",
   url: "https://screenova.solutions",
 } as const;
 

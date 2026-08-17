@@ -3,28 +3,179 @@
  *
  * Tailwind v4 reads `@theme` and generates utilities from it, so a token added
  * here (e.g. `--color-accent`) is immediately usable as `bg-accent`/`text-accent`.
- * Plain custom properties under `:root` are for values consumed by CSS or by
- * JS animation code rather than by utility classes.
+ *
+ * Palette: pulled from the logo, so the page and the mark are the same brand.
+ * Three of these carry the page in equal measure and take turns being the
+ * floor — see the ground system at the top of `globals.css`, which is where
+ * the roles actually live. This file only says what the colours are.
+ *
+ *   paper  #FFFFFF — a third of the page, as a ground in its own right and as
+ *                    the cards and pills that sit on the coloured bands.
+ *   blue   #0B6FE8 — the logo blue. A third of the page as a ground; on white
+ *                    it is the structural thread — links, rules, focus.
+ *   green  #3FAE12 — the logo green. A third of the page as a ground; on white
+ *                    it is action, and every primary button on a white band is
+ *                    this and nothing else.
+ *   sunset #FF7A18 — the logo's sun, and the only colour that is rationed: two
+ *                    appearances on the whole page, both of them on white, both
+ *                    of them fills carrying navy. That is what keeps it hot.
+ *   navy   #071A2F — the ink. All text on white and on green, the header bar,
+ *                    and the structural rules on a green band. Blue taken to
+ *                    its darkest usable point, so even the dark of the page is
+ *                    the brand hue rather than a neutral black.
+ *   mist   #F1F6FC — paper tinted toward blue, for cards and fields that must
+ *                    separate from paper without a shadow.
+ *
+ * Contrast, measured:
+ *   navy on paper   17.5:1   navy on green  6.77:1   navy on sunset  6.7:1
+ *   navy-muted/paper 5.9:1   blue on paper   4.7:1   paper on blue   4.72:1
+ *   paper on navy   17.5:1   navy/82% on green 5.2:1  sunset on navy  6.7:1
+ *
+ * Four pairs fail and the ground system is built around avoiding them: paper on
+ * green is 2.59:1, sunset on paper is 2.6:1, green against blue is 1.82:1, and
+ * sunset against green is 1.04:1. So green never carries light text, sunset is
+ * a fill on white and nowhere else, and blue and green only ever meet as two
+ * grounds with a straight edge between them — never as a mark on a field.
  *
  * Keep this file the single source of truth for colour, type, spacing rhythm
  * and motion timing. Sections should reference tokens, never raw values.
  */
 
 @theme {
-  /* Colour — intentionally neutral until the visual direction is set. */
-  --color-background: #ffffff;
-  --color-foreground: #0a0a0a;
-  --color-muted: #6b7280;
-  --color-border: #e5e7eb;
+  /* Brand */
+  --color-paper: #ffffff;
+  --color-navy: #071a2f;
+  /* Not a brand colour — a chrome colour. The header bar, the menu it opens and
+     the hero's own button are black rather than navy so the page's furniture
+     reads as furniture and the blue stays the brand's. White on it is 21:1. */
+  --color-black: #000000;
+  --color-blue: #0b6fe8;
+  --color-green: #3fae12;
+  --color-sunset: #ff7a18;
 
-  /* Type */
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  /* Derived */
+  --color-mist: #f1f6fc;
+  --color-blue-deep: #0857bc;
+  --color-blue-soft: #6fb6ff;
+  --color-green-deep: #2f8c0b;
+  --color-navy-muted: #55677d;
+  --color-hairline: #dce5f0;
+
+  /* Page-level constants — the few colours that do not change with the band
+     beneath them. Everything that does is a ground role (`--on-ground`,
+     `--rule`, `--action`, `--spark`, …) defined in `globals.css`; components
+     reference those, not these. */
+  --color-background: var(--color-paper);
+  --color-surface: var(--color-mist);
+  --color-foreground: var(--color-navy);
+  --color-muted: var(--color-navy-muted);
+  --color-border: var(--color-hairline);
+  /* Selection and the native accent of checkboxes and radios. Blue, fixed:
+     these are painted by the browser over content whose ground it does not
+     know about, and blue is the only one of the three that is legible against
+     both white and the mist of a field. */
+  --color-brand: var(--color-blue);
+  --color-brand-strong: var(--color-blue-deep);
+
+  /* Type — two families, four roles. Both faces are wired in
+     `src/app/fonts.ts`; these tokens are what components reference.
+
+       hero  → Satoshi Black   (900)   the h1
+       title → Satoshi Regular (400)   h2, h3, eyebrows, labels
+       body  → Satoshi Regular (400)   paragraphs, controls, forms
+       nav   → Chillax Regular (400)   the header, and nothing else
+
+     `--font-nav` is the whole reason two families are loaded. Everything in
+     `main` is Satoshi; the header keeps the face it was designed against, which
+     is what makes it read as chrome rather than as the page's first line.
+
+     Hero, title and body all resolve to Satoshi — those roles are carried by
+     weight and size, not by different typefaces. They stay separate tokens so
+     that pointing one at another face is a one-line change here with nothing
+     downstream moving. */
+  --font-satoshi:
+    var(--font-satoshi-face), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-chillax:
+    var(--font-chillax-face), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-hero: var(--font-satoshi);
+  --font-title: var(--font-satoshi);
+  --font-body: var(--font-satoshi);
+  --font-nav: var(--font-chillax);
+
+  /* Sans is aliased too, so Tailwind's default `font-sans` and any unstyled
+     element land on the right family. */
+  --font-sans: var(--font-satoshi);
+
+  /* Type scale. Every role is a final value — no global multiplier — so each
+     can be tuned without dragging the others sideways.
+
+     The hero ramp is driven by viewport width rather than a constant plus a
+     small vw term, so the headline is the same design at every size rather
+     than collapsing on a phone. The slope fills ~96% of the width available to
+     it, and the 40px ceiling is solved rather than chosen — see below.
+
+     What sets the ceiling is the widest authored line against the narrowest
+     column that line ever has to live in. The headline is two lines now, and
+     two lines of a Black weight is the most expensive thing this ramp has ever
+     had to carry: Satoshi Black at -0.02em tracking measures 12.72em and
+     13.03em for the two, against 8.01em for the widest of the old four.
+
+       320px   272px column   fits 20.9px   ramp asks 20.0px
+       390px   342px column   fits 26.3px   ramp asks 25.2px
+       645px   597px column   fits 45.8px   ramp caps  44.0px
+      1024px   605px column   fits 46.4px   ramp holds 44.0px  ← binding
+      1152px+  684px column   fits 52.5px   ramp holds 44.0px
+
+     The hero copy column was widened from 46% of the measure to 62% to pay for
+     it — there is no picture beside the words any more, so nothing was giving
+     up room. Even so, 44px is the ceiling and 25px is what a phone gets: a wide
+     Black face saying fifty characters in two lines is simply a large ask of a
+     390px screen, and the line count was the requirement.
+
+     Re-solve if the wording, the break or the face changes; the per-line widths
+     are recorded beside the copy in `src/content/home.ts`.
+
+       hero   20 -> 44px      h2   26 -> 33.6px     h3   16 -> 18px
+       lead   13 -> 15px      body 14px flat        label 12px  nav 14px */
+  --text-hero: clamp(1.25rem, 7.37vw - 0.221rem, 2.75rem);
+  --text-h2: clamp(1.625rem, 1.1rem + 2.2vw, 2.1rem);
+  --text-h3: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+  /* The hero's two paragraphs, and nothing else. It is a ramp rather than a
+     flat size because the requirement on them is a *line count*, not a size:
+     three lines each, at every width.
+
+     Line count is held by pairing this with a max-width in `em` — see
+     `#hero p` in globals.css. An em-width is a character count, so as long as
+     the column is exactly that many ems wide the wrap is identical at every
+     size, and the only job left is to keep the font small enough that 27em
+     still fits the window:
+
+       27em x 13px = 351px, so 3 lines from a ~400px viewport up
+       27em x 15px = 405px, reached at ~453px and flat from there
+
+     Below ~400px the floor takes over and the paragraphs run to four lines.
+     That is a copy length problem, not a layout one: 139 and 162 characters
+     cannot be three lines on a 320px screen at any size a person can read. */
+  --text-lead: clamp(0.8125rem, 3.7vw - 0.111rem, 0.9375rem);
+  --text-body: 0.875rem;
+  --text-label: 0.75rem;
+  /* Nav sits a step above `label` rather than with it: the links are the only
+     type in the pill and they are read at a glance, not scanned in a block. */
+  --text-nav: 0.875rem;
 
   /* Layout */
   --spacing-gutter: 1.5rem;
-  --container-page: 80rem;
+  --container-page: 72rem;
+  --radius-control: 0.5rem;
+  /* The room the fixed header overlay needs: its own 5.5rem row plus 2rem of
+     air beneath it. The first section's top padding and every anchor's scroll
+     offset both read this, so nothing ever comes to rest underneath it.
+
+     Note this is clearance for *content*, not for the hero's photograph — the
+     picture is `inset-0` on the band and deliberately runs the full height,
+     underneath the overlay and up to the top of the window. Keep it in step
+     with the row's `min-h-22`. */
+  --header-clearance: 7.5rem;
 
   /* Motion — mirrored in `src/animations/tokens.ts` for GSAP/Motion. */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -32,13 +183,4 @@
   --animate-duration-fast: 200ms;
   --animate-duration-base: 500ms;
   --animate-duration-slow: 900ms;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: #0a0a0a;
-    --color-foreground: #fafafa;
-    --color-muted: #9ca3af;
-    --color-border: #262626;
-  }
 }

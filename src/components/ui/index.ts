@@ -1,5 +1,7 @@
 /**
- * Barrel for small, reusable, section-agnostic primitives
- * (buttons, marquees, reveal wrappers, cursors).
+ * Small, reusable, section-agnostic primitives.
  */
-export {};
+export { CtaLink } from "./CtaLink";
+export { Section } from "./Section";
+export type { Ground } from "./Section";
+export { SectionHeader } from "./SectionHeader";

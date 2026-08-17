@@ -2,12 +2,20 @@
 @import "./tokens.css";
 
 /**
- * Global base layer only. Anything section- or component-specific belongs
- * with that component, not here.
+ * Base layer only — element-level typography and colour so the existing markup
+ * inherits the brand identity. No section layout or component styling lives
+ * here; that arrives with each section's own component.
+ *
+ * The one system-level thing that does live here is the ground system (below):
+ * the page is built as alternating full-bleed bands of white, blue and green,
+ * and every element takes its colour from the band it happens to be standing
+ * on rather than hard-coding a swatch.
  */
 
 @layer base {
   html {
+    /* The scheme is light by design. No dark variant. */
+    color-scheme: light;
     scroll-behavior: smooth;
     /* Reserve gutter so pinned/overflow sections don't shift layout. */
     scrollbar-gutter: stable;
@@ -16,9 +24,367 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: var(--font-sans);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    font-weight: 400;
+    line-height: 1.7;
+    letter-spacing: 0.01em;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-brand);
+    color: var(--color-paper);
+  }
+
+  /* Sections run edge to edge so their ground colour can too. The measure is
+     re-applied inside by `<Section>`, which owns the container and gutter. */
+  main > section {
+    padding-block: clamp(3rem, 8vw, 6rem);
+    /* Anchor jumps must clear the fixed nav. */
+    scroll-margin-top: var(--header-clearance);
+    /* Content that breaks the measure to reach a window edge — the hero
+       photograph — is sized in vw, and with a reserved scrollbar 100vw is a few
+       pixels wider than the page. `clip` swallows those pixels instead of
+       letting them become a horizontal scrollbar. It is not `hidden`: clip
+       makes no scroll container, so sticky descendants still stick. */
+    overflow-x: clip;
+  }
+
+  /* The first section clears the fixed bar and stops — the clearance token
+     already carries the bar's height and the air beneath it, so nothing is
+     added on top of it here. */
+  main > section:first-child {
+    padding-top: var(--header-clearance);
+  }
+
+  /* ---------------------------------------------------------------------
+     Grounds.
+
+     Two colours carry the page — white and the logo blue — and they take turns
+     being the floor, five bands each. A band declares which one it is with
+     `data-ground`, and every role below is re-pointed for that band: what text
+     is, what a rule is, what a raised card is, and above all what the button
+     is. Nothing downstream names a colour; it names a role. That is what lets a
+     section change ground without touching it — three sections moved off green
+     with a one-word edit each and nothing inside them changed.
+
+     Green is still defined here and is still a third of the brand, but it is no
+     longer a floor: it is the action pill on every white band, which is the one
+     surface where it is unmistakable. Keeping the ground defined costs nothing
+     and is what makes bringing a green band back a one-word edit too.
+
+     The roles rotate rather than repeat, which is the point:
+
+       ground   text    rule    card     action pill    spark
+       white    navy    blue    mist     green / navy   sunset
+       blue     white   white   white    white / navy   —
+       green    navy    navy    white    navy / white   —
+
+     The action pill changes colour on each band and every one of the three is
+     forced, not chosen. Green is the action wherever it can be: it is the
+     brand's "go", and on white it is unmistakable. On blue it cannot be —
+     green against blue measures 1.82:1, a button you would have to hunt for —
+     so the pill goes white, which clears 4.72:1. On green neither green (a
+     pill that is not a pill) nor white (2.59:1) survives, so it goes navy at
+     6.77:1 with white lettering. The shape, the radius and the type never
+     change, which is what keeps it the same button throughout.
+
+     The other rule: sunset only ever appears on white. It is 2.6:1 on paper as
+     text — so it is only ever a fill there, carrying navy at 6.7:1 — and it is
+     1.04:1 on green, which is not a colour difference at all. Two sparks on the
+     whole page: the "Best for" chip and the FAQ marker.
+
+     The paper set doubles as the :root default so anything outside a band —
+     the header bar, the menu overlay — still resolves every role. */
+  :root,
+  [data-ground="paper"] {
+    --ground: var(--color-paper);
+    --on-ground: var(--color-navy);
+    --on-ground-muted: var(--color-navy-muted);
+    --hero-ink: var(--color-blue);
+    --rule: var(--color-blue);
+    --raised: var(--color-mist);
+    --raised-border: var(--color-hairline);
+    --action: var(--color-green);
+    --action-hover: var(--color-green-deep);
+    --on-action: var(--color-navy);
+    --link-underline: var(--color-blue);
+    --link-underline-hover: var(--color-blue-deep);
+    --focus-ring: var(--color-blue);
+    --spark: var(--color-sunset);
+    --on-spark: var(--color-navy);
+  }
+
+  /* Blue gives white 4.7:1 and nothing more, so there is no headroom for a
+     dimmed secondary tint — muted text on blue is simply white, and hierarchy
+     is carried by size and weight instead. */
+  [data-ground="blue"] {
+    --ground: var(--color-blue);
+    --on-ground: var(--color-paper);
+    --on-ground-muted: var(--color-paper);
+    --hero-ink: var(--color-paper);
+    --rule: color-mix(in srgb, var(--color-paper) 75%, transparent);
+    --raised: var(--color-paper);
+    --raised-border: transparent;
+    --action: var(--color-paper);
+    --action-hover: var(--color-mist);
+    --on-action: var(--color-navy);
+    --link-underline: color-mix(in srgb, var(--color-paper) 70%, transparent);
+    --link-underline-hover: var(--color-paper);
+    --focus-ring: var(--color-paper);
+    --spark: var(--color-paper);
+    --on-spark: var(--color-blue);
+  }
+
+  /* Unused by any band today — green is the action pill now, not a floor — but
+     kept whole so it stays a one-word edit away.
+
+     Navy at 82% over green lands at 5.2:1 — the one place a translucent text
+     colour is used, because navy's own 6.77:1 on green leaves just enough room
+     for a second step down that is still comfortably past 4.5:1. The usual
+     navy-muted would be 2.2:1 here, which is why it is not used. */
+  [data-ground="green"] {
+    --ground: var(--color-green);
+    --on-ground: var(--color-navy);
+    --on-ground-muted: color-mix(in srgb, var(--color-navy) 82%, transparent);
+    --hero-ink: var(--color-navy);
+    --rule: var(--color-navy);
+    --raised: var(--color-paper);
+    --raised-border: transparent;
+    --action: var(--color-navy);
+    --action-hover: color-mix(in srgb, var(--color-navy) 82%, var(--color-paper));
+    --on-action: var(--color-paper);
+    --link-underline: color-mix(in srgb, var(--color-navy) 45%, transparent);
+    --link-underline-hover: var(--color-navy);
+    --focus-ring: var(--color-navy);
+    --spark: var(--color-navy);
+    --on-spark: var(--color-green);
+  }
+
+  /* The chrome ground — and, since the hero's floor became a photograph, the
+     hero's ground too. The header bar and the full-screen menu are surfaces
+     rather than bands, and giving them a ground means the CTA inside them
+     resolves the same way it does everywhere else instead of being
+     hand-coloured. The hero uses it for a different reason: a dark photograph
+     needs a dark ground's text roles, and this is the one that has them. Its
+     `--ground` is only ever seen there behind the image while it loads.
+
+     The chrome is black. It was navy — the same ink the white bands are set in,
+     used as a ground — and the change is worth naming: navy chrome reads as a
+     fourth brand colour, one more blue competing with the blue that is actually
+     the brand. Black does not compete. It is furniture, the eye files it as
+     structure rather than as a band, and the logo blue is left as the only blue
+     on the page that means anything.
+
+     It is also the strongest surface on the site by some distance: white on
+     black is 21:1, up from navy's 17.5:1, which is what lets the wordmark's own
+     white lettering stand with no shadow propping it up. Muted text is simply
+     white, as on the blue band — there is no headroom for a dimmed second tint
+     at this depth and hierarchy is carried by size and weight. The action pill
+     goes white with black lettering, the same inversion the blue band uses. */
+  [data-ground="sky"] {
+    --ground: var(--color-black);
+    --on-ground: var(--color-paper);
+    --on-ground-muted: var(--color-paper);
+    --hero-ink: var(--color-blue-soft);
+    --rule: color-mix(in srgb, var(--color-paper) 75%, transparent);
+    --raised: var(--color-paper);
+    --raised-border: transparent;
+    --action: var(--color-paper);
+    --action-hover: color-mix(in srgb, var(--color-paper) 88%, var(--color-black));
+    --on-action: var(--color-black);
+    --link-underline: color-mix(in srgb, var(--color-paper) 70%, transparent);
+    --link-underline-hover: var(--color-paper);
+    --focus-ring: var(--color-paper);
+    --spark: var(--color-paper);
+    --on-spark: var(--color-black);
+  }
+
+  [data-ground] {
+    background-color: var(--ground);
+    color: var(--on-ground);
+  }
+
+  /* The default disclosure triangle is replaced by the FAQ's own marker. */
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Hero. Satoshi Black — the only place on the site above Regular, which is
+     what makes it read as the one heavy thing rather than the heaviest of many.
+     Sentence case: Black at 44px is already the loudest thing on the page and
+     caps would only cost it size, since a wider setting means a smaller one.
+
+     Blue, not the ink — but *which* blue is the ground's decision, which is why
+     this reads `--hero-ink` rather than naming one. On paper it is the logo
+     blue at 4.7:1: under the 4.5:1 body text needs, but this is 54px at weight
+     600, which is WCAG large text at 3:1 with room over. Blue is spent here
+     rather than on the body for the same reason links keep the ink — recolour
+     the thing that is already the largest and you lose nothing.
+
+     On the black ground the same blue collapses. #0B6FE8 is a dark colour in
+     its own right (relative luminance 0.17), so against the hero's scrim it
+     measures 1.6:1 and is simply not there. `blue-soft` is the palette's own
+     light blue at luminance 0.44, which clears 4.2:1 against the darkest part
+     of that scrim and 5.6:1 across most of it. The headline is still blue; the
+     ground picks the one that survives it. */
+  h1 {
+    font-family: var(--font-hero);
+    font-size: var(--text-hero);
+    font-weight: 900;
+    color: var(--hero-ink);
+    /* The measured widths behind `--text-hero` assume this exact value. */
+    letter-spacing: -0.02em;
+    /* Satoshi's own line box is 1.25em (1.01 ascender + 0.24 descender). Two
+       lines can be closed further than four could: 1.08 clears the single
+       collision — the p of "Repair" under the caps of the line above needs
+       0.98em — while keeping the pair reading as one block. */
+    line-height: 1.08;
+    /* No balancing: the break is authored in the content, and each line is
+       measured to fit. Wrapping stays enabled as a safety net so an unexpected
+       overrun becomes an extra line rather than horizontal scroll. */
+  }
+
+  /* Titles under the hero. Regular, the same weight as the body they sit above:
+     the family has one voice and the hierarchy is carried by size — 33.6px
+     against 14px is a 2.4x step, which is a larger separation than a weight
+     change could give and does not need one on top of it. Semibold is reserved
+     for the h1 alone. */
+  h2,
+  h3 {
+    font-family: var(--font-title);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  h2 {
+    font-size: var(--text-h2);
+    line-height: 1.1;
+  }
+
+  h3 {
+    font-size: var(--text-h3);
+    line-height: 1.3;
+  }
+
+  p {
+    max-width: 62ch;
+    text-wrap: pretty;
+  }
+
+  /* The hero's two paragraphs, which carry a requirement no other copy on the
+     site does: three lines each, at every viewport.
+
+     Line count is a function of one thing — how many characters fit on a line —
+     so it is held by a measure in `em` rather than in pixels or in a
+     percentage. 27em is 27em at any font size, so the wrap is identical from a
+     phone to a desktop, and `--text-lead` only has to keep the type small
+     enough that 27em still fits the window.
+
+     27em specifically, from the greedy-wrap widths that give exactly three
+     lines: the first paragraph runs 3 lines anywhere from 24.20em to 33.20em,
+     the second from 25.35em to 37.90em. 27em is inside both, and it sits 1.65em
+     clear of the nearer edge — enough that a hinting or subpixel difference
+     cannot tip either into a fourth line.
+
+     `text-wrap: pretty` is off here for the same reason. It re-breaks lines to
+     avoid orphans, which is the right default everywhere else and is exactly
+     what must not happen to a line count that has been solved. */
+  #hero p {
+    font-size: var(--text-lead);
+    line-height: 1.6;
+    max-width: 27em;
+    text-wrap: normal;
+  }
+
+  /* Lists here are content groupings, not bulleted prose. */
+  main ul,
+  main ol {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  dd {
+    margin-left: 0;
+    color: var(--on-ground-muted);
+    max-width: 62ch;
+  }
+
+  /* A link keeps the ground's own text colour and spends the accent on the
+     underline: on white the text is navy at 17.5:1 and blue is 4.7:1, so
+     recolouring the word itself would make the most findable thing on the page
+     into the weakest. The underline colour is the band's rule colour, which is
+     also why a link never impersonates a button — the action colour is never
+     the underline colour on any ground. */
+  a {
+    color: inherit;
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-color: var(--link-underline);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.25em;
+    transition: text-decoration-color var(--animate-duration-fast) var(--ease-out-expo);
+  }
+
+  a:hover {
+    text-decoration-color: var(--link-underline-hover);
+  }
+
+  legend,
+  dt {
+    font-weight: 600;
+  }
+
+  label {
+    color: var(--on-ground-muted);
+    font-size: var(--text-label);
+  }
+
+  input,
+  textarea,
+  select {
+    font-family: var(--font-body);
+    font-size: var(--text-label);
+    font-weight: 400;
+    color: var(--color-foreground);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-control);
+    padding: 0.5rem 0.75rem;
+  }
+
+  input[type="radio"],
+  input[type="checkbox"] {
+    accent-color: var(--color-brand);
+    padding: 0;
+  }
+
+  button {
+    font-family: var(--font-body);
+    font-size: var(--text-label);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--on-action);
+    background-color: var(--action);
+    border: 0;
+    border-radius: var(--radius-control);
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    transition: background-color var(--animate-duration-fast) var(--ease-out-expo);
+  }
+
+  button:hover {
+    background-color: var(--action-hover);
+  }
+
+  /* The ring follows the ground: blue on white, white on blue, navy on green.
+     A single fixed ring colour would vanish on one of the three bands. */
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
   }
 
   /* Motion is opt-out at the platform level; JS also checks this via
@@ -36,10 +402,5 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
-  }
-
-  :focus-visible {
-    outline: 2px solid var(--color-foreground);
-    outline-offset: 2px;
   }
 }
