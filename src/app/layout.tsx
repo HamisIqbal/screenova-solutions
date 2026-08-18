@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "@/styles/globals.css";
 import { fontVariables } from "@/app/fonts";
-import { Cover } from "@/components/layout/Cover";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { siteConfig } from "@/lib/site";
@@ -34,7 +33,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={fontVariables}>
       <body>
-        <Cover />
         <a href="#main" className="sr-only focus:not-sr-only">
           Skip to content
         </a>

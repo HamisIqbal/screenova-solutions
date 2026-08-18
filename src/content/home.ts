@@ -221,6 +221,50 @@ export const howItWorks = {
   ] satisfies Step[],
 } as const;
 
+/**
+ * The three photographic bands other than the hero.
+ *
+ * Each one is the floor of a whole section rather than a picture inside it, so
+ * they are chosen for what they can carry rather than for what they show: a
+ * single subject, plenty of flat area, and no detail near the middle that a
+ * scrim would ruin. All three are exteriors, which is the counterweight the
+ * page needed — the hero is the inside of the window and everything else is
+ * copy, so the outside of the house appears nowhere until here.
+ *
+ * `alt` is empty on all three, and deliberately. They are grounds: the section
+ * heading directly on top of each one already says what the band is, and a
+ * screen reader being told about siding and a roofline before it reaches the
+ * heading is being given the decoration and not the content.
+ *
+ * Intrinsic sizes are recorded so `next/image` can reserve the box. All three
+ * are worth downsampling in the repo — nothing on the page reads past 2560px.
+ */
+export const bandImages = {
+  /** Why Choose Us. Four windows in a row, flat on, with the whole lower half
+      of the frame plain siding — the calmest of the three under six columns of
+      text. */
+  whyChooseUs: {
+    src: "/images/house-window-screen-1.jpg",
+    width: 4845,
+    height: 2710,
+  },
+  /** Screen Options. The one portrait source, which is what recommends it: this
+      is the tallest band on the page and a landscape crop would be pulled to a
+      sliver of itself. */
+  screenOptions: {
+    src: "/images/dithira-hettiarachchi-house-window-long-image.jpg",
+    width: 3648,
+    height: 5472,
+  },
+  /** The closer. A gable and a window against open sky — the most upward of the
+      three, which is the right note to end the page on. */
+  finalCta: {
+    src: "/images/house-window-screen-1-manuela-johnston.jpg",
+    width: 4928,
+    height: 3264,
+  },
+} as const;
+
 export const whyChooseUs = {
   eyebrow: "Why Choose Screenova Solutions?",
   title: "Simple. Professional. Built to Fit.",

@@ -7,19 +7,22 @@
  * cards, the action pill, focus) is re-pointed by the `[data-ground]` block in
  * `globals.css`, so a band can change colour without a single child changing.
  *
- * The page runs white → blue → white → blue → white → blue → blue → white →
- * blue → white: two grounds alternating, five bands each. Green is still a
- * ground the system can produce, but no band uses it — it lives on the page as
- * the action pill on every white band instead, which is the one place it is
- * unambiguous. See `FinalCta`.
+ * The page runs black → blue → white → black → black → blue → blue → white →
+ * blue → black. Green is still a ground the system can produce, but no band
+ * uses it — it lives on the page as the action pill on every white band
+ * instead, which is the one place it is unambiguous.
  *
- * The single repeat is About → ServiceArea, and it is deliberate: who we are
- * and where we work are one answer, so they share a floor.
+ * `sky` is the black chrome ground, and every band that uses it is a band whose
+ * floor is a photograph: the hero, Why Choose Us, Screen Options and the
+ * closer. That is the whole reason the ground exists. A photograph needs the
+ * text roles a dark ground provides, and the band colour itself is only ever
+ * seen behind the image while it loads — which is also why black is the right
+ * thing to be waiting under, rather than a flash of white.
  *
- * `sky` is the black chrome ground, and the hero is the one band that uses it —
- * because the hero's floor is a photograph, and a photograph needs the text
- * roles a dark ground provides. The band colour itself is only ever seen behind
- * the image while it loads.
+ * There are two repeats and both are deliberate. About → ServiceArea share a
+ * floor because who we are and where we work are one answer. Why Choose Us →
+ * Screen Options share one because they are two different photographs, and the
+ * edge between them is the picture changing rather than a colour band ending.
  */
 export type Ground = "paper" | "blue" | "green" | "sky";
 
