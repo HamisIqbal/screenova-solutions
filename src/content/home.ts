@@ -98,9 +98,9 @@ export const hero = {
 /**
  * The six services, in the order the scrolling stage steps through them.
  *
- * `image` points at a generated placeholder — see `scripts/make-placeholders.mjs`.
- * Drop the real photograph into `public/images/services/` under the same name
- * and write `imageAlt` to describe what is in it; nothing else changes.
+ * `image` points at the photograph in `public/images/services/`. To swap one,
+ * drop the new file in under the same name and rewrite `imageAlt` to describe
+ * what is in it; nothing else changes.
  */
 export const services = {
   eyebrow: "Window Screen Services",
@@ -111,7 +111,8 @@ export const services = {
     {
       id: "new-window-screens",
       image: "/images/services/new-window-screens.png",
-      imageAlt: "",
+      imageAlt:
+        "A newly built black-framed window screen leaning against a stucco wall beside the sliding window it was measured for.",
       title: "New Window Screens",
       body: [
         "Missing a screen or need a completely new one?",
@@ -122,7 +123,8 @@ export const services = {
     {
       id: "window-rescreening",
       image: "/images/services/window-rescreening.png",
-      imageAlt: "",
+      imageAlt:
+        "A technician rolling new mesh into the channel of a black window screen frame with a spline roller.",
       title: "Window Rescreening",
       body: [
         "If your existing aluminum frame is still in good condition but the mesh is torn, loose, faded, or damaged, we can replace the screen mesh without replacing the entire frame.",
@@ -133,7 +135,8 @@ export const services = {
     {
       id: "window-screen-repair",
       image: "/images/services/window-screen-repair.png",
-      imageAlt: "",
+      imageAlt:
+        "A technician cutting away torn mesh around a hole in a screen laid on a workbench, next to fresh spline, pliers, and a screwdriver.",
       title: "Window Screen Repair",
       body: [
         "Damaged corners, loose spline, torn mesh, and other common screen problems can often be repaired without replacing the entire screen.",
@@ -144,7 +147,8 @@ export const services = {
     {
       id: "sliding-screen-door-rescreening",
       image: "/images/services/sliding-screen-door-rescreening.png",
-      imageAlt: "",
+      imageAlt:
+        "A technician rescreening a sliding screen door on a patio, rolling spline into the frame while holding the door steady.",
       title: "Sliding Screen Door Rescreening",
       body: [
         "A damaged sliding screen door doesn't always require a new door.",
@@ -155,7 +159,8 @@ export const services = {
     {
       id: "pet-resistant-screens",
       image: "/images/services/pet-resistant-screens.png",
-      imageAlt: "",
+      imageAlt:
+        "A dog and a cat sitting calmly behind a heavy pet-resistant screen in a sliding door.",
       title: "Pet-Resistant Screens",
       body: [
         "Standard fiberglass screen can be easily damaged by dogs and cats.",
@@ -166,7 +171,8 @@ export const services = {
     {
       id: "solar-screens",
       image: "/images/services/solar-screens.png",
-      imageAlt: "",
+      imageAlt:
+        "Two windows fitted with dark solar screens on a sunlit stucco wall, cutting the glare on the glass behind them.",
       title: "Solar Screens",
       body: [
         "Reduce direct sunlight entering your home with solar screen options.",
