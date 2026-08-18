@@ -115,6 +115,12 @@
     --focus-ring: var(--color-blue);
     --spark: var(--color-sunset);
     --on-spark: var(--color-navy);
+    /* See `--stage-tint` below. Paper is the ground the blend costs something
+       on, so it takes the lightest hand of the four — and it is also the ground
+       where the tint is most obvious, because a white band that has gone even
+       slightly grey reads as a mistake rather than as a picture. 12% is the
+       point where the photograph is present and the band is still paper. */
+    --stage-tint: 0.12;
   }
 
   /* Blue gives white 4.7:1 and nothing more, so there is no headroom for a
@@ -136,6 +142,10 @@
     --focus-ring: var(--color-paper);
     --spark: var(--color-paper);
     --on-spark: var(--color-blue);
+    /* Blue takes nearly twice what paper can: multiply only darkens, and
+       darkening blue moves white copy *up* from its 4.72:1 rather than down, so
+       the only limit here is taste. */
+    --stage-tint: 0.22;
   }
 
   /* Unused by any band today — green is the action pill now, not a floor — but
@@ -161,6 +171,7 @@
     --focus-ring: var(--color-navy);
     --spark: var(--color-navy);
     --on-spark: var(--color-green);
+    --stage-tint: 0.16;
   }
 
   /* The chrome ground — and, since the hero's floor became a photograph, the
@@ -200,6 +211,9 @@
     --focus-ring: var(--color-paper);
     --spark: var(--color-paper);
     --on-spark: var(--color-black);
+    /* Multiplying into black is a no-op, so no band using this ground has a
+       stage. Defined only so the role resolves everywhere. */
+    --stage-tint: 0.3;
   }
 
   [data-ground] {
@@ -247,27 +261,37 @@
        overrun becomes an extra line rather than horizontal scroll. */
   }
 
-  /* Titles under the hero. Regular, the same weight as the body they sit above:
-     the family has one voice and the hierarchy is carried by size — 33.6px
-     against 14px is a 2.4x step, which is a larger separation than a weight
-     change could give and does not need one on top of it. Semibold is reserved
-     for the h1 alone. */
+  /* Titles under the hero.
+     
+     These used to be Regular at every level — one voice, hierarchy carried by
+     size alone. That held while the page was a wall of evenly weighted text,
+     and stopped holding once there were nine sections of it: a reader scrolling
+     past had nothing to catch the start of a section on. Section titles are now
+     Bold and much larger, and card titles are Semibold, so the page has three
+     distinct weights and each one means a level.
+
+     Black at 900 is still the h1's alone, which is what keeps the hero the
+     loudest thing here rather than merely the biggest. */
   h2,
   h3 {
     font-family: var(--font-title);
-    font-weight: 400;
     letter-spacing: -0.015em;
     text-wrap: balance;
   }
 
   h2 {
     font-size: var(--text-h2);
-    line-height: 1.1;
+    font-weight: 700;
+    /* Tighter than h3 because it is set so much larger: the same optical gap
+       between letters needs a smaller fraction of the em at 52px than at 20px. */
+    letter-spacing: -0.025em;
+    line-height: 1.05;
   }
 
   h3 {
     font-size: var(--text-h3);
-    line-height: 1.3;
+    font-weight: 600;
+    line-height: 1.35;
   }
 
   p {
@@ -402,5 +426,35 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+  }
+}
+
+/**
+ * The typewriter caret.
+ *
+ * Plain CSS rather than a Tailwind animation utility because it is one
+ * keyframe used in exactly one component, and because `step-end` is the whole
+ * point — a caret that eases is a caret that looks like it is breathing. It
+ * blinks while the line types and is faded out by GSAP once the line lands.
+ *
+ * Outside `@layer base` so it wins over the utilities that set its size and
+ * colour without needing a modifier, and inside `motion-safe` so the reduced
+ * motion path — which never splits the text and never shows a caret in the
+ * first place — cannot end up with a blinking bar left on the page.
+ */
+@keyframes caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .caret-blink {
+    animation: caret-blink 1s step-end infinite;
   }
 }

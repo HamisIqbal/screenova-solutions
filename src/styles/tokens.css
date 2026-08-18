@@ -135,11 +135,28 @@
      Re-solve if the wording, the break or the face changes; the per-line widths
      are recorded beside the copy in `src/content/home.ts`.
 
-       hero   20 -> 44px      h2   26 -> 33.6px     h3   16 -> 18px
-       lead   13 -> 15px      body 14px flat        label 12px  nav 14px */
+       hero   20 -> 44px      h2   32 -> 52px       h3   17 -> 20px
+       lead   13 -> 15px      body 14px flat        label 12px  nav 14px
+
+     h2 was 26 -> 33.6px and is now 32 -> 52px, at weight 700 rather than 400.
+     Section titles were previously a size step above the body and nothing more,
+     which on a page of nine sections left the reader without a strong signal
+     for where one ended and the next began. At 52px and Bold they are the
+     second loudest thing on the page after the hero — which is a 44px Black
+     setting in a different colour on a photograph, so the two do not compete.
+
+     The ceiling is set by the longest title against the header's measure:
+     "Window Screen Services Throughout Tampa Bay" is the longest at 43
+     characters, and Satoshi Bold at -0.02em runs it about 21.8em, so at 52px it
+     takes two lines inside `max-w-3xl` (768px) with room over. Nothing on the
+     page needs it to be one line, and `text-wrap: balance` splits it evenly.
+
+     h3 came up with it — 18 -> 20px and 400 -> 600 — because card titles now
+     type themselves in one at a time and had to hold their own against a
+     heading two and a half times their size. */
   --text-hero: clamp(1.25rem, 7.37vw - 0.221rem, 2.75rem);
-  --text-h2: clamp(1.625rem, 1.1rem + 2.2vw, 2.1rem);
-  --text-h3: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+  --text-h2: clamp(2rem, 1.35rem + 2.9vw, 3.25rem);
+  --text-h3: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
   /* The hero's two paragraphs, and nothing else. It is a ramp rather than a
      flat size because the requirement on them is a *line count*, not a size:
      three lines each, at every width.
