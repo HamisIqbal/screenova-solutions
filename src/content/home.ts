@@ -10,6 +10,9 @@ export type ServiceItem = {
   id: string;
   title: string;
   body: string[];
+  /** Placeholder until the real photograph lands — see the note on `services`. */
+  image: string;
+  imageAlt: string;
   cta?: string;
 };
 
@@ -92,6 +95,13 @@ export const hero = {
   cta: "Get a Free Quote",
 } as const;
 
+/**
+ * The six services, in the order the scrolling stage steps through them.
+ *
+ * `image` points at a generated placeholder — see `scripts/make-placeholders.mjs`.
+ * Drop the real photograph into `public/images/services/` under the same name
+ * and write `imageAlt` to describe what is in it; nothing else changes.
+ */
 export const services = {
   eyebrow: "Window Screen Services",
   title: "Window Screen Solutions for Every Home",
@@ -100,6 +110,8 @@ export const services = {
   items: [
     {
       id: "new-window-screens",
+      image: "/images/services/new-window-screens.png",
+      imageAlt: "",
       title: "New Window Screens",
       body: [
         "Missing a screen or need a completely new one?",
@@ -109,6 +121,8 @@ export const services = {
     },
     {
       id: "window-rescreening",
+      image: "/images/services/window-rescreening.png",
+      imageAlt: "",
       title: "Window Rescreening",
       body: [
         "If your existing aluminum frame is still in good condition but the mesh is torn, loose, faded, or damaged, we can replace the screen mesh without replacing the entire frame.",
@@ -118,6 +132,8 @@ export const services = {
     },
     {
       id: "window-screen-repair",
+      image: "/images/services/window-screen-repair.png",
+      imageAlt: "",
       title: "Window Screen Repair",
       body: [
         "Damaged corners, loose spline, torn mesh, and other common screen problems can often be repaired without replacing the entire screen.",
@@ -127,6 +143,8 @@ export const services = {
     },
     {
       id: "sliding-screen-door-rescreening",
+      image: "/images/services/sliding-screen-door-rescreening.png",
+      imageAlt: "",
       title: "Sliding Screen Door Rescreening",
       body: [
         "A damaged sliding screen door doesn't always require a new door.",
@@ -136,6 +154,8 @@ export const services = {
     },
     {
       id: "pet-resistant-screens",
+      image: "/images/services/pet-resistant-screens.png",
+      imageAlt: "",
       title: "Pet-Resistant Screens",
       body: [
         "Standard fiberglass screen can be easily damaged by dogs and cats.",
@@ -145,6 +165,8 @@ export const services = {
     },
     {
       id: "solar-screens",
+      image: "/images/services/solar-screens.png",
+      imageAlt: "",
       title: "Solar Screens",
       body: [
         "Reduce direct sunlight entering your home with solar screen options.",
@@ -275,94 +297,45 @@ export const serviceArea = {
   title: "Window Screen Services Throughout Tampa Bay",
   intro:
     "Screenova Solutions proudly provides window screen installation, replacement, rescreening, and repair services throughout the Tampa Bay Area.",
-  citiesLabel: "Cities We Serve:",
+  citiesLabel: "Cities We Serve",
   /**
-   * The six cities that carry a picture. The other twenty-five stay as the
-   * chip list beneath — a photograph each for thirty-one cities is a scroll
-   * nobody finishes, and these six are where the work actually is.
-   *
-   * `src` points at a generated placeholder (see
-   * `scripts/make-city-placeholders.mjs`). Replace the file in
-   * `public/images/cities/` with the real photograph, keep the name, and
-   * rewrite the `alt` to describe what is in it — nothing else changes.
+   * One tile per city. `src` points at a generated placeholder — see
+   * `scripts/make-city-placeholders.mjs`. Drop the real photograph into
+   * `public/images/cities/` under the same name and write the `alt` to
+   * describe what is in the picture; nothing else changes.
    */
-  featuredCities: [
-    {
-      id: "01",
-      title: "Tampa",
-      location: "Hillsborough County",
-      src: "/images/cities/tampa.png",
-      alt: "",
-    },
-    {
-      id: "02",
-      title: "St. Petersburg",
-      location: "Pinellas County",
-      src: "/images/cities/st-petersburg.png",
-      alt: "",
-    },
-    {
-      id: "03",
-      title: "Clearwater",
-      location: "Pinellas County",
-      src: "/images/cities/clearwater.png",
-      alt: "",
-    },
-    {
-      id: "04",
-      title: "Brandon",
-      location: "Hillsborough County",
-      src: "/images/cities/brandon.png",
-      alt: "",
-    },
-    {
-      id: "05",
-      title: "Riverview",
-      location: "Hillsborough County",
-      src: "/images/cities/riverview.png",
-      alt: "",
-    },
-    {
-      id: "06",
-      title: "Wesley Chapel",
-      location: "Pasco County",
-      src: "/images/cities/wesley-chapel.png",
-      alt: "",
-    },
-  ],
-  moreCitiesLabel: "And throughout the rest of the bay:",
   cities: [
-    "Tampa",
-    "St. Petersburg",
-    "Clearwater",
-    "Brandon",
-    "Riverview",
-    "Wesley Chapel",
-    "Lutz",
-    "Palm Harbor",
-    "Largo",
-    "Dunedin",
-    "Safety Harbor",
-    "Oldsmar",
-    "Valrico",
-    "Apollo Beach",
-    "Ruskin",
-    "Sun City Center",
-    "Pinellas Park",
-    "Seminole",
-    "Tarpon Springs",
-    "Land O' Lakes",
-    "Odessa",
-    "Trinity",
-    "New Port Richey",
-    "Plant City",
-    "Lithia",
-    "Fish Hawk",
-    "Temple Terrace",
-    "Seffner",
-    "Palmetto",
-    "Bradenton",
-    "Lakewood Ranch",
+    { name: "Tampa", src: "/images/cities/tampa.png", alt: "" },
+    { name: "St. Petersburg", src: "/images/cities/st-petersburg.png", alt: "" },
+    { name: "Clearwater", src: "/images/cities/clearwater.png", alt: "" },
+    { name: "Brandon", src: "/images/cities/brandon.png", alt: "" },
+    { name: "Riverview", src: "/images/cities/riverview.png", alt: "" },
+    { name: "Wesley Chapel", src: "/images/cities/wesley-chapel.png", alt: "" },
+    { name: "Lutz", src: "/images/cities/lutz.png", alt: "" },
+    { name: "Palm Harbor", src: "/images/cities/palm-harbor.png", alt: "" },
+    { name: "Largo", src: "/images/cities/largo.png", alt: "" },
+    { name: "Dunedin", src: "/images/cities/dunedin.png", alt: "" },
+    { name: "Safety Harbor", src: "/images/cities/safety-harbor.png", alt: "" },
+    { name: "Oldsmar", src: "/images/cities/oldsmar.png", alt: "" },
+    { name: "Valrico", src: "/images/cities/valrico.png", alt: "" },
+    { name: "Apollo Beach", src: "/images/cities/apollo-beach.png", alt: "" },
+    { name: "Ruskin", src: "/images/cities/ruskin.png", alt: "" },
+    { name: "Sun City Center", src: "/images/cities/sun-city-center.png", alt: "" },
+    { name: "Pinellas Park", src: "/images/cities/pinellas-park.png", alt: "" },
+    { name: "Seminole", src: "/images/cities/seminole.png", alt: "" },
+    { name: "Tarpon Springs", src: "/images/cities/tarpon-springs.png", alt: "" },
+    { name: "Land O' Lakes", src: "/images/cities/land-o-lakes.png", alt: "" },
+    { name: "Odessa", src: "/images/cities/odessa.png", alt: "" },
+    { name: "Trinity", src: "/images/cities/trinity.png", alt: "" },
+    { name: "New Port Richey", src: "/images/cities/new-port-richey.png", alt: "" },
+    { name: "Plant City", src: "/images/cities/plant-city.png", alt: "" },
+    { name: "Lithia", src: "/images/cities/lithia.png", alt: "" },
+    { name: "Fish Hawk", src: "/images/cities/fish-hawk.png", alt: "" },
+    { name: "Temple Terrace", src: "/images/cities/temple-terrace.png", alt: "" },
+    { name: "Seffner", src: "/images/cities/seffner.png", alt: "" },
+    { name: "Palmetto", src: "/images/cities/palmetto.png", alt: "" },
+    { name: "Bradenton", src: "/images/cities/bradenton.png", alt: "" },
+    { name: "Lakewood Ranch", src: "/images/cities/lakewood-ranch.png", alt: "" },
   ],
   outro:
     "Don't see your city listed? Contact us with your address and we'll let you know if your property is within our service area.",
