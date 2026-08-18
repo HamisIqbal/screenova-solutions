@@ -91,17 +91,22 @@ export function Services() {
         aria-roledescription="carousel"
         aria-label={services.title}
       >
-        <div className="grid lg:grid-cols-2">
+        {/* Below the desktop breakpoint the card is one fixed-height stack and
+            the two rows split it between them: the words take exactly the room
+            their copy needs, and the picture takes everything that is left.
+            That is the same fixed card height on all six — nothing moves under
+            the arrows — but the dead white that used to sit under the shorter
+            bodies is now photograph instead. On a short body the picture is
+            more than twice the height it gets on the longest one. */}
+        <div className="grid h-[25.5rem] grid-rows-[1fr_auto] sm:h-[34rem] lg:h-auto lg:grid-cols-2 lg:grid-rows-none">
           {/* The picture. First on a phone, second on a desktop — the words
               lead the reading order at both widths.
 
-              Its height is set rather than derived from an aspect ratio: on a
-              phone a 4:3 band ate nearly 300px of a 650px card and pushed the
-              arrows off the bottom of the screen. A fixed band crops the photo
-              instead of the card, and on a phone it is a strip — the photo is
-              there to say which service this is, and a strip says that in a
-              third of the height. */}
-          <div className="relative order-1 h-24 w-full sm:h-64 lg:order-2 lg:h-[34rem]">
+              Below the breakpoint it has no height of its own: it is the `1fr`
+              row and takes whatever the words leave, with a floor so it can
+              never collapse to a line. On a desktop the two sit side by side
+              and it takes the card's full height. */}
+          <div className="relative order-1 min-h-24 w-full lg:order-2 lg:h-[34rem]">
             <AnimatePresence initial={false}>
               <motion.div
                 key={current.id}
@@ -123,13 +128,13 @@ export function Services() {
             </AnimatePresence>
           </div>
 
-          {/* The words. Fixed height at every width, not just on a desktop: the
-              six bodies differ by about 50px of copy, and a column that fitted
-              each of them resized the whole card under the arrows every time
-              they were pressed. Held still, the card is one size and one screen
-              — the copy is top-aligned inside it and the controls sit at the
-              bottom of the space whether or not the copy fills it. */}
-          <div className="order-2 flex h-[19.5rem] flex-col px-5 py-4 sm:h-[30rem] sm:p-10 lg:order-1 lg:h-[34rem] lg:p-10 xl:p-12">
+          {/* The words. Below the breakpoint they are the `auto` row — as tall
+              as the copy, no taller — so the six bodies still differ but the
+              card does not: the difference is absorbed by the picture above.
+              On a desktop the column is fixed to the card height instead, the
+              copy is top-aligned inside it, and the controls sit at the bottom
+              of the space whether or not the copy fills it. */}
+          <div className="order-2 flex flex-col px-5 py-4 sm:p-10 lg:order-1 lg:h-[34rem] lg:p-10 xl:p-12">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={current.id}
@@ -172,7 +177,7 @@ export function Services() {
 
             {/* The controls, at the bottom of the column at every width so they
                 are always in the same place on the card. */}
-            <div className="mt-auto flex items-center gap-2.5 pt-4 sm:gap-3 sm:pt-6 lg:pt-8">
+            <div className="mt-auto flex items-center gap-2.5 pt-5 sm:gap-3 sm:pt-6 lg:pt-8">
               <Arrow
                 direction="previous"
                 available={!isFirst}
@@ -213,7 +218,10 @@ export function Services() {
           to hold it, while the pill puts a surface of its own beneath the words
           — white on this band, the same shape as every other action on the
           page. */}
-      <div className="mt-8 flex justify-center">
+      {/* The same distance above as the band's own floor leaves below it, so
+          the pill sits centred in the space between the card and the next
+          section rather than tucked under the card. */}
+      <div className="mt-[clamp(3rem,8vw,6rem)] flex justify-center">
         <CtaLink href="#quote">{current.cta ?? "Get a Quote"}</CtaLink>
       </div>
     </Section>
