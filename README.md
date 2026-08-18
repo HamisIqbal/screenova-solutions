@@ -18,13 +18,14 @@ npm run format     # prettier
 
 ```
 public/                  static assets served from /
-  fonts/ icons/ images/ videos/
+  fonts/                 the two variable woff2 faces, and their licences
+  images/                photographs, the logo, service and city pictures
 src/
   app/
-    layout.tsx           root layout: metadata, header, <main>, footer
+    layout.tsx           root layout: metadata, cover, header, <main>, footer
     page.tsx             the one page — sections are composed here in order
   components/
-    layout/              Header, Footer — site chrome
+    layout/              Cover, Header, Footer — site chrome
     sections/            one directory per page section
     ui/                  reusable primitives shared across sections
   animations/

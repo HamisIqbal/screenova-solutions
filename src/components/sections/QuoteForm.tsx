@@ -140,7 +140,7 @@ export function QuoteForm() {
           <summary className="flex cursor-pointer list-none items-center gap-2 text-(--on-ground-muted)">
             <span
               aria-hidden="true"
-              className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-(--raised-border) leading-none transition-transform duration-300 group-open:rotate-45"
+              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-(--raised-border) leading-none transition-transform duration-300 group-open:rotate-45"
             >
               +
             </span>

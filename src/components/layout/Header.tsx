@@ -247,41 +247,53 @@ function FullScreenMenu({ open, onNavigate }: { open: boolean; onNavigate: () =>
       className="pointer-events-auto fixed inset-0 z-0 xl:hidden"
       style={{ visibility: "hidden", clipPath: "inset(0 0 0 100%)" }}
     >
+      {/* The panel has to survive a viewport shorter than its own contents — a
+          phone held sideways is 375px tall and this list is not. Two things do
+          that, and it needs both. `overflow-y-auto` gives the overflow somewhere
+          to go; `m-auto` on the inner block is what centres it, in place of
+          `justify-center` on the column. A centred *flex* column with more
+          content than room overflows equally off both ends, and the top end is
+          unreachable by scrolling — the first two links simply cannot be
+          reached. Auto margins collapse to zero the moment there is no free
+          space, so the same block centres when it fits and pins to the top when
+          it does not. */}
       <nav
         aria-label="Primary"
-        className="px-gutter flex h-full flex-col justify-center pt-24 pb-12"
+        className="px-gutter flex h-full flex-col overflow-y-auto overscroll-contain pt-24 pb-12"
       >
-        <ul className="flex flex-col items-start gap-1">
-          {navLinks.map((link, i) => (
-            <li
-              key={link.href}
-              ref={(el) => {
-                if (el) itemsRef.current[i] = el;
-              }}
-              style={{ opacity: 0 }}
-            >
-              <a
-                href={link.href}
-                onClick={onNavigate}
-                className="font-title block py-2 no-underline"
-                style={{ fontSize: "clamp(1.25rem, 5.5vw, 1.75rem)", fontWeight: 400 }}
+        <div className="m-auto w-full">
+          <ul className="flex flex-col items-start gap-1">
+            {navLinks.map((link, i) => (
+              <li
+                key={link.href}
+                ref={(el) => {
+                  if (el) itemsRef.current[i] = el;
+                }}
+                style={{ opacity: 0 }}
               >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+                <a
+                  href={link.href}
+                  onClick={onNavigate}
+                  className="font-title block py-2 no-underline"
+                  style={{ fontSize: "clamp(1.25rem, 5.5vw, 1.75rem)", fontWeight: 400 }}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
 
-        <div
-          ref={(el) => {
-            if (el) itemsRef.current[navLinks.length] = el;
-          }}
-          className="mt-10"
-          style={{ opacity: 0 }}
-        >
-          <CtaLink href={navCta.href} onClick={onNavigate}>
-            {navCta.label}
-          </CtaLink>
+          <div
+            ref={(el) => {
+              if (el) itemsRef.current[navLinks.length] = el;
+            }}
+            className="mt-10"
+            style={{ opacity: 0 }}
+          >
+            <CtaLink href={navCta.href} onClick={onNavigate}>
+              {navCta.label}
+            </CtaLink>
+          </div>
         </div>
       </nav>
     </div>

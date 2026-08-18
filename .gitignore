@@ -22,6 +22,9 @@ dist/
 # typescript
 *.tsbuildinfo
 
+# local tooling state (machine-specific paths and session ids)
+.impeccable/
+
 # misc
 .DS_Store
 *.pem
