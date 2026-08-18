@@ -5,7 +5,7 @@ import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
-import { Section, SectionHeader } from "@/components/ui";
+import { CtaLink, Section, SectionHeader } from "@/components/ui";
 import { services } from "@/content/home";
 
 /**
@@ -93,8 +93,13 @@ export function Services() {
       >
         <div className="grid lg:grid-cols-2">
           {/* The picture. First on a phone, second on a desktop — the words
-              lead the reading order at both widths. */}
-          <div className="relative order-1 aspect-4/3 w-full sm:aspect-video lg:order-2 lg:aspect-auto lg:h-[32rem]">
+              lead the reading order at both widths.
+
+              Its height is set rather than derived from an aspect ratio: on a
+              phone a 4:3 band ate nearly 300px of a 650px card and pushed the
+              arrows off the bottom of the screen. A fixed band crops the photo
+              instead of the card. */}
+          <div className="relative order-1 h-44 w-full sm:h-64 lg:order-2 lg:h-[32rem]">
             <AnimatePresence initial={false}>
               <motion.div
                 key={current.id}
@@ -116,9 +121,13 @@ export function Services() {
             </AnimatePresence>
           </div>
 
-          {/* The words. Fixed height on a desktop so the arrows never move; the
-              copy is top-aligned inside it and the controls sit at the bottom. */}
-          <div className="order-2 flex flex-col p-7 sm:p-10 lg:order-1 lg:h-[32rem] lg:p-12">
+          {/* The words. Fixed height at every width, not just on a desktop: the
+              six bodies differ by about 50px of copy, and a column that fitted
+              each of them resized the whole card under the arrows every time
+              they were pressed. Held still, the card is one size and one screen
+              — the copy is top-aligned inside it and the controls sit at the
+              bottom of the space whether or not the copy fills it. */}
+          <div className="order-2 flex h-[28rem] flex-col p-6 sm:h-[30rem] sm:p-10 lg:order-1 lg:h-[32rem] lg:p-12">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={current.id}
@@ -148,7 +157,7 @@ export function Services() {
 
             {/* The controls, at the bottom of the column at every width so they
                 are always in the same place on the card. */}
-            <div className="mt-10 flex items-center gap-3 lg:mt-auto lg:pt-8">
+            <div className="mt-auto flex items-center gap-3 pt-6 lg:pt-8">
               <Arrow
                 direction="previous"
                 available={!isFirst}
@@ -167,7 +176,7 @@ export function Services() {
                 {items.map((service, i) => (
                   <span
                     key={service.id}
-                    className={`h-0.5 w-4 rounded-full sm:w-6 transition-all duration-300 ${
+                    className={`h-0.5 w-4 rounded-full transition-all duration-300 sm:w-6 ${
                       i === index ? "bg-(--on-ground)" : "bg-(--on-ground)/25"
                     }`}
                   />
@@ -182,10 +191,16 @@ export function Services() {
           shown at a time, so a link buried in the copy moved with the words and
           read as belonging to that one service. Out here it sits still on the
           blue while the card changes behind the arrows, and it is the only
-          thing on the band below the card — the last thing the section says. */}
-      <p className="mt-8 text-center">
-        <a href="#quote">{current.cta ?? "Get a Quote"}</a>
-      </p>
+          thing on the band below the card — the last thing the section says.
+
+          It is the pill rather than an underlined link because it is now alone
+          on the blue: a line of text under a very large white card has nothing
+          to hold it, while the pill puts a surface of its own beneath the words
+          — white on this band, the same shape as every other action on the
+          page. */}
+      <div className="mt-8 flex justify-center">
+        <CtaLink href="#quote">{current.cta ?? "Get a Quote"}</CtaLink>
+      </div>
     </Section>
   );
 }
