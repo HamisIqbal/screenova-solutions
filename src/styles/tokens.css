@@ -138,7 +138,12 @@
        hero   20 -> 44px      h2   26 -> 33.6px     h3   16 -> 18px
        lead   13 -> 15px      body 14px flat        label 12px  nav 14px */
   --text-hero: clamp(1.25rem, 7.37vw - 0.221rem, 2.75rem);
-  --text-h2: clamp(1.625rem, 1.1rem + 2.2vw, 2.1rem);
+  /* The section title is the largest type in its section — nothing inside a
+     band may out-size the name of the band. That is what sets the ceiling at
+     44px: it is the hero title's own cap, so a section heading matches the
+     page's loudest voice without exceeding it, and every heading inside a
+     section (a service title, a step numeral) is sized under it. */
+  --text-h2: clamp(1.75rem, 1.05rem + 3vw, 2.75rem);
   --text-h3: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
   /* The hero's two paragraphs, and nothing else. It is a ramp rather than a
      flat size because the requirement on them is a *line count*, not a size:

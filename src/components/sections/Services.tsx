@@ -84,7 +84,7 @@ export function Services() {
 
       <div
         data-ground="paper"
-        className="mt-12 overflow-hidden rounded-3xl"
+        className="overflow-hidden rounded-3xl"
         // A slider is one region that swaps its contents, so it is announced as
         // one rather than as six things that keep appearing and disappearing.
         role="group"
@@ -163,7 +163,7 @@ export function Services() {
                     both larger than the page's defaults — 44px and 17px —
                     which is what makes this read as the section's one big
                     thing rather than a paragraph sitting in a large box. */}
-                <h3 className="text-lg leading-tight font-bold sm:mt-4 sm:text-3xl lg:text-[2.25rem] xl:text-[2.75rem]">
+                <h3 className="text-lg leading-tight font-bold sm:mt-4 sm:text-2xl lg:text-[2rem] xl:text-[2.25rem]">
                   {current.title}
                 </h3>
 

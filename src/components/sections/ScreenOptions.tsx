@@ -23,7 +23,7 @@ export function ScreenOptions() {
         intro={screenOptions.intro}
       />
 
-      <div className="mt-14 grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2">
         {screenOptions.options.map((option) => (
           <article
             key={option.title}

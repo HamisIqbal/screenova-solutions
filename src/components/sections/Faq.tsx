@@ -15,11 +15,11 @@ import { faq } from "@/content/home";
 export function Faq() {
   return (
     <Section id="faq" ground="paper" labelledBy="faq-title">
-      <h2 id="faq-title" className="max-w-2xl">
+      <h2 id="faq-title" className="mx-auto mb-[clamp(3rem,8vw,6rem)] max-w-2xl text-center">
         {faq.eyebrow}
       </h2>
 
-      <div className="mt-12 border-t border-(--raised-border)">
+      <div className="border-t border-(--raised-border)">
         {faq.items.map((item) => (
           <details key={item.question} className="group border-b border-(--raised-border)">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5">

@@ -49,7 +49,7 @@ export function ServiceArea() {
         intro={serviceArea.intro}
       />
 
-      <h3 className="mt-12">{serviceArea.citiesLabel}</h3>
+      <h3>{serviceArea.citiesLabel}</h3>
 
       <ul className="group/row mt-6 flex flex-wrap gap-3 sm:flex-nowrap">
         {serviceArea.featured.map((city) => (
@@ -60,7 +60,7 @@ export function ServiceArea() {
               // taller, from `sm` — that height is what makes them blocks
               // rather than banners.
               "relative aspect-4/5 basis-[calc(50%-0.375rem)] overflow-hidden rounded-2xl",
-              "sm:aspect-auto sm:h-[26rem] sm:basis-0 sm:grow lg:h-[30rem]",
+              "sm:aspect-auto sm:h-[26rem] sm:grow sm:basis-0 lg:h-[30rem]",
               "transition-[flex-grow,opacity,transform] duration-500 ease-out",
               // The resting state of the *other* three while the row is hovered.
               "sm:group-hover/row:scale-[0.97] sm:group-hover/row:opacity-60",

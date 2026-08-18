@@ -442,6 +442,10 @@ export const quote = {
     "Not Sure / Need Recommendation",
   ],
   submit: "Submit Request",
+  /** The disclosure that holds the three fields most people leave empty. */
+  optional: "Add quantity, measurements or photos",
+  /** Under the button: the other way to reach us, for anyone who won't fill this in. */
+  callInstead: "Prefer to talk? Call",
 } as const;
 
 export const finalCta = {

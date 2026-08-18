@@ -21,7 +21,7 @@ export function WhyChooseUs() {
         intro={whyChooseUs.intro}
       />
 
-      <ul className="mt-14 grid gap-x-10 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid gap-x-10 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
         {whyChooseUs.benefits.map((benefit) => (
           <li key={benefit.title}>
             <span aria-hidden="true" className="block h-1 w-10 rounded-full bg-(--rule)" />

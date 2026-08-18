@@ -50,7 +50,7 @@ export function HowItWorks() {
       {/* The gap between cards is the travel from one step to the next. It is
           short and the cards are tall, because the alternative — small cards
           far apart — is a long stretch of empty white band between them. */}
-      <ol className="mt-14 flex flex-col gap-[14vh] pb-[6vh]">
+      <ol className="flex flex-col gap-[14vh] pb-[6vh]">
         {steps.map((step, i) => (
           <li
             key={step.number}
@@ -74,8 +74,9 @@ export function HowItWorks() {
                 className="font-hero text-blue mt-5 block leading-none"
                 // Bigger than it was as a column heading — one card at a time
                 // means the numeral is the thing that tells you where in the
-                // four you are, and it still stays under the hero title.
-                style={{ fontSize: "clamp(2.5rem, 6vw, 4rem)" }}
+                // four you are — but still under the section title, which is
+                // the largest thing on the band.
+                style={{ fontSize: "clamp(2rem, 4vw, 2.5rem)" }}
               >
                 {String(step.number).padStart(2, "0")}
               </span>
@@ -85,7 +86,7 @@ export function HowItWorks() {
                 {step.number} of {steps.length}
               </p>
 
-              <h3 className="mt-4 text-xl sm:text-2xl lg:text-3xl">{step.title}</h3>
+              <h3 className="mt-4 text-xl sm:text-2xl">{step.title}</h3>
 
               <div className="mt-4 flex max-w-xl flex-col gap-3 text-(--on-ground-muted) lg:gap-4 lg:text-base xl:text-[1.0625rem]">
                 {step.body.map((paragraph) => (

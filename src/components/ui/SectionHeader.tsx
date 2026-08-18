@@ -10,6 +10,15 @@
  * The eyebrow used to carry a small dot in the band's rule colour. It is gone —
  * the eyebrow's own size and 0.16em tracking already separate it from the
  * title, and the mark was doing no work the type was not already doing.
+ *
+ * It is centred, and it owns the space beneath it. Both are one decision: a
+ * section opens with its name on the centre line and then hands over to the
+ * content, so the title reads as the section's own label rather than as the
+ * first item in it. The bottom margin is the same `clamp(3rem, 8vw, 6rem)` the
+ * band uses for its own padding, so the title sits exactly as far from the
+ * content below it as it does from the section above — the header is centred
+ * in its own gap as well as on the page. Sections therefore add no top margin
+ * of their own to the block that follows.
  */
 export function SectionHeader({
   eyebrow,
@@ -27,7 +36,7 @@ export function SectionHeader({
   const paragraphs = typeof intro === "string" ? [intro] : (intro ?? []);
 
   return (
-    <header className={`max-w-2xl ${className}`}>
+    <header className={`mx-auto mb-[clamp(3rem,8vw,6rem)] max-w-2xl text-center ${className}`}>
       <p
         className="font-title text-(--on-ground-muted)"
         style={{ fontSize: "var(--text-label)", fontWeight: 400, letterSpacing: "0.16em" }}
