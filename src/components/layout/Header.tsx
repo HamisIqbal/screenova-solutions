@@ -34,19 +34,18 @@ import { useIsomorphicLayoutEffect, usePrefersReducedMotion } from "@/hooks";
  * A transparent header is designed against the hero, and the hero is dark. Two
  * hundred pixels further down the page is white, and white lettering, a white
  * quote pill and a mark that is half white type all vanish into it — the header
- * would be functionally invisible for nine tenths of the scroll. So once the
- * hero has passed, a black scrim fades in behind the whole overlay.
+ * would be functionally invisible for nine tenths of the scroll. So a black
+ * scrim fades in behind the whole overlay.
  *
- * It is keyed to the hero's real height rather than to a guessed pixel count,
- * so it is still fully transparent everywhere the design was drawn for and
- * arrives exactly as the picture leaves. Delete `scrolled` and the class it
- * gates to remove it.
+ * It arrives on the first flick of the wheel rather than at the foot of the
+ * hero: the moment the page moves the header is a floating thing over moving
+ * picture, and it wants its own ground from then on. Only the resting state at
+ * the very top is left bare. Delete `scrolled` and the class it gates to
+ * remove it.
  */
 
-/** Fallback trigger point if the hero cannot be measured. */
-const FALLBACK_LIFT_AT = 320;
-/** The overlay's own height, `min-h-22`. The backdrop is wanted a row early. */
-const ROW_HEIGHT = 88;
+/** Scroll past this many pixels and the backdrop is in. A flick of the wheel. */
+const LIFT_AT = 8;
 /** Rendered box for the brand mark at its largest, in its native 3:1 ratio. */
 const LOGO_HEIGHT = 56;
 const LOGO_WIDTH = Math.round((LOGO_HEIGHT * logo.width) / logo.height);
@@ -55,34 +54,15 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // The backdrop arrives as the hero leaves, so the trigger is the hero's own
-  // height less the overlay's — measured, not guessed, because the hero's
-  // height moves with the viewport and with how the copy wraps.
+  // A single threshold a few pixels down, so the backdrop is keyed to "the page
+  // has moved" and nothing else. Nothing to measure and nothing to re-measure
+  // on resize — the old hero-bottom trigger needed both.
   useEffect(() => {
-    let liftAt = FALLBACK_LIFT_AT;
+    const onScroll = () => setScrolled(window.scrollY > LIFT_AT);
 
-    // The hero's *bottom* edge, less the row, so the backdrop is fully in by
-    // the time the picture behind it is fully out.
-    const measure = () => {
-      const band = document.getElementById("hero");
-      if (!band) return;
-      const bottom = band.getBoundingClientRect().bottom + window.scrollY;
-      liftAt = Math.max(0, bottom - ROW_HEIGHT);
-    };
-
-    const onScroll = () => setScrolled(window.scrollY > liftAt);
-    const onResize = () => {
-      measure();
-      onScroll();
-    };
-
-    onResize();
+    onScroll(); // A reload part-way down the page starts scrolled.
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
-    };
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   // Escape closes the full-screen layer, and the page must not scroll behind it.

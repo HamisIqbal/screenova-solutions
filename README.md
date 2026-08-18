@@ -130,12 +130,11 @@ Because the header paints nothing, the hero photograph reaches the top of the wi
 ran the full height of its band — the image is `inset-0` — but a solid bar was covering its first
 88px.
 
-**One addition that is not in the design:** past the hero, a black backdrop fades in behind the
-whole overlay. A transparent header is drawn against a dark picture, and 200px down the page is
-white, where white lettering, a white quote pill and a half-white mark all disappear. The trigger
-is the hero's measured bottom edge rather than a guessed pixel count, so the header is still fully
-transparent everywhere the design was drawn for. Delete `scrolled` and the element it gates to
-remove it.
+**One addition that is not in the design:** a black backdrop fades in behind the whole overlay as
+soon as the page scrolls. A transparent header is drawn against a dark picture, and 200px down the
+page is white, where white lettering, a white quote pill and a half-white mark all disappear. The
+trigger is 8px of scroll, so only the resting state at the very top is left bare. Delete
+`scrolled` and the element it gates to remove it.
 
 **Type — one family, three roles.** Everything on the site is **Chillax** (Indian Type Foundry),
 self-hosted from `public/fonts/` under the ITF Free Font License — commercial use and self-hosting
