@@ -33,9 +33,17 @@
     text-rendering: optimizeLegibility;
   }
 
-  ::selection {
-    background-color: var(--color-brand);
-    color: var(--color-paper);
+  /* Selection follows the band rather than naming a colour. It used to be brand
+     blue on white type, which vanished on the five blue bands — blue on blue —
+     and that is half the page. Inverting the band's own two roles is the one
+     rule that cannot fail: navy on white where the ground is paper, white on
+     blue where it is blue, and the ground's text colour is always the thing
+     that was legible on it in the first place. `*::selection` rather than
+     `::selection` so it is the selected element's own ground that decides, not
+     the root's. */
+  *::selection {
+    background-color: var(--on-ground);
+    color: var(--ground);
   }
 
   /* Sections run edge to edge so their ground colour can too. The measure is

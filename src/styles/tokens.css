@@ -145,6 +145,9 @@
      section (a service title, a step numeral) is sized under it. */
   --text-h2: clamp(1.75rem, 1.05rem + 3vw, 2.75rem);
   --text-h3: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+  /* The line under a section's name. It is what `--text-h2` used to be, because
+     that is exactly the job it has taken over: the descriptive sentence. */
+  --text-subtitle: clamp(1.25rem, 0.95rem + 1.3vw, 1.75rem);
   /* The hero's two paragraphs, and nothing else. It is a ramp rather than a
      flat size because the requirement on them is a *line count*, not a size:
      three lines each, at every width.

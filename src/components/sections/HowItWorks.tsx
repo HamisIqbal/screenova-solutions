@@ -76,7 +76,7 @@ export function HowItWorks() {
                 // means the numeral is the thing that tells you where in the
                 // four you are — but still under the section title, which is
                 // the largest thing on the band.
-                style={{ fontSize: "clamp(2rem, 4vw, 2.5rem)" }}
+                style={{ fontSize: "clamp(1.5rem, 4vw, 2.5rem)" }}
               >
                 {String(step.number).padStart(2, "0")}
               </span>

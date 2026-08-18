@@ -15,8 +15,15 @@ import { faq } from "@/content/home";
 export function Faq() {
   return (
     <Section id="faq" ground="paper" labelledBy="faq-title">
-      <h2 id="faq-title" className="mx-auto mb-[clamp(3rem,8vw,6rem)] max-w-2xl text-center">
-        {faq.eyebrow}
+      {/* The section's name, set the same way `SectionHeader` sets one. This
+          section has no describing line under it — the questions are the
+          description — so it renders the heading on its own. */}
+      <h2
+        id="faq-title"
+        className="mx-auto mb-[clamp(3rem,8vw,6rem)] max-w-2xl text-center"
+        style={{ letterSpacing: "0.04em" }}
+      >
+        {faq.eyebrow.toUpperCase()}
       </h2>
 
       <div className="border-t border-(--raised-border)">
