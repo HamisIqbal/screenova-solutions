@@ -1,221 +1,226 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion, useInView } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
-import { TextRotate, type TextRotateRef } from "@/components/ui/text-rotate";
+import { Section, SectionHeader } from "@/components/ui";
 import { services } from "@/content/home";
 
 /**
- * The six services, told one at a time, on a stage that is six screens tall.
+ * Six services, one card, driven by two arrows.
  *
- * The mechanic is the oldest one in scroll-telling and the reason it is used
- * here is that these six are alternatives rather than steps: a grid of six
- * cards asks the reader to compare them, and comparing six things is work.
- * Handed one at a time, each service gets the whole screen and the reader is
- * asked only "is this the one I need?" six times over.
+ * These six are alternatives rather than steps — you need one of them, not all
+ * of them — so they are handed over one at a time and at full size instead of
+ * being laid out as six cards to compare. The card is deliberately large: the
+ * whole measure wide and the better part of a screen tall, so a service is a
+ * thing you are looking at rather than an entry in a list.
+ *
+ * The card is white on the blue band. That is the same reason this section has
+ * always been able to be blue at all: a block of small copy on a solid blue
+ * field is hard reading, and putting the words back on paper fixes it. It is
+ * done with `data-ground="paper"`, so every role inside the card — text, muted
+ * copy, the rule around the arrows, the link underline — flips back to the
+ * white set without a single child knowing it moved.
  *
  * ---------------------------------------------------------------------------
- * How the six screens are built, since nothing here is measuring scroll:
+ * The layout is one grid that reads the same on both sides of the breakpoint:
+ * words on one side, picture on the other. On a phone the two stack with the
+ * picture first, which is the same order the desktop row reads in.
  *
- *   - The band is `600vh` tall — six screens exactly, so the section starts as
- *     the first service arrives and ends as the sixth leaves. There is no
- *     seventh screen of heading, which is why the eyebrow lives inside the
- *     panel rather than above it.
- *   - One `sticky top-0 h-svh` panel is pinned inside it. That panel is the
- *     only thing ever seen; it does not move for the whole six screens.
- *   - Six invisible tracks are laid over the band, one screen each, and each
- *     watches itself with `useInView` shrunk to the viewport's centre line
- *     (`-50%` top and bottom). A 100vh track can only cross that line while it
- *     owns the middle of the screen, so exactly one is ever in view and the
- *     active index is whichever one says so. No scroll listener, no rAF, no
- *     layout reads.
+ * The card's height is fixed rather than fitted to the copy. The six bodies are
+ * not the same length, and a card that resized around each of them would move
+ * the arrows every time they were pressed — the one control on the card would
+ * be the one thing that will not hold still.
  *
- * The title and the paragraph are the same `TextRotate`, driven by ref rather
- * than by its own timer — `auto={false} loop={false}`, and the tracks call
- * `jumpTo`. The title is split by characters so it types itself in; the
- * paragraph by words, because sixty characters of stagger on body copy reads as
- * a fault rather than as an effect. The picture crossfades underneath on the
- * same index.
+ * The arrows are gone at the ends rather than greyed: there is no card before
+ * the first or after the sixth, so there is nothing for the control to mean.
+ * They keep their space (`invisible`, not `hidden`) so the pair does not shift
+ * sideways on the first and last card, and they are `disabled` so a keyboard
+ * cannot reach a control that is not there.
  *
- * `min-h-svh` rather than `vh`: on a phone the browser chrome collapses as you
- * scroll and `vh` would leave the panel a chrome's-height too tall for the
- * whole six screens.
+ * Direction is tracked because the animation has to know it: pressing forward
+ * sends the old card left and brings the new one in from the right, and
+ * pressing back does the reverse. Without it every move looks the same and the
+ * card stops feeling like a position in a sequence.
  */
 
 const items = services.items;
 
-/**
- * One screen of the band. It renders nothing — it exists to notice when it is
- * the one in the middle of the window and to say so.
- */
-function Track({ index, onActive }: { index: number; onActive: (index: number) => void }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { margin: "-50% 0px -50% 0px" });
-
-  useEffect(() => {
-    if (inView) onActive(index);
-  }, [inView, index, onActive]);
-
-  return <div ref={ref} className="flex-1" aria-hidden="true" />;
-}
+/** How far a card sits off-centre as it enters or leaves, in px. */
+const SLIDE = 48;
 
 export function Services() {
-  const [active, setActive] = useState(0);
-  const titleRef = useRef<TextRotateRef>(null);
-  const bodyRef = useRef<TextRotateRef>(null);
+  const [index, setIndex] = useState(0);
+  /** +1 when the last move was forward, -1 when it was back. */
+  const [direction, setDirection] = useState(1);
 
-  /* `active` only ever comes from a track's own index, so it is always in
-     range — the fallback is here for `noUncheckedIndexedAccess`, not for a
-     case that happens. */
-  const current = items[active] ?? items[0]!;
+  const current = items[index] ?? items[0]!;
+  const isFirst = index === 0;
+  const isLast = index === items.length - 1;
 
-  const onActive = useCallback((index: number) => {
-    setActive(index);
-    titleRef.current?.jumpTo(index);
-    bodyRef.current?.jumpTo(index);
-  }, []);
+  const go = (step: number) => {
+    setDirection(step);
+    setIndex((i) => Math.min(Math.max(i + step, 0), items.length - 1));
+  };
+
+  const slide = {
+    enter: { opacity: 0, x: direction * SLIDE },
+    center: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: direction * -SLIDE },
+  };
+
+  const transition = { duration: 0.42, ease: [0.25, 1, 0.5, 1] as const };
 
   return (
-    <section
-      id="services"
-      data-ground="blue"
-      aria-labelledby="services-title"
-      // `py-0` drops the band padding every other section gets. That padding is
-      // the rhythm between bands, and a pinned stage has no rhythm to keep — it
-      // is six screens of scroll, and 192px of it spent on padding would make
-      // the section 6.2 screens long instead of six. The panel keeps its own
-      // clearance from the fixed header instead.
-      className="relative py-0!"
-    >
-      {/* The panel, pinned. It is first in the flow and one screen tall, and
-          the spacer beneath it supplies the other five — together they are the
-          600vh the section is, and the panel stays put across all of it. */}
-      <div className="sticky top-0 h-svh">
-        <div className="max-w-page px-gutter mx-auto flex h-full w-full items-center pt-(--header-clearance) pb-14">
-          <div className="grid w-full items-center gap-8 lg:grid-cols-2 lg:gap-16">
-            {/* Left: the words. Everything in this column is on the same index,
-                so the whole column turns over as one gesture. */}
-            <div className="order-2 lg:order-1">
-              <p
-                className="font-title text-(--on-ground-muted)"
-                style={{ fontSize: "var(--text-label)", letterSpacing: "0.16em" }}
+    <Section id="services" ground="blue" labelledBy="services-title">
+      <SectionHeader
+        eyebrow={services.eyebrow}
+        title={services.title}
+        titleId="services-title"
+        intro={services.intro}
+      />
+
+      <div
+        data-ground="paper"
+        className="mt-12 overflow-hidden rounded-3xl"
+        // A slider is one region that swaps its contents, so it is announced as
+        // one rather than as six things that keep appearing and disappearing.
+        role="group"
+        aria-roledescription="carousel"
+        aria-label={services.title}
+      >
+        <div className="grid lg:grid-cols-2">
+          {/* The picture. First on a phone, second on a desktop — the words
+              lead the reading order at both widths. */}
+          <div className="relative order-1 aspect-4/3 w-full sm:aspect-video lg:order-2 lg:aspect-auto lg:h-[32rem]">
+            <AnimatePresence initial={false}>
+              <motion.div
+                key={current.id}
+                className="absolute inset-0"
+                initial={{ opacity: 0, scale: 1.05 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1 }}
+                transition={transition}
               >
-                {services.eyebrow.toUpperCase()}
-              </p>
-
-              {/* The band's real heading, for the outline and for `aria-labelledby`.
-                  It is not shown: the panel already carries the eyebrow, and a
-                  second static line above six rotating ones would be a third
-                  thing competing for the same corner. */}
-              <h2 id="services-title" className="sr-only">
-                {services.title}
-              </h2>
-
-              <h3 className="mt-5">
-                <TextRotate
-                  ref={titleRef}
-                  texts={items.map((service) => service.title)}
-                  auto={false}
-                  loop={false}
-                  splitBy="characters"
-                  staggerFrom="first"
-                  staggerDuration={0.012}
-                  mainClassName="font-title text-3xl leading-[1.05] font-bold sm:text-5xl lg:text-6xl"
-                  splitLevelClassName="overflow-hidden pb-1"
-                  initial={{ y: "110%", opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: "-110%", opacity: 0 }}
-                  transition={{ type: "spring", duration: 0.55, bounce: 0 }}
+                <Image
+                  src={current.image}
+                  alt={current.imageAlt}
+                  fill
+                  sizes="(min-width: 64rem) 36rem, 100vw"
+                  className="object-cover"
+                  priority={index === 0}
                 />
-              </h3>
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-              <div className="mt-6 max-w-md text-(--on-ground-muted)">
-                <TextRotate
-                  ref={bodyRef}
-                  texts={items.map((service) => service.body.join(" "))}
-                  auto={false}
-                  loop={false}
-                  splitBy="words"
-                  staggerFrom="first"
-                  staggerDuration={0.006}
-                  mainClassName="block"
-                  splitLevelClassName="overflow-hidden"
-                  initial={{ y: "60%", opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: "-40%", opacity: 0 }}
-                  transition={{ type: "spring", duration: 0.5, bounce: 0 }}
-                />
-              </div>
+          {/* The words. Fixed height on a desktop so the arrows never move; the
+              copy is top-aligned inside it and the controls sit at the bottom. */}
+          <div className="order-2 flex flex-col p-7 sm:p-10 lg:order-1 lg:h-[32rem] lg:p-12">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={current.id}
+                variants={slide}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={transition}
+                aria-live="polite"
+              >
+                <p
+                  className="font-title text-(--on-ground-muted) tabular-nums"
+                  style={{ fontSize: "var(--text-label)", letterSpacing: "0.16em" }}
+                >
+                  {String(index + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
+                </p>
 
-              {/* Where you are in the six. The rules are the progress bar and
-                  the count is the same information in words — a scroll-pinned
-                  section has to say how long it is or it reads as stuck. */}
-              <div className="mt-9 flex items-center gap-4">
-                <div className="flex gap-1.5" aria-hidden="true">
-                  {items.map((service, i) => (
-                    <span
-                      key={service.id}
-                      className={`h-0.5 w-7 rounded-full transition-all duration-500 ${
-                        i === active ? "bg-(--on-ground)" : "bg-(--on-ground)/30"
-                      }`}
-                    />
+                <h3 className="mt-4 text-2xl font-bold sm:text-3xl lg:text-4xl">{current.title}</h3>
+
+                <div className="mt-5 flex max-w-md flex-col gap-3 text-(--on-ground-muted)">
+                  {current.body.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
                   ))}
                 </div>
 
-                <span
-                  className="text-(--on-ground-muted) tabular-nums"
-                  style={{ fontSize: "var(--text-label)" }}
-                >
-                  {String(active + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
-                </span>
-              </div>
+                <p className="mt-7">
+                  <a href="#quote">{current.cta ?? "Get a Quote"}</a>
+                </p>
+              </motion.div>
+            </AnimatePresence>
 
-              <p className="mt-7">
-                <a href="#quote">{current.cta ?? "Get a Quote"}</a>
-              </p>
-            </div>
+            {/* The controls, at the bottom of the column at every width so they
+                are always in the same place on the card. */}
+            <div className="mt-10 flex items-center gap-3 lg:mt-auto lg:pt-8">
+              <Arrow
+                direction="previous"
+                available={!isFirst}
+                onClick={() => go(-1)}
+                label={isFirst ? "" : `Previous service, ${items[index - 1]?.title}`}
+              />
+              <Arrow
+                direction="next"
+                available={!isLast}
+                onClick={() => go(1)}
+                label={isLast ? "" : `Next service, ${items[index + 1]?.title}`}
+              />
 
-            {/* Right: the picture. One frame, six images crossfading through it,
-                so the frame itself never moves — the panel is a window onto the
-                service, not six slides going past. */}
-            <div className="relative order-1 aspect-4/5 w-full overflow-hidden rounded-3xl lg:order-2 lg:aspect-4/5 lg:max-h-[70svh] lg:justify-self-end">
-              <AnimatePresence initial={false}>
-                <motion.div
-                  key={current.id}
-                  className="absolute inset-0"
-                  initial={{ opacity: 0, scale: 1.06 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 1 }}
-                  transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
-                >
-                  <Image
-                    src={current.image}
-                    alt={current.imageAlt}
-                    fill
-                    sizes="(min-width: 64rem) 34rem, 92vw"
-                    className="object-cover"
-                    priority={active === 0}
+              {/* Six ticks: which of the six this is, without counting. */}
+              <div className="ml-2 flex gap-1.5 sm:ml-3" aria-hidden="true">
+                {items.map((service, i) => (
+                  <span
+                    key={service.id}
+                    className={`h-0.5 w-4 rounded-full sm:w-6 transition-all duration-300 ${
+                      i === index ? "bg-(--on-ground)" : "bg-(--on-ground)/25"
+                    }`}
                   />
-                </motion.div>
-              </AnimatePresence>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
+    </Section>
+  );
+}
 
-      {/* The remaining five screens. Nothing is ever drawn here. */}
-      <div className="h-[500svh]" aria-hidden="true" />
+/**
+ * One of the two controls. `available` is what makes it exist: unavailable, it
+ * keeps its 48px of space so the pair never shifts, but it is invisible,
+ * unfocusable, and unannounced.
+ */
+function Arrow({
+  direction,
+  available,
+  onClick,
+  label,
+}: {
+  direction: "previous" | "next";
+  available: boolean;
+  onClick: () => void;
+  label: string;
+}) {
+  const Icon = direction === "previous" ? ArrowLeft : ArrowRight;
 
-      {/* Six tracks laid over the whole band, one screen each, reporting which
-          of them owns the middle of the window. `pointer-events-none` so the
-          overlay never comes between the pointer and the quote link. */}
-      <div className="pointer-events-none absolute inset-0 flex flex-col">
-        {items.map((service, i) => (
-          <Track key={service.id} index={i} onActive={onActive} />
-        ))}
-      </div>
-    </section>
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={!available}
+      aria-hidden={!available}
+      aria-label={label}
+      className={[
+        // `button` is the green action pill by default — see globals. An arrow
+        // is a control, not an action, so it opts out of the fill and the
+        // padding and keeps only the type colour.
+        "flex h-12 w-12 shrink-0 items-center justify-center rounded-full border bg-transparent p-0",
+        "border-(--rule)/40 text-(--on-ground) transition-colors duration-300",
+        "hover:bg-(--on-ground) hover:text-(--ground)",
+        available ? "" : "invisible",
+      ].join(" ")}
+    >
+      <Icon className="h-5 w-5" />
+    </button>
   );
 }
