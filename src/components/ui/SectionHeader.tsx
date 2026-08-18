@@ -1,20 +1,15 @@
 /**
- * The opening block every section shares: an eyebrow, the title, and optional
- * intro copy, all ranged left. Keeping it in one place is what makes nine
- * different layouts read as one page.
+ * The opening block every section shares: a marked eyebrow, the title, and
+ * optional intro copy. Keeping it in one place is what makes nine different
+ * layouts read as one page.
  *
- * There is no `tone` prop. The header takes its colours from whatever band it
- * is standing in, so a section can change ground without the header being told
- * about it.
+ * There is no `tone` prop any more. The header takes its colours from whatever
+ * band it is standing in, so a section can change ground without the header
+ * being told about it.
  *
- * The eyebrow used to carry a small dot in the band's rule colour. It is gone:
- * the titles are now set considerably larger and at 700, and a 6px bullet in
- * front of a 52px heading reads as leftover furniture rather than as structure.
- * The eyebrow's own tracking and size already separate it from the title.
- *
- * `text-left` is stated rather than inherited. The measure this sits in is
- * centred on the page, and an explicit alignment is what guarantees the header
- * is not centred with it if a parent ever picks up `text-center`.
+ * The eyebrow used to carry a small dot in the band's rule colour. It is gone —
+ * the eyebrow's own size and 0.16em tracking already separate it from the
+ * title, and the mark was doing no work the type was not already doing.
  */
 export function SectionHeader({
   eyebrow,
@@ -32,9 +27,7 @@ export function SectionHeader({
   const paragraphs = typeof intro === "string" ? [intro] : (intro ?? []);
 
   return (
-    // Wider than it was: the title is a larger setting now, and 2xl would have
-    // pushed most of them onto an extra line for no reason.
-    <header className={`max-w-3xl text-left ${className}`}>
+    <header className={`max-w-2xl ${className}`}>
       <p
         className="font-title text-(--on-ground-muted)"
         style={{ fontSize: "var(--text-label)", fontWeight: 400, letterSpacing: "0.16em" }}
@@ -42,12 +35,12 @@ export function SectionHeader({
         {eyebrow.toUpperCase()}
       </p>
 
-      <h2 id={titleId} className="mt-3">
+      <h2 id={titleId} className="mt-4">
         {title}
       </h2>
 
       {paragraphs.map((paragraph) => (
-        <p key={paragraph} className="mt-5 text-(--on-ground-muted)">
+        <p key={paragraph} className="mt-4 text-(--on-ground-muted)">
           {paragraph}
         </p>
       ))}

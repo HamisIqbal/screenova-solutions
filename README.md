@@ -18,11 +18,7 @@ npm run format     # prettier
 
 ```
 public/                  static assets served from /
-  fonts/ icons/ videos/
-  images/
-    placeholders/        stand-in card backdrops — see "Card stages" below
-scripts/
-  generate-placeholders.mjs   regenerates public/images/placeholders/
+  fonts/ icons/ images/ videos/
 src/
   app/
     layout.tsx           root layout: metadata, header, <main>, footer
@@ -78,12 +74,12 @@ A band declares itself with `<Section ground="paper|blue|green">`, which sets `d
 change ground without any of its children being touched. A white card on a coloured band carries
 `data-ground="paper"` itself, so everything inside it flips back to the white set.
 
-| Ground | Text  | Rule  | Card  | Action pill   | Spark  | h1 accent   | Stage tint |
-| ------ | ----- | ----- | ----- | ------------- | ------ | ----------- | ---------- |
-| white  | navy  | blue  | mist  | green / navy  | sunset | blue        | 12%        |
-| blue   | white | white | white | white / navy  | —      | white       | 22%        |
-| green  | navy  | navy  | white | navy / white  | —      | navy        | 16%        |
-| sky    | white | white | white | white / black | —      | `blue-soft` | 30%        |
+| Ground | Text  | Rule  | Card  | Action pill   | Spark  | h1 accent   |
+| ------ | ----- | ----- | ----- | ------------- | ------ | ----------- |
+| white  | navy  | blue  | mist  | green / navy  | sunset | blue        |
+| blue   | white | white | white | white / navy  | —      | white       |
+| green  | navy  | navy  | white | navy / white  | —      | navy        |
+| sky    | white | white | white | white / black | —      | `blue-soft` |
 
 `sky` is black. It is the chrome ground — the header bar and the full-screen menu, so the CTA
 inside them resolves like any other rather than being hand-painted — and it is also **the hero's
@@ -184,107 +180,6 @@ colour. On the hero's black ground the logo blue collapses: `#0B6FE8` is itself 
 clears 4.2:1 against the darkest part of that scrim. The headline is still blue; the ground picks
 the one that survives it.
 
-### Section headings
-
-Every section opens with `<SectionHeader>`: an eyebrow, the title, optional intro copy, ranged
-left. Three things about it are decisions rather than defaults.
-
-**No mark.** The eyebrow used to carry a small dot in the band rule colour. It is gone — with
-titles now set at up to 52px and Bold, a 6px bullet in front of them read as leftover furniture.
-The eyebrow own size and 0.16em tracking already separate it from the title.
-
-**Bold, and much larger.** `h2` went from 26 → 33.6px at weight 400 to **32 → 52px at weight 700**.
-Titles used to be a size step above the body and nothing more, which across nine sections left a
-scrolling reader with no strong signal for where one section ended and the next began. The ceiling
-is solved rather than chosen: the longest title on the page is "Window Screen Services Throughout
-Tampa Bay" at 43 characters, which Satoshi Bold at −0.025em runs to about 21.8em — two comfortable
-lines inside the header `max-w-3xl` at 52px, with `text-wrap: balance` splitting them evenly.
-
-**Three weights now mean three levels.** 900 for the `h1`, 700 for section titles, 600 for card
-titles (`h3`, up from 400 and from 18 → 20px), 400 for everything else. Black stays the hero alone,
-which is what keeps it the loudest thing on the page rather than merely the biggest.
-
-### Card stages
-
-Four sections — Services, How It Works, Why Choose Us, Screen Options — are **stages**: the cards
-arrive one at a time on scroll, each title types itself in, and a photograph behind the whole band
-cross-fades to whichever card is currently being read. `CardStage` and `RevealCard` in
-`components/ui` own all of it; a section only supplies the images and wraps its cards.
-
-```tsx
-<Section ground="blue" bandClassName="relative isolate">
-  <SectionHeader … />
-  <CardStage images={items.map((i) => i.image)} columns={3} className="grid …">
-    {items.map((item, index) => (
-      <RevealCard key={item.id} index={index} className="…">
-        <h3>
-          <Typewriter text={item.title} />
-        </h3>
-        …
-      </RevealCard>
-    ))}
-  </CardStage>
-</Section>
-```
-
-**`relative isolate` on the band, and both words are load-bearing.** `relative` gives the backdrop
-its containing block, so `inset-0` reaches the window rather than the measure. `isolate` makes the
-band a stacking context — without it the backdrop negative z-index does not stop at the band, it
-rises to the root and paints _underneath_ the band own background, where it is invisible. It also
-bounds the blend so the multiply cannot reach the section below.
-
-**The backdrop is `mix-blend-multiply`, and that is a contrast decision, not a look.** The bands
-were measured against flat colour; putting a photograph under them moves every one of those
-numbers. Blue is the binding case — white on blue is 4.72:1 with nothing to spare, and normal
-blending at even 10% opacity drops it to 4.03:1, a fail. Multiply can only darken, so on blue the
-ground under the copy can only get darker and the contrast can only go up. On paper it costs navy
-some of its 17.5:1 and lands around 12:1, still twice what body text needs. That asymmetry is why
-`--stage-tint` is a per-ground role: paper pays for the blend so it takes the lightest hand, blue
-is helped by it so it can take nearly twice as much.
-
-**The reveal is per-card, not per-grid.** Each card owns its own ScrollTrigger, which is what makes
-them arrive individually as you travel down rather than as one burst when the grid top edge crosses
-the line. Within a row they are separated by a delay taken from the card column, so a row resolves
-left to right. A second trigger per card drives the backdrop: whichever card is crossing the middle
-of the viewport owns the picture and gets `data-active`, which sections style however suits them —
-a lift on the Services cards, a green rule turning blue in How It Works, a rule running out from
-2.5rem to 4rem in Why Choose Us.
-
-**Everything degrades.** The cards ship visible and the hidden state is applied by GSAP after
-mount, so with no JavaScript the sections are plain grids. `Typewriter` renders its full string on
-the server and only splits into characters once its card arrives — the text is always in the HTML,
-the characters never move (only their opacity changes), words stay grouped so line breaking is
-unaffected, and a screen reader is handed the finished sentence from an `sr-only` span rather than
-walked through it letter by letter. Reduced motion opts out of both: no entrance, no split, no
-caret.
-
-### Card photographs
-
-Every card in those four sections names an image in `src/content/home.ts`:
-
-```ts
-image: {
-  src: "/images/placeholders/window-rescreening.jpg",
-  alt: "…",     // written for the real photograph; the backdrop itself renders decorative
-  detail: "…",  // the brief for the shot that replaces the placeholder
-}
-```
-
-**All twenty are placeholders today.** `detail` is the art direction for each — what the real
-photograph has to show for the card it belongs to — so replacing them is a file copy: same path,
-same `.jpg`, same 8:5 box, no code change anywhere. `scripts/generate-placeholders.mjs` regenerates
-the stand-ins (`node scripts/generate-placeholders.mjs`) and can be deleted once the real
-photographs land.
-
-The stand-ins are deliberately **light**. The backdrop multiplies, so how dark a placeholder is
-decides how far it drags its band down — a navy gradient at 12% turns the white bands visibly grey
-and makes the layout look broken for reasons that have nothing to do with the layout. Daylight
-photographs of windows and screens are light, so the stand-ins are too.
-
-Note that `next/image` caches optimised output under `.next/cache/images`, for 4 hours by default in
-Next 16. After replacing an image at a path that has already been served, clear that directory or
-the old one keeps coming back.
-
 ### The hero scrim
 
 The hero photograph fills the band and the copy stands on it, which makes the scrim between them a
@@ -314,9 +209,6 @@ back to 55% by the right edge, where the windows are still windows.
   and the gutter — then open with `<SectionHeader>` (eyebrow, title, intro) and use `<CtaLink>`
   for any primary action. Those three primitives are what make the sections read as one page;
   reach for them before writing bespoke markup, and keep the band rotation alternating.
-- **Cards that stage:** a grid of cards on a band that should carry a photograph goes in
-  `<CardStage>` with `<RevealCard>` children and `<Typewriter>` on the title, and the band takes
-  `bandClassName="relative isolate"`. Do not hand-roll a ScrollTrigger for a card grid.
 - **Colour by role:** inside a section write `text-(--on-ground-muted)`, `bg-(--action)`,
   `bg-(--rule)`, never `text-muted` or `bg-green`. A literal colour is a section that breaks
   when its ground changes.
