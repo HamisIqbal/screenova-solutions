@@ -276,6 +276,61 @@ export const serviceArea = {
   intro:
     "Screenova Solutions proudly provides window screen installation, replacement, rescreening, and repair services throughout the Tampa Bay Area.",
   citiesLabel: "Cities We Serve:",
+  /**
+   * The six cities that carry a picture. The other twenty-five stay as the
+   * chip list beneath — a photograph each for thirty-one cities is a scroll
+   * nobody finishes, and these six are where the work actually is.
+   *
+   * `src` points at a generated placeholder (see
+   * `scripts/make-city-placeholders.mjs`). Replace the file in
+   * `public/images/cities/` with the real photograph, keep the name, and
+   * rewrite the `alt` to describe what is in it — nothing else changes.
+   */
+  featuredCities: [
+    {
+      id: "01",
+      title: "Tampa",
+      location: "Hillsborough County",
+      src: "/images/cities/tampa.png",
+      alt: "",
+    },
+    {
+      id: "02",
+      title: "St. Petersburg",
+      location: "Pinellas County",
+      src: "/images/cities/st-petersburg.png",
+      alt: "",
+    },
+    {
+      id: "03",
+      title: "Clearwater",
+      location: "Pinellas County",
+      src: "/images/cities/clearwater.png",
+      alt: "",
+    },
+    {
+      id: "04",
+      title: "Brandon",
+      location: "Hillsborough County",
+      src: "/images/cities/brandon.png",
+      alt: "",
+    },
+    {
+      id: "05",
+      title: "Riverview",
+      location: "Hillsborough County",
+      src: "/images/cities/riverview.png",
+      alt: "",
+    },
+    {
+      id: "06",
+      title: "Wesley Chapel",
+      location: "Pasco County",
+      src: "/images/cities/wesley-chapel.png",
+      alt: "",
+    },
+  ],
+  moreCitiesLabel: "And throughout the rest of the bay:",
   cities: [
     "Tampa",
     "St. Petersburg",
