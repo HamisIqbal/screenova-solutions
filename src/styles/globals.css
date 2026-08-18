@@ -255,11 +255,12 @@
        overrun becomes an extra line rather than horizontal scroll. */
   }
 
-  /* Titles under the hero. Regular, the same weight as the body they sit above:
-     the family has one voice and the hierarchy is carried by size — 33.6px
-     against 14px is a 2.4x step, which is a larger separation than a weight
-     change could give and does not need one on top of it. Semibold is reserved
-     for the h1 alone. */
+  /* Titles under the hero, in the page's one face. h3 stays Regular — the same
+     weight as the body it sits above, with the step carried by size alone. The
+     h2 does not: it is the section's name, set in caps, and caps at Regular go
+     thin and wide at 44px in a way lowercase at the same weight does not. Bold
+     puts the weight back into the letterforms, which is what makes the name
+     read as the band's title rather than as a stretched label. */
   h2,
   h3 {
     font-family: var(--font-title);
@@ -270,6 +271,7 @@
 
   h2 {
     font-size: var(--text-h2);
+    font-weight: 700;
     line-height: 1.1;
   }
 
