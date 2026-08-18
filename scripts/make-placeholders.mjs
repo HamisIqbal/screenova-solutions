@@ -1,6 +1,7 @@
 /**
- * Generates every placeholder picture on the site: one per city in the service
- * area grid, and one per service in the scrolling services stage.
+ * Generates the placeholder pictures still standing in for real photographs:
+ * one per service in the scrolling services stage. The four service-area cities
+ * have their photographs and are not generated.
  *
  * They are stand-ins for real photographs of each city, and they exist as files
  * rather than as a CSS gradient so the markup is already the markup it will
@@ -33,15 +34,6 @@ const HOME = readFileSync(join(ROOT, "src", "content", "home.ts"), "utf8");
  * should read as thirty-one distinct places, which is exactly what it will do
  * once the photographs replace these.
  */
-const NAMES = [...HOME.matchAll(/name: "([^"]+)", src: "\/images\/cities\//g)].map((m) => m[1]);
-
-const slug = (name) =>
-  name
-    .replace(/['.]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-
 /** Palette blues, top colour to bottom colour, cycled across a set. */
 const RAMPS = [
   [[16, 42, 78], [8, 18, 34]],
@@ -54,17 +46,10 @@ const RAMPS = [
 ];
 
 /**
- * The two sets, at the two shapes they are actually drawn at: a city tile is
- * never wider than ~400px on screen, and a service picture fills half of a
- * tall panel.
+ * The one set left, at the shape it is drawn at: a service picture fills half
+ * of a tall panel.
  */
 const SETS = [
-  {
-    dir: join(ROOT, "public", "images", "cities"),
-    width: 800,
-    height: 600,
-    files: NAMES.map((name) => `${slug(name)}.png`),
-  },
   {
     dir: join(ROOT, "public", "images", "services"),
     width: 1200,

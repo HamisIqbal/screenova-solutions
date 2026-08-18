@@ -8,31 +8,32 @@ import { serviceArea } from "@/content/home";
  * so. The heading and the white space between them are the break.
  *
  * ---------------------------------------------------------------------------
- * Thirty-one cities, one picture each, in a grid that answers to the pointer.
+ * The service area is told twice, because thirty-one cities is two different
+ * pieces of information wearing one label.
  *
- * The size is picked so the whole service area is one object on the screen —
- * around seven tiles a row on a desktop and five rows deep, small enough that
- * the grid reads as a territory rather than a gallery, large enough that each
- * city is still a photograph and not a swatch. On a phone it settles to two a
- * row and stays legible.
+ * Four of them are shown: four tall blocks in a row, each a photograph of the
+ * place, big enough that they are pictures rather than thumbnails. That is the
+ * part a person looks at instead of reading — it says "we are there" with a
+ * picture rather than a claim. The other twenty-seven are set as three columns
+ * of names underneath, because that list answers exactly one question — is my
+ * city on it — and a name is the fastest way to answer it.
  *
- * The hover is done with flex, not with JavaScript, and the choice is the
- * reason it behaves:
+ * The blocks answer to the pointer, and it is done with flex rather than with
+ * JavaScript:
  *
- *   - Every tile is `basis-36 grow`, so the row's spare width is shared out
- *     evenly and all tiles start equal.
- *   - The pointed-at tile takes `grow-[8]`. Growth is only ever a share of the
- *     row's *spare* width, and the basis never changes, so its neighbours give
- *     way to it and the wrap points cannot move. No tile ever jumps to another
- *     row mid-animation, which is the failure mode of doing this with widths.
- *   - Everything else, anywhere in the grid, dims and drops to 97% while a
- *     pointer is in the grid at all. That is what makes the rest get smaller
- *     rather than just narrower — the tiles in other rows have no width to
- *     give, so they answer with scale instead.
+ *   - Each block is `basis-0 grow`, so the row is split four equal ways.
+ *   - The pointed-at block goes to `grow-[2.2]`, taking a little over a third
+ *     of the row while the other three share the rest. Because growth is a
+ *     share of the row and the basis never changes, the four can never wrap or
+ *     jump — they only trade width with each other.
+ *   - The others also dim and drop to 97%, so the effect reads as one block
+ *     coming forward rather than as a column being resized.
  *
- * All of it is one 500ms transition per tile on a single hover state, so it is
- * smooth in both directions and there is nothing to hydrate: this section is
- * still a server component.
+ * It is one 500ms transition per block on a single hover state, so it is smooth
+ * in both directions and there is nothing to hydrate: this is still a server
+ * component. Below `sm` the row becomes a two-by-two grid and the hover is
+ * dropped — there is no hover on a touchscreen, and four blocks side by side on
+ * a phone would be four slivers.
  *
  * The names sit on the pictures rather than under them. Under them they would
  * be a caption, and a caption implies the picture is the subject; the city is
@@ -50,50 +51,53 @@ export function ServiceArea() {
 
       <h3 className="mt-12">{serviceArea.citiesLabel}</h3>
 
-      <ul className="group/grid mt-6 flex flex-wrap gap-2">
-        {serviceArea.cities.map((city) => (
+      <ul className="group/row mt-6 flex flex-wrap gap-3 sm:flex-nowrap">
+        {serviceArea.featured.map((city) => (
           <li
             key={city.name}
             className={[
-              "relative h-28 grow basis-36 overflow-hidden rounded-xl sm:h-32 sm:basis-40",
+              // Two-up on a phone at a friendly aspect; one row of four, and
+              // taller, from `sm` — that height is what makes them blocks
+              // rather than banners.
+              "relative aspect-4/5 basis-[calc(50%-0.375rem)] overflow-hidden rounded-2xl",
+              "sm:aspect-auto sm:h-[26rem] sm:basis-0 sm:grow lg:h-[30rem]",
               "transition-[flex-grow,opacity,transform] duration-500 ease-out",
-              // Resting state of the *other* tiles while the grid is hovered.
-              "group-hover/grid:scale-[0.97] group-hover/grid:opacity-55",
-              // The pointed-at tile overrides both, and takes the row's width.
-              "hover:z-10 hover:grow-[8]! hover:scale-100! hover:opacity-100!",
+              // The resting state of the *other* three while the row is hovered.
+              "sm:group-hover/row:scale-[0.97] sm:group-hover/row:opacity-60",
+              // The pointed-at block overrides both and takes the width.
+              "sm:hover:z-10 sm:hover:grow-[2.2]! sm:hover:scale-100! sm:hover:opacity-100!",
             ].join(" ")}
           >
             <Image
               src={city.src}
               alt={city.alt}
               fill
-              // Tiles are small in the common case and only the hovered one is
-              // wide, so the smallest useful candidate is the right default.
-              sizes="(min-width: 64rem) 22rem, (min-width: 40rem) 40vw, 50vw"
+              // Between a quarter of the measure and a little over a third of
+              // it, depending on which one is being pointed at.
+              sizes="(min-width: 64rem) 30rem, (min-width: 40rem) 40vw, 50vw"
               className="object-cover"
             />
 
             {/* Weighted to the bottom, where the name sits — enough to hold
-                white type at 4.5:1 over a photograph without greying the top
-                of the picture out. */}
+                white type over a photograph without greying the top of the
+                picture out. */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
 
-            <span
-              className="absolute right-3 bottom-2.5 left-3 font-semibold text-white"
-              style={{ fontSize: "var(--text-label)" }}
-            >
-              {city.name}
-            </span>
+            <h4 className="absolute right-5 bottom-4 left-5 font-bold text-white">{city.name}</h4>
           </li>
         ))}
-        {/* Thirty-one does not divide by the row, so the last row would hold a
-            single tile and `grow` would stretch it the full width of the
-            measure. These five are that row's missing tiles: they take a basis
-            like any other so the wrap sees a full row, and they are zero-height
-            so the rows they fall into on narrower screens are not there at
-            all. */}
-        {[0, 1, 2, 3, 4].map((i) => (
-          <li key={`filler-${i}`} className="h-0 grow basis-36 sm:basis-40" aria-hidden="true" />
+      </ul>
+
+      <h3 className="mt-14">{serviceArea.otherCitiesLabel}</h3>
+
+      {/* Three columns, filled top-to-bottom rather than left-to-right, which
+          is how a list of names is read — `columns` keeps the reading order in
+          the markup and lets the browser balance the three. */}
+      <ul className="mt-5 columns-2 gap-x-10 sm:columns-3">
+        {serviceArea.cities.map((city) => (
+          <li key={city} className="py-1 text-(--on-ground-muted)">
+            {city}
+          </li>
         ))}
       </ul>
 
