@@ -21,8 +21,8 @@ import { services } from "@/content/home";
  * always been able to be blue at all: a block of small copy on a solid blue
  * field is hard reading, and putting the words back on paper fixes it. It is
  * done with `data-ground="paper"`, so every role inside the card — text, muted
- * copy, the rule around the arrows, the link underline — flips back to the
- * white set without a single child knowing it moved.
+ * copy, the rule around the arrows — flips back to the white set without a
+ * single child knowing it moved.
  *
  * ---------------------------------------------------------------------------
  * The layout is one grid that reads the same on both sides of the breakpoint:
@@ -143,10 +143,6 @@ export function Services() {
                     <p key={paragraph}>{paragraph}</p>
                   ))}
                 </div>
-
-                <p className="mt-7">
-                  <a href="#quote">{current.cta ?? "Get a Quote"}</a>
-                </p>
               </motion.div>
             </AnimatePresence>
 
@@ -181,6 +177,15 @@ export function Services() {
           </div>
         </div>
       </div>
+
+      {/* The call to action, under the card rather than inside it. One card is
+          shown at a time, so a link buried in the copy moved with the words and
+          read as belonging to that one service. Out here it sits still on the
+          blue while the card changes behind the arrows, and it is the only
+          thing on the band below the card — the last thing the section says. */}
+      <p className="mt-8 text-center">
+        <a href="#quote">{current.cta ?? "Get a Quote"}</a>
+      </p>
     </Section>
   );
 }
