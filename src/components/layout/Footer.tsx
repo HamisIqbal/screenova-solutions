@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { logo, navLinks, wordmark } from "@/content/nav";
-import { siteConfig } from "@/lib/site";
+import { contact, siteConfig, socials } from "@/lib/site";
 
 /**
  * Site footer. Black, and the same black as the header — `data-ground="sky"`,
@@ -15,21 +15,21 @@ import { siteConfig } from "@/lib/site";
  * the content rather than letting it trail off on a white band.
  *
  * ---------------------------------------------------------------------------
- * The mark takes the right half, at the size it was drawn for.
+ * Four columns, reading left to right: the mark, then Contact Us, Navigate, and
+ * Join Us. The mark's column is wider than the other three — it is a picture
+ * rather than a list and needs the room — and the three list columns are equal,
+ * which is what makes their headings line up as a row of labels across the top
+ * of the band rather than three unrelated stacks.
  *
- * It is the one place on the site the logo is large. In the header it is 56px
- * tall because it is chrome there, competing with links and a button; here it
- * has a half of the page to itself and is the last thing seen, so it is set at
- * roughly a third of the measure — around 340px wide, or six times the header's
- * mark. Its lettering is half white on transparent, which is why black is the
- * one ground it can be this large on without a plate behind it.
+ * The order is deliberate. The mark is first because the eye enters at the left
+ * and the last thing the page should say is its own name; the lists then run
+ * from the most consequential (how to reach a human) to the least (a handle to
+ * follow). On narrow screens the grid collapses to two columns and then one,
+ * and the mark stays first throughout — a phone reads the sign-off, then the
+ * ways to get in touch.
  *
- * The halves stack on narrow screens with the mark second, so a phone reads the
- * links first and the mark signs off at the bottom, which is the same order the
- * desktop layout reads in.
- *
- * The `alt` is empty: the site name is already in the copyright line below, so
- * a second announcement of it here would be noise.
+ * The mark's `alt` is empty: the site name is already in the copyright line
+ * below, so a second announcement of it here would be noise.
  *
  * ---------------------------------------------------------------------------
  * What is deliberately not here: a heading, a quote button, and the "Serving
@@ -43,39 +43,81 @@ import { siteConfig } from "@/lib/site";
 const LOGO_WIDTH = 340;
 const LOGO_HEIGHT = Math.round((LOGO_WIDTH * logo.height) / logo.width);
 
+/**
+ * The three column headings, set as the eyebrow is set everywhere else on the
+ * site — `font-title` at the label size, 0.16em tracked, upper-cased in the
+ * markup so a screen reader is not handed three shouted words. Keeping them on
+ * the muted role rather than full white is what holds them under the links they
+ * label; at this depth muted resolves to plain white, so the separation is
+ * carried by the size and the tracking, not by a tint.
+ */
+function ColumnTitle({ children }: { children: string }) {
+  return (
+    <h2
+      className="font-title text-(--on-ground-muted)"
+      style={{ fontSize: "var(--text-label)", fontWeight: 400, letterSpacing: "0.16em" }}
+    >
+      {children.toUpperCase()}
+    </h2>
+  );
+}
+
+/**
+ * The social marks, drawn rather than fetched — three glyphs is not worth an
+ * icon dependency, and inline paths inherit `currentColor`, which is how they
+ * pick up the link hover without a second rule.
+ */
+function SocialIcon({ name }: { name: string }) {
+  const paths: Record<string, React.ReactNode> = {
+    Facebook: (
+      <path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5H16.7V3.6A21 21 0 0 0 14.3 3.5c-2.4 0-4 1.45-4 4.1v2.3H7.6V13h2.7v8z" />
+    ),
+    Instagram: (
+      <>
+        <path d="M12 2.2c3.2 0 3.6 0 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.25.07 1.63.07 4.81s0 3.56-.07 4.81c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.25.06-1.63.07-4.85.07s-3.6 0-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.8 3.8 0 0 1-1.38-.9 3.8 3.8 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.21 15.56 2.2 15.18 2.2 12s0-3.56.07-4.81c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.44 2.21 8.82 2.2 12 2.2m0 1.98c-3.13 0-3.5.01-4.73.07-1.14.05-1.76.24-2.17.4-.55.21-.94.47-1.35.87-.4.41-.66.8-.87 1.35-.16.41-.35 1.03-.4 2.17-.06 1.23-.07 1.6-.07 4.73s.01 3.5.07 4.73c.05 1.14.24 1.76.4 2.17.21.55.47.94.87 1.35.41.4.8.66 1.35.87.41.16 1.03.35 2.17.4 1.23.06 1.6.07 4.73.07s3.5-.01 4.73-.07c1.14-.05 1.76-.24 2.17-.4.55-.21.94-.47 1.35-.87.4-.41.66-.8.87-1.35.16-.41.35-1.03.4-2.17.06-1.23.07-1.6.07-4.73s-.01-3.5-.07-4.73c-.05-1.14-.24-1.76-.4-2.17a3.6 3.6 0 0 0-.87-1.35 3.6 3.6 0 0 0-1.35-.87c-.41-.16-1.03-.35-2.17-.4-1.23-.06-1.6-.07-4.73-.07" />
+        <path d="M12 6.87a5.13 5.13 0 1 0 0 10.26 5.13 5.13 0 0 0 0-10.26m0 8.46a3.33 3.33 0 1 1 0-6.66 3.33 3.33 0 0 1 0 6.66" />
+        <circle cx="17.34" cy="6.67" r="1.2" />
+      </>
+    ),
+    LinkedIn: (
+      <>
+        <path d="M6.94 8.9H3.6V21h3.34zM5.27 3a1.93 1.93 0 1 0 0 3.87 1.93 1.93 0 0 0 0-3.87" />
+        <path d="M16.6 8.66c-1.86 0-2.9.93-3.4 1.83h-.05V8.9H9.94V21h3.34v-6c0-1.58.3-3.1 2.25-3.1 1.93 0 1.95 1.8 1.95 3.2V21h3.33v-6.57c0-3.07-.66-5.77-4.21-5.77" />
+      </>
+    ),
+  };
+
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="18"
+      height="18"
+      fill="currentColor"
+      aria-hidden="true"
+      // Optically centred against the cap height of the label beside it.
+      className="shrink-0 translate-y-px"
+    >
+      {paths[name]}
+    </svg>
+  );
+}
+
+/** The link treatment shared by all three lists: the header's, not the page's. */
+const LINK = "hover:text-blue-soft no-underline transition-colors";
+
 export function Footer() {
   return (
     <footer data-ground="sky">
       <div className="max-w-page px-gutter mx-auto w-full py-16 lg:py-20">
-        <div className="grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-16">
-          {/* Left half: the map of the page, and what the page is about in one
-              line for anyone who has arrived at the bottom without reading it. */}
-          <div>
-            <p className="max-w-md">{siteConfig.description}</p>
-
-            <nav aria-label="Footer" className="mt-9">
-              <ul className="flex flex-wrap gap-x-7 gap-y-3">
-                {navLinks.map((link) => (
-                  <li key={link.href}>
-                    <a
-                      href={link.href}
-                      // The header's treatment, not the page's: no underline,
-                      // and the hover goes to the palette's light blue. On this
-                      // ground that is the same pairing the nav links use, so
-                      // the two pieces of chrome behave alike.
-                      className="hover:text-blue-soft no-underline transition-colors"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-
-          {/* Right half: the mark, ranged right so it sits against the measure
-              rather than floating in the middle of its own column. */}
-          <div className="lg:justify-self-end">
+        <div className="grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))] lg:gap-x-12">
+          {/* Far left: the mark, at the size it was drawn for. It is the one
+              place on the site the logo is large — in the header it is 56px
+              tall because it is chrome there, competing with links and a
+              button. Its lettering is half white on transparent, which is why
+              black is the one ground it can be this size on without a plate
+              behind it. The line beneath says what the page is, for anyone who
+              has arrived at the bottom without reading it. */}
+          <div className="sm:col-span-2 lg:col-span-1">
             <Image
               src={logo.src}
               // The rendered box, not the source's 2172x724 — declaring it here
@@ -88,6 +130,79 @@ export function Footer() {
               sizes="(min-width: 64rem) 340px, 280px"
               className="h-auto w-70 lg:w-85"
             />
+
+            <p className="mt-7 max-w-sm text-(--on-ground-muted)">{siteConfig.description}</p>
+          </div>
+
+          {/* Contact: the most consequential of the three lists, so it comes
+              first. Every line is a live target — the address opens the pin,
+              the number dials, the mailbox composes — because a footer address
+              that has to be copied out by hand is a picture of an address. */}
+          <div>
+            <ColumnTitle>Contact Us</ColumnTitle>
+
+            <address className="mt-6 space-y-4 not-italic">
+              <a
+                href={contact.address.href}
+                target="_blank"
+                rel="noreferrer"
+                className={`${LINK} block`}
+              >
+                {contact.address.lines.map((line) => (
+                  <span key={line} className="block">
+                    {line}
+                  </span>
+                ))}
+              </a>
+
+              <a href={contact.phone.href} className={`${LINK} block`}>
+                {contact.phone.label}
+              </a>
+
+              <a href={contact.email.href} className={`${LINK} block break-words`}>
+                {contact.email.label}
+              </a>
+            </address>
+          </div>
+
+          {/* Navigate: the map of the page. The same list the header carries,
+              from the same source, stacked here rather than laid in a row — a
+              footer nav is scanned down a column, not read across. */}
+          <nav aria-label="Footer">
+            <ColumnTitle>Navigate</ColumnTitle>
+
+            <ul className="mt-6 space-y-3">
+              {navLinks.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} className={LINK}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Join Us: the handles. Mark and word together rather than a row of
+              bare glyphs — three unlabelled circles is a guessing game, and the
+              column has the width for the words. */}
+          <div>
+            <ColumnTitle>Join Us</ColumnTitle>
+
+            <ul className="mt-6 space-y-3">
+              {socials.map((social) => (
+                <li key={social.label}>
+                  <a
+                    href={social.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={`${LINK} inline-flex items-center gap-2.5`}
+                  >
+                    <SocialIcon name={social.label} />
+                    {social.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
