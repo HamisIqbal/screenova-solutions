@@ -296,7 +296,11 @@
   #hero p {
     font-size: var(--text-lead);
     line-height: 1.6;
-    max-width: 27em;
+    /* `min()` rather than a flat 27em: below about 400px the type has hit its
+       floor and 27em is wider than the column, which cost the last word or two
+       to the band's `overflow-x: clip`. Capping at the column trades a fourth
+       line — which that width was always going to take — for never clipping. */
+    max-width: min(27em, 100%);
     text-wrap: normal;
   }
 

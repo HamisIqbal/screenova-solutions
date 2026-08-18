@@ -37,9 +37,15 @@ import { hero, heroImage } from "@/content/home";
  *
  *   below lg — one uniform 70%. The words run the full width here, so there is
  *     no side of the frame that can be left alone.
- *   lg and up — 55% flat, plus a left-weighted gradient over it. Where the
- *     words are those multiply out to 1 - (0.45 x 0.65) = 70.75%, and by the
- *     right edge it has fallen back to 55% and the windows are still windows.
+ *   lg and up — 55% flat, plus a centred ellipse over it. Behind the words
+ *     those multiply out to 1 - (0.45 x 0.55) = 75.25%, and by the edges of the
+ *     frame it has fallen back to about 57% and the windows are still windows.
+ *
+ * The second layer used to be a left-weighted linear gradient, because the copy
+ * used to be ranged left in a 62% column. The copy is centred now, so a scrim
+ * weighted to one side would have left the right half of every centred line
+ * sitting on the thinner end of it. Weighting follows the words: the words
+ * moved to the middle, so the weight did too.
  *
  * ---------------------------------------------------------------------------
  * The band declares `data-ground="sky"` — the black chrome ground — so the copy
@@ -49,10 +55,22 @@ import { hero, heroImage } from "@/content/home";
  * override this section used to carry is gone: on a dark photograph a black
  * pill is a hole, and the ground already knew what to do.
  *
- * The words stay in a 46% column past lg. They no longer have to share the band
- * with anything, but the headline's four-line break was cut against exactly
- * that width — see `content/home.ts` — and it is also the width the gradient is
- * weighted for.
+ * ---------------------------------------------------------------------------
+ * The copy is centred, and stacked with air between its three parts.
+ *
+ * It sits in a centred column rather than a left rail, which is the one change
+ * that has to be checked against the type rather than eyeballed: the headline's
+ * break was cut to fit a measured width. The binding line is 13.03em, which at
+ * the 44px ceiling is 573px — comfortably inside the 768px column it is centred
+ * in, so the authored two-line break survives. See `content/home.ts`.
+ *
+ * The paragraphs keep their 27em measure, which is what holds them to three
+ * lines each at every viewport; they are only centred within it, not widened.
+ *
+ * The block also rides higher in the band than dead centre. The band centres
+ * its content, and extra padding at the foot is what lifts it — the copy reads
+ * better sitting above the middle of a photograph than straddling it, and the
+ * room it gives up is at the bottom of the frame where the floor is.
  */
 export function Hero() {
   return (
@@ -81,18 +99,20 @@ export function Hero() {
       {/* Scrim, part one: the floor under every reading. */}
       <div aria-hidden="true" className="absolute inset-0 bg-black/70 lg:bg-black/55" />
 
-      {/* Scrim, part two: the extra weight behind the words, desktop only.
-          It carries further right than it used to — the headline now runs to
-          about half the window rather than a third, and the gradient has to
-          stay under all of it. At the headline's right edge the two layers
-          multiply to 68.5%, which holds `blue-soft` at 4.0:1 even where the
-          pixel behind it is a blown-out window. */}
+      {/* Scrim, part two: the extra weight behind the words, desktop only, and
+          centred because the words are. Over the copy the two layers multiply
+          to 75.25%, which holds `blue-soft` at 4.6:1 even where the pixel
+          behind it is a blown-out window; by the edges of the frame it has
+          eased back to about 57% and the photograph is still readable. */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 hidden bg-gradient-to-r from-black/45 via-black/30 to-black/5 lg:block"
+        className="absolute inset-0 hidden bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.45)_0%,rgba(0,0,0,0.38)_45%,rgba(0,0,0,0.05)_100%)] lg:block"
       />
 
-      <div className="relative lg:w-[62%]">
+      {/* Centred on the band and held to a measure the authored line break
+          survives. `pb` is what lifts the block above dead centre — the band
+          centres what is in it, so padding at the foot is the lever. */}
+      <div className="relative mx-auto max-w-3xl pb-10 text-center lg:pb-16">
         <h1 id="hero-title">
           {/* One block per line: the break is authored, not left to the
               browser, and each line is its own element for later staggered
@@ -105,11 +125,16 @@ export function Hero() {
           ))}
         </h1>
 
-        <div className="mt-5 flex flex-col items-start gap-2">
-          <p>{hero.subtitle}</p>
-          <p className="text-(--on-ground-muted)">{hero.body}</p>
+        {/* Three steps of air, widening as they go down: the headline is set
+            off from the copy, the copy holds together as one voice, and the
+            button is set off from both. `mx-auto` on the paragraphs centres
+            them inside the 27em measure `globals.css` gives them — that measure
+            is what holds each to three lines, so it is centred, never widened. */}
+        <div className="mt-9 flex flex-col items-center gap-4 lg:mt-11">
+          <p className="mx-auto">{hero.subtitle}</p>
+          <p className="mx-auto text-(--on-ground-muted)">{hero.body}</p>
 
-          <CtaLink href="#quote" className="mt-6">
+          <CtaLink href="#quote" className="mt-8 lg:mt-10">
             {hero.cta}
           </CtaLink>
         </div>
