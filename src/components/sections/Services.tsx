@@ -98,8 +98,10 @@ export function Services() {
               Its height is set rather than derived from an aspect ratio: on a
               phone a 4:3 band ate nearly 300px of a 650px card and pushed the
               arrows off the bottom of the screen. A fixed band crops the photo
-              instead of the card. */}
-          <div className="relative order-1 h-44 w-full sm:h-64 lg:order-2 lg:h-[32rem]">
+              instead of the card, and on a phone it is a strip — the photo is
+              there to say which service this is, and a strip says that in a
+              third of the height. */}
+          <div className="relative order-1 h-24 w-full sm:h-64 lg:order-2 lg:h-[34rem]">
             <AnimatePresence initial={false}>
               <motion.div
                 key={current.id}
@@ -127,7 +129,7 @@ export function Services() {
               they were pressed. Held still, the card is one size and one screen
               — the copy is top-aligned inside it and the controls sit at the
               bottom of the space whether or not the copy fills it. */}
-          <div className="order-2 flex h-[28rem] flex-col p-6 sm:h-[30rem] sm:p-10 lg:order-1 lg:h-[32rem] lg:p-12">
+          <div className="order-2 flex h-[19.5rem] flex-col px-5 py-4 sm:h-[30rem] sm:p-10 lg:order-1 lg:h-[34rem] lg:p-10 xl:p-12">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={current.id}
@@ -138,16 +140,29 @@ export function Services() {
                 transition={transition}
                 aria-live="polite"
               >
+                {/* The counter is the one thing that goes on a phone: the tick
+                    row under the arrows already says which of the six this is,
+                    and its 30px of height is the difference between a card that
+                    fits a small screen and one that does not. */}
                 <p
-                  className="font-title text-(--on-ground-muted) tabular-nums"
+                  className="font-title hidden text-(--on-ground-muted) tabular-nums sm:block"
                   style={{ fontSize: "var(--text-label)", letterSpacing: "0.16em" }}
                 >
                   {String(index + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
                 </p>
 
-                <h3 className="mt-4 text-2xl font-bold sm:text-3xl lg:text-4xl">{current.title}</h3>
+                {/* The type runs the other way at the two ends of the range.
+                    On a phone it is stepped down so the whole card fits one
+                    screen; on a wide screen the card is half a viewport of
+                    white with room to spare, so the title and the copy are
+                    both larger than the page's defaults — 44px and 17px —
+                    which is what makes this read as the section's one big
+                    thing rather than a paragraph sitting in a large box. */}
+                <h3 className="text-lg leading-tight font-bold sm:mt-4 sm:text-3xl lg:text-[2.25rem] xl:text-[2.75rem]">
+                  {current.title}
+                </h3>
 
-                <div className="mt-5 flex max-w-md flex-col gap-3 text-(--on-ground-muted)">
+                <div className="mt-3 flex max-w-md flex-col gap-1.5 text-[0.8125rem] leading-snug text-(--on-ground-muted) sm:mt-5 sm:gap-3 sm:text-[length:var(--text-body)] sm:leading-normal lg:max-w-lg lg:gap-3 lg:text-base lg:leading-[1.6] xl:text-[1.0625rem] xl:leading-[1.55]">
                   {current.body.map((paragraph) => (
                     <p key={paragraph}>{paragraph}</p>
                   ))}
@@ -157,7 +172,7 @@ export function Services() {
 
             {/* The controls, at the bottom of the column at every width so they
                 are always in the same place on the card. */}
-            <div className="mt-auto flex items-center gap-3 pt-6 lg:pt-8">
+            <div className="mt-auto flex items-center gap-2.5 pt-4 sm:gap-3 sm:pt-6 lg:pt-8">
               <Arrow
                 direction="previous"
                 available={!isFirst}
@@ -234,13 +249,13 @@ function Arrow({
         // `button` is the green action pill by default — see globals. An arrow
         // is a control, not an action, so it opts out of the fill and the
         // padding and keeps only the type colour.
-        "flex h-12 w-12 shrink-0 items-center justify-center rounded-full border bg-transparent p-0",
+        "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border bg-transparent p-0 sm:h-12 sm:w-12",
         "border-(--rule)/40 text-(--on-ground) transition-colors duration-300",
         "hover:bg-(--on-ground) hover:text-(--ground)",
         available ? "" : "invisible",
       ].join(" ")}
     >
-      <Icon className="h-5 w-5" />
+      <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
     </button>
   );
 }
