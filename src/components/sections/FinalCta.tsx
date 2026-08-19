@@ -35,7 +35,16 @@ export function FinalCta() {
       {/* `relative`, so the content paints above the picture and its scrim —
           both are positioned, and a static sibling would sit under them. */}
       <div className="relative">
-        <h2 id="contact-title" className="max-w-2xl">
+        {/* The one h2 on the page that is not a band's name — the closer has no
+            name over it, this sentence is its heading — so it opts back out of
+            the name treatment and into the page's own title face: Satoshi at
+            700, tracked in rather than out, in the ground's ink rather than the
+            accent. See the `h2` rule in `globals.css`. */}
+        <h2
+          id="contact-title"
+          className="font-title max-w-2xl text-(--on-ground)"
+          style={{ fontWeight: 700, letterSpacing: "-0.015em" }}
+        >
           {finalCta.title}
         </h2>
 
