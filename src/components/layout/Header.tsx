@@ -312,29 +312,31 @@ function FullScreenMenu({ open, onNavigate }: { open: boolean; onNavigate: () =>
  *
  * The glass is three things at once, and it needs all three: `backdrop-blur`
  * for the defocus, `backdrop-saturate` because blurring alone drains the colour
- * out of what is behind it, and a 10% white wash so the panel still has a body
- * on a surface too flat to blur interestingly. The border is the same white at
- * 15%, which is what gives the edge its lit look rather than a drawn one.
+ * out of what is behind it, and a navy wash so the panel still has a body on a
+ * surface too flat to blur interestingly. The wash is dark rather than the
+ * white it was: at 55% navy the capsule reads as its own dark pane over the
+ * photograph instead of as a lightened patch of it, and white lettering on it
+ * clears 12:1 against a blown window rather than the 5.2:1 the white wash left.
+ * The border is white at 18%, which is what gives the edge its lit look rather
+ * than a drawn one.
  *
- * White is `--on-ground`, not a named colour, so the capsule follows the
- * overlay's roles like everything else in here.
- *
- * Contrast, on the hero's scrim behind it: the wash lifts a worst-case blown
- * window from sRGB 0.363 to 0.427, which still leaves white lettering at
- * 5.2:1 — above the 4.5:1 body threshold, and the links are the only thing
- * riding on it.
+ * Hover inverts the pane rather than tinting the word: a solid white pill
+ * arrives behind the link and the lettering goes navy on it, which is the same
+ * inversion the CTA and the open MENU button already use. A colour shift alone
+ * was the weakest hover state on the page — on glass this dark, a link that
+ * merely changed hue barely registered.
  */
 function DesktopNav() {
   return (
     <nav
       aria-label="Primary"
-      className="pointer-events-auto absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-xl border border-(--on-ground)/15 bg-(--on-ground)/10 px-2 py-1.5 backdrop-blur-xl backdrop-saturate-150 xl:flex"
+      className="pointer-events-auto bg-navy/55 absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-xl border border-(--on-ground)/18 px-2 py-1.5 backdrop-blur-xl backdrop-saturate-150 xl:flex"
     >
       {navLinks.map((link) => (
         <a
           key={link.href}
           href={link.href}
-          className="font-title hover:text-blue-soft rounded-lg px-2.5 py-1.5 whitespace-nowrap no-underline transition-colors"
+          className="font-title text-(--on-ground) hover:bg-paper hover:text-navy rounded-lg px-2.5 py-1.5 whitespace-nowrap no-underline transition-colors"
           style={{ fontSize: "var(--text-nav)", fontWeight: 400 }}
         >
           {link.label}
