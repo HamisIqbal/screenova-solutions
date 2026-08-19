@@ -24,6 +24,8 @@
  * Screen Options share one because they are two different photographs, and the
  * edge between them is the picture changing rather than a colour band ending.
  */
+import { RevealGroup } from "./RevealGroup";
+
 export type Ground = "paper" | "blue" | "green" | "sky";
 
 export function Section({
@@ -49,7 +51,11 @@ export function Section({
 }) {
   return (
     <section id={id} data-ground={ground} aria-labelledby={labelledBy} className={bandClassName}>
-      <div className={`max-w-page px-gutter mx-auto w-full ${className}`}>{children}</div>
+      {/* The measure — and, because it is a `RevealGroup`, the thing that fades
+          each block of the band in as you reach it. See `RevealGroup`. */}
+      <RevealGroup className={`max-w-page px-gutter mx-auto w-full ${className}`}>
+        {children}
+      </RevealGroup>
     </section>
   );
 }
