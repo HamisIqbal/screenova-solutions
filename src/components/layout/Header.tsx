@@ -325,18 +325,139 @@ function FullScreenMenu({ open, onNavigate }: { open: boolean; onNavigate: () =>
  * inversion the CTA and the open MENU button already use. A colour shift alone
  * was the weakest hover state on the page — on glass this dark, a link that
  * merely changed hue barely registered.
+ *
+ * ---------------------------------------------------------------------------
+ * That pill is one element for the whole capsule, not a background on each
+ * link, and this is the whole of the interaction. A per-link `hover:bg` has to
+ * fade one word's ground out while the next fades in, and the two crossing
+ * fades are what read as lag: for a moment there is no highlight anywhere.
+ * A single pill instead *travels* — it slides and resizes from the link you
+ * left to the link you arrived at, so the highlight is continuous and the
+ * movement itself points at where you are going.
+ *
+ * It is animated rather than transitioned because it has to interrupt cleanly:
+ * `overwrite: "auto"` means a fast sweep across four links retargets the one
+ * tween in flight instead of queueing four, which is the other half of why the
+ * old version felt behind the cursor. Arriving from nothing is quick and in
+ * place — position set, then a fade — because a pill sliding in from the left
+ * edge on first hover would be movement that means nothing.
+ *
+ * The click is a press: the pill squashes under the pointer and springs back on
+ * release, on `pointerdown`/`pointerup` rather than `click` so it answers the
+ * finger rather than the navigation. The spring overshoots slightly, which is
+ * what makes it read as a physical button rather than a state change.
+ *
+ * Focus drives the same pill, so tabbing through the links looks like hovering
+ * through them. Under `prefers-reduced-motion` every duration collapses to zero
+ * and the pill simply appears where it is needed.
  */
 function DesktopNav() {
+  const pillRef = useRef<HTMLSpanElement>(null);
+  /** The link the pill is currently sitting on — kept for re-measuring. */
+  const targetRef = useRef<HTMLAnchorElement | null>(null);
+  /** Whether the pill is shown; a move from nothing is a fade, not a slide. */
+  const shownRef = useRef(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  const moveTo = (target: HTMLAnchorElement) => {
+    const pill = pillRef.current;
+    if (!pill) return;
+
+    targetRef.current = target;
+    // `offsetParent` is the nav itself, so these are already pill coordinates.
+    const box = {
+      x: target.offsetLeft,
+      y: target.offsetTop,
+      width: target.offsetWidth,
+      height: target.offsetHeight,
+    };
+
+    if (!shownRef.current) gsap.set(pill, box);
+    shownRef.current = true;
+
+    gsap.to(pill, {
+      ...box,
+      opacity: 1,
+      duration: prefersReducedMotion ? 0 : 0.42,
+      ease: "power3.out",
+      overwrite: "auto",
+    });
+  };
+
+  const hide = () => {
+    const pill = pillRef.current;
+    if (!pill) return;
+
+    targetRef.current = null;
+    shownRef.current = false;
+    gsap.to(pill, {
+      opacity: 0,
+      duration: prefersReducedMotion ? 0 : 0.25,
+      ease: "power2.out",
+      overwrite: "auto",
+    });
+  };
+
+  const press = (down: boolean) => {
+    const pill = pillRef.current;
+    if (!pill || !shownRef.current || prefersReducedMotion) return;
+
+    gsap.to(pill, {
+      scaleX: down ? 0.94 : 1,
+      scaleY: down ? 0.84 : 1,
+      duration: down ? 0.12 : 0.5,
+      ease: down ? "power2.out" : "elastic.out(1, 0.55)",
+      overwrite: "auto",
+    });
+  };
+
+  // A resize moves the links under a pill that is already up — the capsule is
+  // centred on the window, so every link shifts. Re-place it without a tween.
+  useEffect(() => {
+    const onResize = () => {
+      const pill = pillRef.current;
+      const target = targetRef.current;
+      if (!pill || !target) return;
+
+      gsap.set(pill, {
+        x: target.offsetLeft,
+        y: target.offsetTop,
+        width: target.offsetWidth,
+        height: target.offsetHeight,
+      });
+    };
+
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   return (
     <nav
       aria-label="Primary"
-      className="pointer-events-auto bg-navy/55 absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-xl border border-(--on-ground)/18 px-2 py-1.5 backdrop-blur-xl backdrop-saturate-150 xl:flex"
+      onPointerLeave={hide}
+      className="bg-navy/55 pointer-events-auto absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-xl border border-(--on-ground)/18 px-2 py-1.5 backdrop-blur-xl backdrop-saturate-150 xl:flex"
     >
+      {/* The travelling highlight. `top-0 left-0` and moved by transform, so the
+          slide is on the compositor rather than on layout. */}
+      <span
+        ref={pillRef}
+        aria-hidden="true"
+        className="bg-paper pointer-events-none absolute top-0 left-0 rounded-lg opacity-0"
+      />
+
       {navLinks.map((link) => (
         <a
           key={link.href}
           href={link.href}
-          className="font-title text-(--on-ground) hover:bg-paper hover:text-navy rounded-lg px-2.5 py-1.5 whitespace-nowrap no-underline transition-colors"
+          onPointerEnter={(event) => moveTo(event.currentTarget)}
+          onFocus={(event) => moveTo(event.currentTarget)}
+          onBlur={hide}
+          onPointerDown={() => press(true)}
+          onPointerUp={() => press(false)}
+          onPointerCancel={() => press(false)}
+          // `relative` alone would not be enough — the pill is a positioned
+          // sibling, so the links need a stacking order to sit above it.
+          className="font-title hover:text-navy focus-visible:text-navy relative z-10 rounded-lg px-2.5 py-1.5 whitespace-nowrap text-(--on-ground) no-underline transition-colors duration-300"
           style={{ fontSize: "var(--text-nav)", fontWeight: 400 }}
         >
           {link.label}
