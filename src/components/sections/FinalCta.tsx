@@ -33,18 +33,15 @@ import { contact } from "@/lib/site";
  * thing before the footer, and the room under the buttons is what stops the
  * page ending the moment it has finished asking.
  *
- * That room ends in the tagline, which is no longer a 12px label at the foot of
- * the block but the largest type on the site: right aligned, hard against the
- * end of the measure, in the hero's own Black face. It works as the page's last
- * word because it says the one thing a local trade has to say — where it works —
- * and because a line that big reads as a sign rather than as a sentence, which
- * is what a closing line should be. Right aligned specifically: everything above
- * it starts at the left margin, so ending on the opposite edge is what makes it
- * land as a full stop instead of one more line of copy.
+ * The whole band is centred — heading, copy, both buttons and the tagline under
+ * them — and sits a little lower in the room the height gives it, so the block
+ * reads as one closing statement on the middle of the picture rather than as a
+ * left rail with space beside it.
  *
- * The trailing dots are drawn in the markup rather than typed into the content:
- * they are a lead-out, not words, so they are `aria-hidden` and a screen reader
- * is handed the tagline and nothing else.
+ * That room ends in the tagline, which is set larger than the label it used to
+ * be but well under the heading: it is the page's last word, not its loudest.
+ * In the hero's Black face, so it lands as a sign rather than as one more line
+ * of copy, and nothing follows it.
  */
 export function FinalCta() {
   return (
@@ -62,21 +59,24 @@ export function FinalCta() {
       <BandPhoto {...bandImages.finalCta} />
 
       {/* `relative`, so the content paints above the picture and its scrim —
-          both are positioned, and a static sibling would sit under them. */}
-      <div className="relative">
+          both are positioned, and a static sibling would sit under them. `pt`
+          is what sits the block lower in the band: the section is tall now, and
+          the content reads better below the middle of the picture than at the
+          top of it. */}
+      <div className="relative pt-[clamp(2rem,8vw,7rem)] text-center">
         {/* No override any more: every h2 on the page is a describing sentence
             again, so the rule in `globals.css` is already the right one. */}
-        <h2 id="contact-title" className="max-w-2xl">
+        <h2 id="contact-title" className="mx-auto max-w-2xl">
           {finalCta.title}
         </h2>
 
-        <div className="mt-5 flex max-w-xl flex-col gap-3 text-(--on-ground-muted)">
+        <div className="mx-auto mt-5 flex max-w-xl flex-col items-center gap-3 text-(--on-ground-muted)">
           {finalCta.body.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
         </div>
 
-        <div className="mt-9 flex flex-wrap items-center gap-x-4 gap-y-4">
+        <div className="mt-9 flex flex-wrap items-center justify-center gap-x-4 gap-y-4">
           <CtaLink href="#quote">{finalCta.primaryCta}</CtaLink>
 
           {/* The number is in the accessible name as well as the href, so the
@@ -92,22 +92,20 @@ export function FinalCta() {
 
         {/* The closing line. `max-w-none` because the global `p` measure is 62ch
             and this is a sign, not a paragraph — and `mt` in `vw` so the room
-            above it opens with the type rather than staying a fixed gap under a
-            line that has trebled in size. It stays in the ground's own ink:
-            sunset would not read on a darkened photograph, and the two sparks
-            the page is allowed are already spent on the "Best for" chip and the
-            FAQ marker. */}
+            above it opens with the type rather than staying a fixed gap. It
+            stays in the ground's own ink: sunset would not read on a darkened
+            photograph, and the two sparks the page is allowed are already spent
+            on the "Best for" chip and the FAQ marker. */}
         <p
-          className="font-hero mt-[clamp(4rem,14vw,10rem)] max-w-none text-right"
+          className="font-hero mt-[clamp(3rem,10vw,7rem)] max-w-none"
           style={{
-            fontSize: "clamp(2.25rem, 11vw, 8rem)",
+            fontSize: "clamp(1.25rem, 3.2vw, 2.25rem)",
             fontWeight: 900,
-            letterSpacing: "-0.03em",
-            lineHeight: 0.95,
+            letterSpacing: "-0.01em",
+            lineHeight: 1.1,
           }}
         >
           {finalCta.tagline.toUpperCase()}
-          <span aria-hidden="true">.......</span>
         </p>
       </div>
     </Section>
