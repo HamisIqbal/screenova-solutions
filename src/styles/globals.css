@@ -420,3 +420,41 @@
     }
   }
 }
+
+/* ---------------------------------------------------------------------------
+   The two travelling rows in Why Choose Us, on phones and tablets only.
+
+   Each track holds its three blocks twice and moves exactly half its own width,
+   so the moment the animation ends the second copy is standing where the first
+   began and the restart cannot be seen. `linear` because a loop that eases is a
+   loop you can feel restarting.
+
+   The pair run in opposite directions, which is what stops the two rows reading
+   as one wide thing sliding past. Both stop under `prefers-reduced-motion` —
+   the rule above caps every animation at a single iteration.
+   ------------------------------------------------------------------------ */
+@keyframes marquee-forward {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes marquee-back {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.marquee {
+  animation: marquee-forward 28s linear infinite;
+}
+
+.marquee-reverse {
+  animation: marquee-back 28s linear infinite;
+}
