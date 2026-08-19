@@ -20,7 +20,7 @@ export function Faq() {
           description — so it renders the heading on its own. */}
       <h2
         id="faq-title"
-        className="mb-[clamp(3rem,8vw,6rem)] text-center"
+        className="mx-auto mb-[clamp(3rem,8vw,6rem)] max-w-2xl text-center"
         style={{ letterSpacing: "0.04em" }}
       >
         {faq.eyebrow.toUpperCase()}
