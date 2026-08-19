@@ -27,6 +27,10 @@ import { useIsomorphicLayoutEffect, usePrefersReducedMotion } from "@/hooks";
  *     must never start at zero opacity.
  *   - `aria-hidden` ones, which are decoration by their own admission.
  *   - Anything with no text in it. The brief was text.
+ *   - Anything marked `data-reveal="off"`, and its children. The How It Works
+ *     deck is the one that asks: those cards already arrive by covering the one
+ *     before them, which is the whole point of the section, and a fade on top of
+ *     that was a second arrival for the same card.
  *
  * And nothing that is already on screen when you arrive is touched at all: its
  * position is measured once at setup, and a block inside the window keeps the
@@ -65,7 +69,9 @@ export function RevealGroup({
     // here is reverted together — including the opacity, which `revert` puts
     // back rather than leaving a block invisible if this ever unmounts.
     const context = gsap.context(() => {
-      const children = Array.from(root.children) as HTMLElement[];
+      const children = (Array.from(root.children) as HTMLElement[]).filter(
+        (child) => child.dataset.reveal !== "off",
+      );
       const blocks = children.flatMap((child) =>
         child.tagName === "OL" || child.tagName === "UL"
           ? (Array.from(child.children) as HTMLElement[])

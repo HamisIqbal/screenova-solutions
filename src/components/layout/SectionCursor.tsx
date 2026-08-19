@@ -15,6 +15,10 @@ import { navLinks } from "@/content/nav";
  * for the same devices, in `globals.css`, so nothing can leave a machine
  * without a pointer at all.
  *
+ * The hero and the footer keep the native arrow — see the rule in
+ * `globals.css` — and the block does not appear over either of them: the hero
+ * is not in the name table, and the footer is not a `section` at all.
+ *
  * Form fields keep their own cursor. A text field with no caret is a field you
  * cannot see where you are typing in, so the block hides itself over inputs,
  * textareas and selects and the native I-beam comes back — which is why the
@@ -41,9 +45,10 @@ const EASE = 0.22;
 const OFFSET_X = 18;
 const OFFSET_Y = 14;
 
-/** Sections the nav does not list still get a name. */
+/** Bands the nav does not list, but which are still bands with names. The hero
+    is deliberately absent: it keeps the native arrow, and a section with no name
+    here is a section the block does not appear over. */
 const EXTRA_NAMES: Record<string, string> = {
-  hero: "Screenova",
   quote: "Free Quote",
   contact: "Contact",
 };

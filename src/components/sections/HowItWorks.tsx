@@ -47,7 +47,10 @@ export function HowItWorks() {
       {/* The gap between cards is the travel from one step to the next. It is
           short and the cards are tall, because the alternative — small cards
           far apart — is a long stretch of empty white band between them. */}
-      <ol className="flex flex-col gap-[14vh] pb-[6vh]">
+      {/* No reveal on the deck: a card arriving is a card covering the one
+          before it, and a fade on top of that was the same card arriving twice.
+          See `RevealGroup`. */}
+      <ol data-reveal="off" className="flex flex-col gap-[14vh] pb-[6vh]">
         {steps.map((step, i) => (
           <li
             key={step.number}

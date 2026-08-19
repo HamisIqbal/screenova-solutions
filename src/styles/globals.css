@@ -440,6 +440,13 @@
 /* The native pointer, hidden — `SectionCursor` draws the replacement, a small
    block carrying the name of the section it is over.
 
+   Hidden inside the page's bands and nowhere else. The hero and the footer keep
+   the arrow, and so does the header: the hero has nothing to name that its own
+   headline is not already saying, and the footer is not a band at all — it is a
+   column of links, where an arrow is the right tool and a floating word is one
+   more thing between a pointer and a link. The replacement block hides itself in
+   exactly the same places, so there is always precisely one pointer on screen.
+
    Only where there is a mouse to replace: a coarse pointer has no cursor and a
    touch screen would simply lose nothing. `!important` because the alternative
    is losing a specificity race with every `cursor-pointer` utility on the page,
@@ -449,8 +456,8 @@
    where you are typing in, so inputs, textareas and selects are exempt here and
    the replacement block hides itself over them. */
 @media (hover: hover) and (pointer: fine) {
-  body,
-  body *:not(input):not(textarea):not(select) {
+  main > section:not(#hero),
+  main > section:not(#hero) *:not(input):not(textarea):not(select) {
     cursor: none !important;
   }
 }
