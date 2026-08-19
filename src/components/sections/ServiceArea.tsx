@@ -43,7 +43,6 @@ export function ServiceArea() {
   return (
     <Section id="service-area" ground="blue" labelledBy="service-area-title">
       <SectionHeader
-        eyebrow={serviceArea.eyebrow}
         title={serviceArea.title}
         titleId="service-area-title"
         intro={serviceArea.intro}

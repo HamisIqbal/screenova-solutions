@@ -15,11 +15,16 @@ import { faq } from "@/content/home";
 export function Faq() {
   return (
     <Section id="faq" ground="paper" labelledBy="faq-title">
-      {/* The section's name, set the same way `SectionHeader` sets one. This
-          section has no describing line under it — the questions are the
-          description — so it renders the heading on its own. */}
-      <h2 id="faq-title" className="mx-auto mb-[clamp(3rem,8vw,6rem)] max-w-2xl text-center">
-        {faq.eyebrow.toUpperCase()}
+      {/* This band has no visible header at all now. It never had a describing
+          line — the questions are the description — and with the section name
+          gone there is nothing left to show. The heading stays in the markup
+          because the section is `aria-labelledby` it: the region still has to
+          announce itself as the FAQ, it simply does so to a screen reader and
+          not to the page. `sr-only` takes it out of the layout entirely, so the
+          first question starts at the top of the band rather than under a
+          header's worth of empty space. */}
+      <h2 id="faq-title" className="sr-only">
+        {faq.eyebrow}
       </h2>
 
       <div className="border-t border-(--raised-border)">

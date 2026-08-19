@@ -40,11 +40,7 @@ export function HowItWorks() {
 
   return (
     <Section id="how-it-works" ground="paper" labelledBy="how-it-works-title">
-      <SectionHeader
-        eyebrow={howItWorks.eyebrow}
-        title={howItWorks.title}
-        titleId="how-it-works-title"
-      />
+      <SectionHeader title={howItWorks.title} titleId="how-it-works-title" />
 
       {/* The gap between cards is the travel from one step to the next. It is
           short and the cards are tall, because the alternative — small cards

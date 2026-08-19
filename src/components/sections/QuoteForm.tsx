@@ -70,12 +70,7 @@ const FIELD = "w-full";
 export function QuoteForm() {
   return (
     <Section id="quote" ground="blue" labelledBy="quote-title">
-      <SectionHeader
-        eyebrow={quote.eyebrow}
-        title={quote.title}
-        titleId="quote-title"
-        intro={quote.intro[0]}
-      />
+      <SectionHeader title={quote.title} titleId="quote-title" intro={quote.intro[0]} />
 
       <form
         aria-labelledby="quote-form-title"

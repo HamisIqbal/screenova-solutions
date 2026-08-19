@@ -37,12 +37,7 @@ export function WhyChooseUs() {
       {/* `relative`, so the content paints above the picture and its scrim —
           both are positioned, and a static sibling would sit under them. */}
       <div className="relative">
-        <SectionHeader
-          eyebrow={whyChooseUs.eyebrow}
-          title={whyChooseUs.title}
-          titleId="why-us-title"
-          intro={whyChooseUs.intro}
-        />
+        <SectionHeader title={whyChooseUs.title} titleId="why-us-title" intro={whyChooseUs.intro} />
 
         <ul className="grid gap-x-10 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
           {whyChooseUs.benefits.map((benefit) => (

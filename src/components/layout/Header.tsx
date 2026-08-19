@@ -330,13 +330,13 @@ function DesktopNav() {
   return (
     <nav
       aria-label="Primary"
-      className="pointer-events-auto bg-navy/55 absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-xl border border-(--on-ground)/18 px-2 py-1.5 backdrop-blur-xl backdrop-saturate-150 xl:flex"
+      className="bg-navy/55 pointer-events-auto absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-xl border border-(--on-ground)/18 px-2 py-1.5 backdrop-blur-xl backdrop-saturate-150 xl:flex"
     >
       {navLinks.map((link) => (
         <a
           key={link.href}
           href={link.href}
-          className="font-title text-(--on-ground) hover:bg-paper hover:text-navy rounded-lg px-2.5 py-1.5 whitespace-nowrap no-underline transition-colors"
+          className="font-title hover:bg-paper hover:text-navy rounded-lg px-2.5 py-1.5 whitespace-nowrap text-(--on-ground) no-underline transition-colors"
           style={{ fontSize: "var(--text-nav)", fontWeight: 400 }}
         >
           {link.label}

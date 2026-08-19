@@ -16,7 +16,7 @@ export function About() {
   return (
     <Section id="about" ground="blue" labelledBy="about-title">
       <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
-        <SectionHeader eyebrow={about.eyebrow} title={about.title} titleId="about-title" />
+        <SectionHeader title={about.title} titleId="about-title" />
 
         <div>
           <div className="flex flex-col gap-4">

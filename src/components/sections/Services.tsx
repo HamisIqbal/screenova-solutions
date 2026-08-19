@@ -75,12 +75,7 @@ export function Services() {
 
   return (
     <Section id="services" ground="blue" labelledBy="services-title">
-      <SectionHeader
-        eyebrow={services.eyebrow}
-        title={services.title}
-        titleId="services-title"
-        intro={services.intro}
-      />
+      <SectionHeader title={services.title} titleId="services-title" intro={services.intro} />
 
       <div
         data-ground="paper"

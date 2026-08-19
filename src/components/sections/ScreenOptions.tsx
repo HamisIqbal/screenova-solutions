@@ -43,7 +43,6 @@ export function ScreenOptions() {
           both are positioned, and a static sibling would sit under them. */}
       <div className="relative">
         <SectionHeader
-          eyebrow={screenOptions.eyebrow}
           title={screenOptions.title}
           titleId="screen-options-title"
           intro={screenOptions.intro}

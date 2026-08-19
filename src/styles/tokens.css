@@ -81,23 +81,13 @@
      `src/app/fonts.ts`; these tokens are what components reference.
 
        hero  → Satoshi Black   (900)   the h1
-       title → Satoshi Regular (400)   h3, eyebrows, labels
+       title → Satoshi Bold    (700)   h2; Regular (400) h3, labels
        body  → Satoshi Regular (400)   paragraphs, controls, forms
-       nav   → Chillax Regular (400)   the header
-       name  → Chillax Bold    (700)   the h2, a band's name, and nothing else
+       nav   → Chillax Regular (400)   the header, and nothing else
 
      `--font-nav` is the whole reason two families are loaded. Everything in
      `main` is Satoshi; the header keeps the face it was designed against, which
      is what makes it read as chrome rather than as the page's first line.
-
-     `--font-name` is the one place that split is crossed on purpose. A band's
-     name is the *navigation's* word for it, so it is set in the navigation's
-     face — the reader has already met these words up in the header, and meeting
-     them again in the same letterforms is what says "this is the place you
-     asked for" rather than "this is the band's first sentence". Bold, because
-     Chillax at 700 has weight in the letterforms that Satoshi caps at 700 do
-     not: caps set in a text face go thin and wide at this size, which is the
-     whole complaint the change answers.
 
      Hero, title and body all resolve to Satoshi — those roles are carried by
      weight and size, not by different typefaces. They stay separate tokens so
@@ -111,7 +101,6 @@
   --font-title: var(--font-satoshi);
   --font-body: var(--font-satoshi);
   --font-nav: var(--font-chillax);
-  --font-name: var(--font-chillax);
 
   /* Sans is aliased too, so Tailwind's default `font-sans` and any unstyled
      element land on the right family. */
@@ -149,16 +138,13 @@
        hero   20 -> 44px      h2   26 -> 33.6px     h3   16 -> 18px
        lead   13 -> 15px      body 14px flat        label 12px  nav 14px */
   --text-hero: clamp(1.25rem, 7.37vw - 0.221rem, 2.75rem);
-  /* The section title is the largest type in its section — nothing inside a
-     band may out-size the name of the band. That is what sets the ceiling at
+  /* The section heading is the largest type in its section — nothing inside a
+     band may out-size the line that opens it. That is what sets the ceiling at
      44px: it is the hero title's own cap, so a section heading matches the
      page's loudest voice without exceeding it, and every heading inside a
      section (a service title, a step numeral) is sized under it. */
   --text-h2: clamp(1.75rem, 1.05rem + 3vw, 2.75rem);
   --text-h3: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
-  /* The line under a section's name. It is what `--text-h2` used to be, because
-     that is exactly the job it has taken over: the descriptive sentence. */
-  --text-subtitle: clamp(1.25rem, 0.95rem + 1.3vw, 1.75rem);
   /* The hero's two paragraphs, and nothing else. It is a ramp rather than a
      flat size because the requirement on them is a *line count*, not a size:
      three lines each, at every width.
