@@ -3,7 +3,6 @@ import "@/styles/globals.css";
 import { fontVariables } from "@/app/fonts";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { SectionRail } from "@/components/layout/SectionRail";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -38,8 +37,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <Header />
-        {/* Desktop-only section rail; renders nothing below xl. */}
-        <SectionRail />
         <main id="main">{children}</main>
         <Footer />
       </body>
