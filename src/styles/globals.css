@@ -255,12 +255,8 @@
        overrun becomes an extra line rather than horizontal scroll. */
   }
 
-  /* Titles under the hero, in the page's one face. h3 stays Regular — the same
-     weight as the body it sits above, with the step carried by size alone. The
-     h2 does not: it is the section's name, set in caps, and caps at Regular go
-     thin and wide at 44px in a way lowercase at the same weight does not. Bold
-     puts the weight back into the letterforms, which is what makes the name
-     read as the band's title rather than as a stretched label. */
+  /* h3 is a title under the hero in the page's own face, Regular — the same
+     weight as the body it sits above, with the step carried by size alone. */
   h2,
   h3 {
     font-family: var(--font-title);
@@ -269,10 +265,37 @@
     text-wrap: balance;
   }
 
+  /* h2 is not a title. It is the band's *name* — the navigation's word for this
+     place, and the only thing on the band whose job is to say where you are
+     rather than to tell you something. So it is set as a marker, and every
+     value here is chosen to keep it out of the run of prose beneath it:
+
+       Chillax Bold, the header's face, not the page's. The reader met these
+         exact words up in the nav; the letterforms are what carry that across.
+         It also solves the complaint that started this: Satoshi's caps at 700
+         are a text face stretched into caps, and they read thin and wide at
+         33px. Chillax at 700 is heavy in the stroke and closed in the counters,
+         so the name has body at any size.
+
+       Positive tracking, not negative. Caps have no ascenders or descenders to
+         separate them, so a name reads as a label when the letters are given
+         air and as a word when they are not. Titles keep the -0.015em above;
+         this is the one heading that opens up instead.
+
+       `--hero-ink`, the accent ink — the same role the h1 takes. Blue on the
+         white bands, white on blue, `blue-soft` over the photographs. A name in
+         the accent is unmistakably a marker, and it is the last thing that
+         stops the name reading as the first line of the copy under it.
+
+     `text-wrap: balance` is inherited from the rule above and wanted here: the
+     names are two or three short words and a lone hanging word looks broken. */
   h2 {
+    font-family: var(--font-name);
     font-size: var(--text-h2);
     font-weight: 700;
+    letter-spacing: 0.06em;
     line-height: 1.1;
+    color: var(--hero-ink);
   }
 
   h3 {

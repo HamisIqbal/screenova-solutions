@@ -81,13 +81,23 @@
      `src/app/fonts.ts`; these tokens are what components reference.
 
        hero  → Satoshi Black   (900)   the h1
-       title → Satoshi Regular (400)   h2, h3, eyebrows, labels
+       title → Satoshi Regular (400)   h3, eyebrows, labels
        body  → Satoshi Regular (400)   paragraphs, controls, forms
-       nav   → Chillax Regular (400)   the header, and nothing else
+       nav   → Chillax Regular (400)   the header
+       name  → Chillax Bold    (700)   the h2, a band's name, and nothing else
 
      `--font-nav` is the whole reason two families are loaded. Everything in
      `main` is Satoshi; the header keeps the face it was designed against, which
      is what makes it read as chrome rather than as the page's first line.
+
+     `--font-name` is the one place that split is crossed on purpose. A band's
+     name is the *navigation's* word for it, so it is set in the navigation's
+     face — the reader has already met these words up in the header, and meeting
+     them again in the same letterforms is what says "this is the place you
+     asked for" rather than "this is the band's first sentence". Bold, because
+     Chillax at 700 has weight in the letterforms that Satoshi caps at 700 do
+     not: caps set in a text face go thin and wide at this size, which is the
+     whole complaint the change answers.
 
      Hero, title and body all resolve to Satoshi — those roles are carried by
      weight and size, not by different typefaces. They stay separate tokens so
@@ -101,6 +111,7 @@
   --font-title: var(--font-satoshi);
   --font-body: var(--font-satoshi);
   --font-nav: var(--font-chillax);
+  --font-name: var(--font-chillax);
 
   /* Sans is aliased too, so Tailwind's default `font-sans` and any unstyled
      element land on the right family. */

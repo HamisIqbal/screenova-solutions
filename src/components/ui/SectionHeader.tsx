@@ -40,16 +40,9 @@ export function SectionHeader({
 
   return (
     <header className={`mx-auto mb-[clamp(3rem,8vw,6rem)] max-w-2xl text-center ${className}`}>
-      <h2
-        id={titleId}
-        // Uppercase, and the tracking comes down as the size goes up: 0.16em
-        // was set for a 12px label, where letters need pushing apart to read as
-        // a label at all. At 44px the same value is a gap you read across
-        // rather than a word, so it drops to a quarter of it.
-        style={{ letterSpacing: "0.04em" }}
-      >
-        {eyebrow.toUpperCase()}
-      </h2>
+      {/* Caps, and the face, weight, tracking and ink that make a name a name
+          all live on the `h2` rule in `globals.css`. */}
+      <h2 id={titleId}>{eyebrow.toUpperCase()}</h2>
 
       {/* Not a heading: there is one heading per section and the name has it.
           This is the sentence under the name, set at the size the old heading
