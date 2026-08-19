@@ -43,8 +43,12 @@ import { useIsomorphicLayoutEffect, usePrefersReducedMotion } from "@/hooks";
  * is a page that reads normally.
  */
 
-/** How far below the window's own bottom edge a block waits before it moves. */
-const START = "top 88%";
+/** How far below the window's own bottom edge a block waits before it moves.
+    92% rather than 88%: the wheel on the right calls a section current when its
+    middle passes the middle of the window, and a block that had not finished
+    arriving by then would be named before it could be read. Earlier trigger,
+    shorter tween — the two now land together. */
+const START = "top 92%";
 const RISE = 24;
 
 export function RevealGroup({
@@ -89,7 +93,7 @@ export function RevealGroup({
           // Only what was offset comes back — a sticky card never gets a
           // transform of its own, not even a zeroed one.
           ...(sticky ? {} : { y: 0 }),
-          duration: 0.8,
+          duration: 0.6,
           ease: "power3.out",
           scrollTrigger: {
             trigger: block,
