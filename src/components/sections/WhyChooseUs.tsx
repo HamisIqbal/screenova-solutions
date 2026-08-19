@@ -1,12 +1,13 @@
-"use client";
-
-import { useState } from "react";
 import { BandPhoto, CtaLink, Section, SectionHeader } from "@/components/ui";
 import { bandImages, whyChooseUs } from "@/content/home";
 
 /**
- * Six reasons, on a photograph: six white blocks closed to their headings, and
- * the sentence arrives when you open one.
+ * Six reasons, on a photograph: six white blocks, three and three, each showing
+ * its heading and its sentence at all times.
+ *
+ * Nothing here is hidden and nothing has to be opened. Six short reasons are
+ * exactly the amount a reader will take in one pass, and a section whose whole
+ * job is "here is why" should not make you work for the why.
  *
  * The band was blue and is now `sky`, because its floor is a picture and a
  * photograph needs the text roles a dark ground provides. The blocks are
@@ -19,41 +20,30 @@ import { bandImages, whyChooseUs } from "@/content/home";
  * not another's: two rows of white blocks need somewhere quiet to land.
  *
  * ---------------------------------------------------------------------------
- * One layout, two ways in.
+ * Hover, on a desktop: one block comes forward and the other five go soft.
  *
- * Closed, the section is six short phrases — the six reasons, readable in a
- * single pass, which is what a list of reasons is for. Opening one brings the
- * sentence under the heading, so the summary and the detail are the same six
- * objects rather than six headings with six paragraphs already spent under them.
+ * The blocks sit close together — a 12px gutter, near enough to read as one
+ * panel of six — and hovering one lifts it, scales it up, and blurs the rest
+ * back. It is a focus effect rather than a reveal: the same six reasons are on
+ * screen the whole time, and the pointer is only choosing which of them is
+ * being read. The blur is what makes it work; a scale on its own reads as a
+ * button being pressed, while a scale against five soft neighbours reads as
+ * depth.
  *
- * A pointer opens a block by hovering it. A finger has no hover, so a tap opens
- * it and a second tap closes it — and because that is not something you can see,
- * the phone gets a line above the grid that says so. The two are the same
- * control: each block is a `button` carrying `aria-expanded`, the hover only
- * fires for `pointerType === "mouse"`, and the tap is an ordinary click, so a
- * keyboard gets the behaviour for free with no third code path.
+ * It is transform and filter only, and that is the requirement, not a
+ * preference: the band's floor is a photograph sized to the band, so anything
+ * that changed the section's height would move the picture behind it. `scale`
+ * and `blur` are painted, not laid out — the grid is the same size at rest and
+ * under the pointer, and the photograph never moves.
  *
- * The open/close is grid rows rather than height, because `height: auto` cannot
- * be transitioned and a fixed height would have to be guessed for the longest of
- * the six: the copy sits in a row that goes from `0fr` to `1fr`, which measures
- * itself and which the browser can interpolate. The copy is never removed from
- * the DOM, so the six sentences are read out in order whether or not anything is
- * open.
+ * No JavaScript in any of it. The list is the hover group, so "some block is
+ * hovered" is a state CSS already knows; the hovered one takes the `hover:`
+ * side of each pair and its five neighbours take the group's.
  *
- * Nothing moves outside a block when one opens
- * --------------------------------------------
- * The band's floor is a photograph sized to the band. If the section grew every
- * time a block opened, the picture behind it would grow with it — the whole
- * image jumping a step in and out of frame under the pointer. So the row
- * reserves the room the tallest open block needs, and the block itself is
- * absolutely positioned inside that reserved space: the white box grows, the
- * grid does not, and the photograph never moves. `z-10` while open, so a block
- * that runs a line longer than the reservation paints over its neighbour rather
- * than being clipped by it.
+ * Below `lg` there is no hover to build on, so none of it applies: the blocks
+ * are simply six blocks, one or two to a row, all six equally readable.
  */
 export function WhyChooseUs() {
-  const [open, setOpen] = useState<number | null>(null);
-
   return (
     <Section
       id="why-us"
@@ -70,66 +60,23 @@ export function WhyChooseUs() {
       <div className="relative">
         <SectionHeader title={whyChooseUs.title} titleId="why-us-title" intro={whyChooseUs.intro} />
 
-        {/* Only where there is no hover to discover the behaviour with. */}
-        <p
-          className="font-title mb-5 text-(--on-ground-muted) lg:hidden"
-          style={{ fontSize: "var(--text-label)", letterSpacing: "0.14em" }}
-        >
-          TAP A BLOCK TO EXPAND
-        </p>
-
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
-          {whyChooseUs.benefits.map((benefit, i) => {
-            const isOpen = open === i;
-
-            return (
-              // The reservation. The block inside is absolute, so opening it
-              // changes nothing about the height of this row.
-              <li
-                key={benefit.title}
-                className={`relative min-h-[9.5rem] sm:min-h-[12.5rem] lg:min-h-[13.5rem] ${
-                  isOpen ? "z-10" : ""
-                }`}
-              >
-                <button
-                  type="button"
-                  aria-expanded={isOpen}
-                  onClick={() => setOpen(isOpen ? null : i)}
-                  onPointerEnter={(event) => {
-                    if (event.pointerType === "mouse") setOpen(i);
-                  }}
-                  onPointerLeave={(event) => {
-                    if (event.pointerType === "mouse") setOpen(null);
-                  }}
-                  data-ground="paper"
-                  className={`absolute inset-x-0 top-0 cursor-pointer rounded-2xl px-6 py-6 text-left transition-[transform,box-shadow] duration-500 ${
-                    isOpen
-                      ? "-translate-y-1 shadow-[0_18px_40px_rgba(0,0,0,0.28)]"
-                      : "translate-y-0 shadow-none"
-                  }`}
-                >
-                  <h3 className="text-lg leading-snug font-bold">{benefit.title}</h3>
-
-                  {/* `0fr` to `1fr`: a height the browser can both measure and
-                      interpolate. `overflow-hidden` on the child is what makes
-                      the closed row actually clip. */}
-                  <div
-                    className={`grid transition-[grid-template-rows] duration-500 ease-out ${
-                      isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                    }`}
-                  >
-                    <p
-                      className={`overflow-hidden text-(--on-ground-muted) transition-[padding] duration-500 ${
-                        isOpen ? "pt-3" : "pt-0"
-                      }`}
-                    >
-                      {benefit.body}
-                    </p>
-                  </div>
-                </button>
-              </li>
-            );
-          })}
+        <ul className="group/blocks grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {whyChooseUs.benefits.map((benefit) => (
+            <li
+              key={benefit.title}
+              // The group's side of the pair blurs and softens every block
+              // while any of them is hovered; the element's own `hover:` side
+              // takes it back for the one under the pointer and brings it
+              // forward. `z-10` so the scaled block is over its neighbours and
+              // not under them.
+              className="transition-[filter,opacity,transform] duration-500 ease-out lg:group-hover/blocks:scale-[0.98] lg:group-hover/blocks:opacity-55 lg:group-hover/blocks:blur-[3px] lg:hover:z-10 lg:hover:scale-[1.06] lg:hover:opacity-100! lg:hover:blur-none!"
+            >
+              <div data-ground="paper" className="h-full rounded-2xl px-6 py-6">
+                <h3 className="text-lg leading-snug font-bold">{benefit.title}</h3>
+                <p className="mt-3 text-(--on-ground-muted)">{benefit.body}</p>
+              </div>
+            </li>
+          ))}
         </ul>
 
         <CtaLink href="#quote" className="mt-14">

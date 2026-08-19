@@ -436,3 +436,21 @@
     transform: translate3d(0, 0, 0);
   }
 }
+
+/* The native pointer, hidden — `SectionCursor` draws the replacement, a small
+   block carrying the name of the section it is over.
+
+   Only where there is a mouse to replace: a coarse pointer has no cursor and a
+   touch screen would simply lose nothing. `!important` because the alternative
+   is losing a specificity race with every `cursor-pointer` utility on the page,
+   and this has to win against all of them or the swap is half done.
+
+   Form fields keep theirs. A text field with no caret is a field you cannot see
+   where you are typing in, so inputs, textareas and selects are exempt here and
+   the replacement block hides itself over them. */
+@media (hover: hover) and (pointer: fine) {
+  body,
+  body *:not(input):not(textarea):not(select) {
+    cursor: none !important;
+  }
+}

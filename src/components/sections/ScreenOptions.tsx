@@ -92,8 +92,15 @@ export function ScreenOptions() {
 
       <div className="grid gap-10 lg:grid-cols-[18rem_minmax(0,1fr)] lg:gap-16">
         {/* The pinned answer. `self-start` is what lets it stick — a stretched
-            grid item is as tall as the column and has nothing to stick within. */}
-        <div className="hidden self-start lg:sticky lg:top-[calc(50vh-4rem)] lg:block">
+            grid item is as tall as the column and has nothing to stick within.
+
+            `mt` is where it starts and `top` is where it stops. It used to
+            begin level with the top edge of the first panel, which put the
+            label above the first line of the option it was answering and read
+            as a heading for the column rather than as a line beside it. It now
+            starts a panel's-worth lower, and comes to rest just under the
+            middle of the window. */}
+        <div className="hidden self-start lg:sticky lg:top-[calc(50vh-3rem)] lg:mt-28 lg:block">
           <p
             className="text-blue-soft font-title"
             style={{ fontSize: "var(--text-label)", letterSpacing: "0.16em" }}
