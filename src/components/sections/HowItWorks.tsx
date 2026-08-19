@@ -6,10 +6,12 @@ import { howItWorks } from "@/content/home";
  * the order is information the reader needs. The numerals are set in the hero
  * face, which is the only other place on the page that shouts.
  *
- * Back on white. Each card opens with nothing but its numeral, set large and in
- * blue, with the copy navy on paper. The numeral is blue rather than green
- * because green is 2.9:1 on white — under the 3:1 large-text floor — so it can
- * be a mark but never a word or a figure.
+ * Back on white. Each card opens with nothing but its numeral, set large, in
+ * the hero's Black weight and in black: at that size and that weight the figure
+ * is the mark, and it does not need a colour to be one. Blue made it a second
+ * brand moment on a band that already carries the action pill, and green was
+ * never an option — 2.9:1 on white, under the large-text floor. Black is 21:1
+ * and reads as structure, which is what a step number is.
  *
  * ---------------------------------------------------------------------------
  * The four steps are a deck rather than a row. Each card is `sticky` at the
@@ -59,15 +61,14 @@ export function HowItWorks() {
           >
             <article className="flex min-h-[52vh] flex-col justify-center rounded-3xl border border-(--raised-border) bg-(--ground) p-7 shadow-[0_-1px_24px_rgba(11,31,59,0.08)] sm:min-h-[58vh] sm:p-10 lg:p-12">
               <p
-                // Blue, not green: green is the click, and green is also too
-                // close to white to carry a numeral. The numerals carry
-                // sequence, which is structure, and blue holds 4.7:1 on paper
-                // so a number that means something is actually readable.
-                className="font-hero text-blue block leading-none"
+                // Black in both senses — the colour and the weight. The
+                // numerals carry sequence, which is structure, and structure on
+                // this page is set in the page's own ink at its heaviest.
+                className="font-hero block leading-none text-black"
                 // The numeral is now the only marker of position in the four,
                 // so it is set large — but still under the section title,
                 // which stays the largest thing on the band.
-                style={{ fontSize: "clamp(2.5rem, 7vw, 4.5rem)" }}
+                style={{ fontSize: "clamp(2.5rem, 7vw, 4.5rem)", fontWeight: 900 }}
               >
                 <span className="sr-only">Step </span>
                 {String(step.number).padStart(2, "0")}

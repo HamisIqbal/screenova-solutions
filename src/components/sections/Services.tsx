@@ -92,8 +92,14 @@ export function Services() {
             That is the same fixed card height on all six — nothing moves under
             the arrows — but the dead white that used to sit under the shorter
             bodies is now photograph instead. On a short body the picture is
-            more than twice the height it gets on the longest one. */}
-        <div className="grid h-[25.5rem] grid-rows-[1fr_auto] sm:h-[34rem] lg:h-auto lg:grid-cols-2 lg:grid-rows-none">
+            more than twice the height it gets on the longest one.
+
+            The phone height is 28.5rem rather than 25.5rem. The split is a
+            fixed card less the copy, so the longest of the six bodies was
+            leaving the picture barely more than its floor — a strip rather than
+            a photograph. The three extra rem all go to the picture, because the
+            words take what they take, and the card still fits a small screen. */}
+        <div className="grid h-[28.5rem] grid-rows-[1fr_auto] sm:h-[34rem] lg:h-auto lg:grid-cols-2 lg:grid-rows-none">
           {/* The picture. First on a phone, second on a desktop — the words
               lead the reading order at both widths.
 

@@ -38,10 +38,9 @@ import { contact } from "@/lib/site";
  * reads as one closing statement on the middle of the picture rather than as a
  * left rail with space beside it.
  *
- * That room ends in the tagline, which is set larger than the label it used to
- * be but well under the heading: it is the page's last word, not its loudest.
- * In the hero's Black face, so it lands as a sign rather than as one more line
- * of copy, and nothing follows it.
+ * That room ends in the tagline: a quiet line, well under the heading, and set
+ * at Regular. It is the page's last word, not its loudest — the room around it
+ * is what gives it weight, not the type.
  */
 export function FinalCta() {
   return (
@@ -97,12 +96,12 @@ export function FinalCta() {
             photograph, and the two sparks the page is allowed are already spent
             on the "Best for" chip and the FAQ marker. */}
         <p
-          className="font-hero mt-[clamp(3rem,10vw,7rem)] max-w-none"
+          className="font-title mt-[clamp(3rem,10vw,7rem)] max-w-none"
           style={{
-            fontSize: "clamp(1.25rem, 3.2vw, 2.25rem)",
-            fontWeight: 900,
-            letterSpacing: "-0.01em",
-            lineHeight: 1.1,
+            fontSize: "clamp(1rem, 1.9vw, 1.375rem)",
+            fontWeight: 400,
+            letterSpacing: "0.01em",
+            lineHeight: 1.2,
           }}
         >
           {finalCta.tagline.toUpperCase()}
