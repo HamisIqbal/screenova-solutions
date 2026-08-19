@@ -6,11 +6,10 @@ import { howItWorks } from "@/content/home";
  * the order is information the reader needs. The numerals are set in the hero
  * face, which is the only other place on the page that shouts.
  *
- * Back on white, and this is where all three colours are visible at once: a
- * green rule opens each step, the numeral under it is blue, the copy is navy on
- * paper. Green as a 3px rule rather than as the numeral is deliberate — green
- * is 2.9:1 on white, under the 3:1 large-text floor, so it can be a mark here
- * but never a word.
+ * Back on white. Each card opens with nothing but its numeral, set large and in
+ * blue, with the copy navy on paper. The numeral is blue rather than green
+ * because green is 2.9:1 on white — under the 3:1 large-text floor — so it can
+ * be a mark but never a word or a figure.
  *
  * ---------------------------------------------------------------------------
  * The four steps are a deck rather than a row. Each card is `sticky` at the
@@ -63,27 +62,19 @@ export function HowItWorks() {
             }}
           >
             <article className="flex min-h-[52vh] flex-col justify-center rounded-3xl border border-(--raised-border) bg-(--ground) p-7 shadow-[0_-1px_24px_rgba(11,31,59,0.08)] sm:min-h-[58vh] sm:p-10 lg:p-12">
-              <span className="bg-green block h-[3px] w-16" aria-hidden="true" />
-
-              <span
-                aria-hidden="true"
+              <p
                 // Blue, not green: green is the click, and green is also too
                 // close to white to carry a numeral. The numerals carry
                 // sequence, which is structure, and blue holds 4.7:1 on paper
                 // so a number that means something is actually readable.
-                className="font-hero text-blue mt-5 block leading-none"
-                // Bigger than it was as a column heading — one card at a time
-                // means the numeral is the thing that tells you where in the
-                // four you are — but still under the section title, which is
-                // the largest thing on the band.
-                style={{ fontSize: "clamp(1.5rem, 4vw, 2.5rem)" }}
+                className="font-hero text-blue block leading-none"
+                // The numeral is now the only marker of position in the four,
+                // so it is set large — but still under the section title,
+                // which stays the largest thing on the band.
+                style={{ fontSize: "clamp(2.5rem, 7vw, 4.5rem)" }}
               >
-                {String(step.number).padStart(2, "0")}
-              </span>
-
-              <p className="text-(--on-ground-muted)" style={{ fontSize: "var(--text-label)" }}>
                 <span className="sr-only">Step </span>
-                {step.number} of {steps.length}
+                {String(step.number).padStart(2, "0")}
               </p>
 
               <h3 className="mt-4 text-xl sm:text-2xl">{step.title}</h3>
