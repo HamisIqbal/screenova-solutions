@@ -176,6 +176,7 @@ export function QuoteForm() {
               name="name"
               type="text"
               autoComplete="name"
+              placeholder={quote.hints.name}
               required
             />
           </Field>
@@ -187,6 +188,7 @@ export function QuoteForm() {
               name="phone"
               type="tel"
               autoComplete="tel"
+              placeholder={quote.hints.phone}
               required
             />
           </Field>
@@ -198,6 +200,7 @@ export function QuoteForm() {
               name="email"
               type="email"
               autoComplete="email"
+              placeholder={quote.hints.email}
               required
             />
           </Field>
@@ -216,6 +219,7 @@ export function QuoteForm() {
               type="text"
               inputMode="numeric"
               autoComplete="postal-code"
+              placeholder={quote.hints.zip}
               pattern={ZIP_PATTERN}
               maxLength={5}
               required
@@ -229,6 +233,7 @@ export function QuoteForm() {
               name="address"
               type="text"
               autoComplete="street-address"
+              placeholder={quote.hints.address}
             />
           </Field>
 
@@ -251,7 +256,13 @@ export function QuoteForm() {
           </Field>
 
           <Field id="details" label={quote.fields.details} className="sm:col-span-2">
-            <textarea className={FIELD} id="details" name="details" rows={3} />
+            <textarea
+                className={FIELD}
+                id="details"
+                name="details"
+                rows={3}
+                placeholder={quote.hints.details}
+              />
           </Field>
         </div>
 
@@ -271,11 +282,24 @@ export function QuoteForm() {
 
           <div className="mt-4 grid gap-x-5 gap-y-4 sm:grid-cols-2">
             <Field id="quantity" label={quote.fields.quantity}>
-              <input className={FIELD} id="quantity" name="quantity" type="number" min="1" />
+              <input
+                className={FIELD}
+                id="quantity"
+                name="quantity"
+                type="number"
+                min="1"
+                placeholder={quote.hints.quantity}
+              />
             </Field>
 
             <Field id="measurements" label={quote.fields.measurements}>
-              <input className={FIELD} id="measurements" name="measurements" type="text" />
+              <input
+                className={FIELD}
+                id="measurements"
+                name="measurements"
+                type="text"
+                placeholder={quote.hints.measurements}
+              />
             </Field>
 
             <Field id="photos" label={quote.fields.photos} className="sm:col-span-2">

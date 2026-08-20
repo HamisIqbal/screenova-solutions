@@ -372,6 +372,17 @@
     padding: 0.5rem 0.75rem;
   }
 
+  /* A placeholder is an example of the answer, not the answer — so it is set in
+     the muted ink while a typed value is set in the full one. That difference
+     is the only thing telling a reader whether a field is filled in, which is
+     why it is a colour change and not an opacity: opacity would drag it toward
+     the mist behind it and take the contrast with it. Muted on mist is 4.7:1,
+     which is a hint you can actually read. */
+  ::placeholder {
+    color: var(--color-muted);
+    opacity: 1;
+  }
+
   input[type="radio"],
   input[type="checkbox"] {
     accent-color: var(--color-brand);

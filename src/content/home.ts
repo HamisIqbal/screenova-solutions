@@ -477,6 +477,30 @@ export const quote = {
     details: "Tell us about your project",
     photos: "Upload Photos",
   },
+  /**
+   * The placeholder in each field: an example of the answer, never a restatement
+   * of the label. A label that says "Phone Number" over a box that says "Phone
+   * Number" has spent a line to say nothing twice — these show the shape of what
+   * goes in, which is the one thing a label cannot do.
+   *
+   * They are examples, not instructions, so they are written as somebody's real
+   * answer would be: a whole street line rather than "Street, City", a sentence
+   * in the details box rather than "Describe your project". The ZIP is a real
+   * Tampa one, which doubles as a hint that this field decides something.
+   *
+   * `service` has none — a select shows its own first option — and neither does
+   * the file input, which the browser labels itself.
+   */
+  hints: {
+    name: "Jane Rivera",
+    phone: "(813) 555-0134",
+    email: "jane@example.com",
+    zip: "33602",
+    address: "1204 W Azeele St, Tampa",
+    details: "Three torn screens on the lanai, and a slider that won't latch.",
+    quantity: "6",
+    measurements: "About 36 x 48 in",
+  },
   serviceOptions: [
     "New Window Screens",
     "Window Rescreening",
