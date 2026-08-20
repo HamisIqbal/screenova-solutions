@@ -12,19 +12,17 @@ export const siteConfig = {
 export type SiteConfig = typeof siteConfig;
 
 /**
- * Where the business actually is, and how to reach it. Placeholder values —
- * swap the street, phone, and mailbox for the real ones before launch; the
- * `href` forms are derived from the display strings so they stay in step.
+ * How to reach the business. The number is the real one; the mailbox is still
+ * a placeholder — swap it before launch. The `href` forms are derived from the
+ * display strings so they stay in step.
+ *
+ * No street address: the business is dispatched rather than visited, so the
+ * footer lists ways to reach a human and nothing else.
  */
 export const contact = {
-  address: {
-    lines: ["4830 W Kennedy Blvd, Suite 600", "Tampa, FL 33609"],
-    /** Opens the pin rather than a search result page. */
-    href: "https://maps.google.com/?q=4830+W+Kennedy+Blvd+Suite+600+Tampa+FL+33609",
-  },
   phone: {
-    label: "(813) 555-0142",
-    href: "tel:+18135550142",
+    label: "(850) 896-3173",
+    href: "tel:+18508963173",
   },
   email: {
     label: "info@screenova.solutions",

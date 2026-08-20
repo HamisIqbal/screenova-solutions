@@ -125,7 +125,7 @@ export function Footer() {
       <div className="max-w-page px-gutter mx-auto w-full py-16 lg:py-20">
         <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))] lg:gap-x-10">
           {/* Far left: the mark, at the size it was drawn for. It is the one
-              place on the site the logo is large — in the header it is 56px
+              place on the site the logo is large — in the header it is 72px
               tall because it is chrome there, competing with links and a
               button. Its lettering is half white on transparent, which is why
               black is the one ground it can be this size on without a plate
@@ -149,26 +149,13 @@ export function Footer() {
           </div>
 
           {/* Contact: the most consequential of the three lists, so it comes
-              first. Every line is a live target — the address opens the pin,
-              the number dials, the mailbox composes — because a footer address
-              that has to be copied out by hand is a picture of an address. */}
+              first. Both lines are live targets — the number dials, the mailbox
+              composes. No street address: the work happens at the customer's
+              property, so an address here would only be a place nobody visits. */}
           <div className={`${DIVIDER} border-t pt-10 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-10`}>
             <ColumnTitle>Contact Us</ColumnTitle>
 
             <address className="mt-6 space-y-4 not-italic">
-              <a
-                href={contact.address.href}
-                target="_blank"
-                rel="noreferrer"
-                className={`${LINK} block`}
-              >
-                {contact.address.lines.map((line) => (
-                  <span key={line} className="block">
-                    {line}
-                  </span>
-                ))}
-              </a>
-
               <a href={contact.phone.href} className={`${LINK} block`}>
                 {contact.phone.label}
               </a>

@@ -3,6 +3,8 @@
  * `src/app/page.tsx` — keep the two in step when sections are added or renamed.
  */
 
+import { contact } from "@/lib/site";
+
 export type NavLink = {
   label: string;
   href: string;
@@ -22,9 +24,17 @@ export const logo = {
   alt: `${wordmark} — window and door screens`,
 } as const;
 
+/**
+ * The header's one button. It dials rather than scrolling to the form: the
+ * quote form is already the destination of every section CTA on the page, and
+ * the header — the one thing visible at every scroll position — is better spent
+ * on the action a visitor cannot reach by scrolling. The number lives in
+ * `src/lib/site.ts` so the header, the footer, the form and the closer all
+ * carry the same one.
+ */
 export const navCta: NavLink = {
-  label: "Get a Free Quote",
-  href: "#quote",
+  label: "Call Us",
+  href: contact.phone.href,
 };
 
 export const navLinks: NavLink[] = [
@@ -32,6 +42,7 @@ export const navLinks: NavLink[] = [
   { label: "How It Works", href: "#how-it-works" },
   { label: "Why Choose Us", href: "#why-us" },
   { label: "Screen Options", href: "#screen-options" },
+  { label: "Our Projects", href: "#projects" },
   { label: "About Us", href: "#about" },
   { label: "Service Areas", href: "#service-area" },
   { label: "FAQ", href: "#faq" },

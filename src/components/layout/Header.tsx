@@ -6,11 +6,12 @@ import { gsap } from "@/animations";
 import { CtaLink } from "@/components/ui";
 import { logo, navCta, navLinks } from "@/content/nav";
 import { useIsomorphicLayoutEffect, usePrefersReducedMotion } from "@/hooks";
+import { contact } from "@/lib/site";
 
 /**
  * Site header. No bar — a transparent overlay carrying three things over the
  * top of the hero photograph: the mark on the left, a glass capsule of links in
- * the middle of the window, the quote button on the right.
+ * the middle of the window, the call button on the right.
  *
  * Because there is no bar, the hero picture begins at the very top of the
  * document rather than under a lid. It always did — the image is `inset-0` on a
@@ -20,8 +21,8 @@ import { useIsomorphicLayoutEffect, usePrefersReducedMotion } from "@/hooks";
  * The capsule is centred on the *window*, not on the space between the mark and
  * the button, which is why it is positioned rather than laid out: those two are
  * different widths, so a flex row would have put it visibly off-centre. The row
- * keeps the 88px height and the 24px side inset the bar had, so the mark and
- * the button have not moved by a pixel.
+ * is 96px tall, sized around the mark rather than the other way round, and
+ * keeps the 24px side inset the bar had.
  *
  * `--header-clearance` is the room the overlay needs before page content can
  * start, and the first section's top padding and every anchor's scroll offset
@@ -47,7 +48,7 @@ import { useIsomorphicLayoutEffect, usePrefersReducedMotion } from "@/hooks";
 /** Scroll past this many pixels and the backdrop is in. A flick of the wheel. */
 const LIFT_AT = 8;
 /** Rendered box for the brand mark at its largest, in its native 3:1 ratio. */
-const LOGO_HEIGHT = 56;
+const LOGO_HEIGHT = 72;
 const LOGO_WIDTH = Math.round((LOGO_HEIGHT * logo.width) / logo.height);
 
 export function Header() {
@@ -107,7 +108,7 @@ export function Header() {
       */}
       <div
         data-ground="sky"
-        className="relative z-10 flex min-h-22 items-center bg-transparent px-6"
+        className="relative z-10 flex min-h-24 items-center bg-transparent px-6"
       >
         {/* The scroll backdrop. Its own element so it can cross-fade: `-z-10`
             inside this element's stacking context puts it above the row's
@@ -135,10 +136,12 @@ export function Header() {
             height={LOGO_HEIGHT}
             alt=""
             priority
-            // Unchanged from the bar: 44px tall, 56px past sm, sitting 24px in
-            // from the window and centred in an 88px row. Removing the bar was
-            // not supposed to move it, so none of those numbers moved.
-            className="h-11 w-auto sm:h-14"
+            // 56px tall, 72px past sm — a step up from the 44/56 it was, so
+            // the mark reads as the mark rather than as a third piece of
+            // chrome. The row grew to 96px with it, which keeps the same
+            // optical breathing room above and below; `--header-clearance` is
+            // 120px, so the taller row still clears the page content.
+            className="h-14 w-auto sm:h-18"
           />
         </a>
 
@@ -147,7 +150,11 @@ export function Header() {
         {/* `ml-auto` rather than a cell: with the capsule out of the flow, the
             button is the only thing left to push right. */}
         <div className="pointer-events-auto ml-auto hidden items-center xl:flex">
-          <CtaLink href={navCta.href}>{navCta.label}</CtaLink>
+          {/* "Call Us" is two words on the pill; the number is what a screen
+              reader should hear, so it goes on the label rather than the face. */}
+          <CtaLink href={navCta.href} ariaLabel={`${navCta.label} on ${contact.phone.label}`}>
+            {navCta.label}
+          </CtaLink>
         </div>
 
         <div className="pointer-events-auto ml-auto flex items-center xl:hidden">
@@ -290,7 +297,11 @@ function FullScreenMenu({ open, onNavigate }: { open: boolean; onNavigate: () =>
             className="mt-10"
             style={{ opacity: 0 }}
           >
-            <CtaLink href={navCta.href} onClick={onNavigate}>
+            <CtaLink
+              href={navCta.href}
+              onClick={onNavigate}
+              ariaLabel={`${navCta.label} on ${contact.phone.label}`}
+            >
               {navCta.label}
             </CtaLink>
           </div>
