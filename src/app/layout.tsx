@@ -3,7 +3,7 @@ import "@/styles/globals.css";
 import { fontVariables } from "@/app/fonts";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { SectionCursor } from "@/components/layout/SectionCursor";
+import { SiteCursor } from "@/components/layout/SiteCursor";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <Header />
-        <SectionCursor />
+        <SiteCursor />
         <main id="main">{children}</main>
         <Footer />
       </body>

@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/animations";
 import { CtaLink } from "@/components/ui";
 import { logo, navCta, navLinks } from "@/content/nav";
-import { useIsomorphicLayoutEffect, usePrefersReducedMotion } from "@/hooks";
+import { useActiveSection, useIsomorphicLayoutEffect, usePrefersReducedMotion } from "@/hooks";
 
 /**
  * Site header. No bar — a transparent overlay carrying three things over the
@@ -44,6 +44,11 @@ import { useIsomorphicLayoutEffect, usePrefersReducedMotion } from "@/hooks";
  * remove it.
  */
 
+/** The section ids the nav points at, in the order they appear on the page —
+    which is the order `useActiveSection` needs them in to answer "which band
+    has the reader reached". Derived from the links so the two cannot drift. */
+const NAV_IDS = navLinks.map((link) => link.href.replace("#", ""));
+
 /** Scroll past this many pixels and the backdrop is in. A flick of the wheel. */
 const LIFT_AT = 8;
 /** Rendered box for the brand mark at its largest, in its native 3:1 ratio. */
@@ -53,6 +58,7 @@ const LOGO_WIDTH = Math.round((LOGO_HEIGHT * logo.width) / logo.height);
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const active = useActiveSection(NAV_IDS);
 
   // A single threshold a few pixels down, so the backdrop is keyed to "the page
   // has moved" and nothing else. Nothing to measure and nothing to re-measure
@@ -97,7 +103,7 @@ export function Header() {
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-50">
       {/* First in the DOM so the row below always paints on top of it. */}
-      <FullScreenMenu open={menuOpen} onNavigate={() => setMenuOpen(false)} />
+      <FullScreenMenu open={menuOpen} active={active} onNavigate={() => setMenuOpen(false)} />
 
       {/*
         `data-ground="sky"` for the roles — white lettering, a white quote pill
@@ -142,7 +148,7 @@ export function Header() {
           />
         </a>
 
-        <DesktopNav />
+        <DesktopNav active={active} />
 
         {/* `ml-auto` rather than a cell: with the capsule out of the flow, the
             button is the only thing left to push right. */}
@@ -182,7 +188,15 @@ export function Header() {
  * `visibility` is what takes it out of the tab order and the accessibility
  * tree while closed — a clipped-away panel is still focusable otherwise.
  */
-function FullScreenMenu({ open, onNavigate }: { open: boolean; onNavigate: () => void }) {
+function FullScreenMenu({
+  open,
+  active,
+  onNavigate,
+}: {
+  open: boolean;
+  active: string;
+  onNavigate: () => void;
+}) {
   const panelRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<HTMLElement[]>([]);
   const mounted = useRef(false);
@@ -274,7 +288,13 @@ function FullScreenMenu({ open, onNavigate }: { open: boolean; onNavigate: () =>
                 <a
                   href={link.href}
                   onClick={onNavigate}
-                  className="font-title block py-2 no-underline"
+                  // The same mark the capsule makes, in the form this layer can
+                  // carry: the band you are in is the one word in the list that
+                  // is not the ground's ink.
+                  aria-current={link.href === `#${active}` ? "true" : undefined}
+                  className={`font-title block py-2 no-underline transition-colors duration-300 ${
+                    link.href === `#${active}` ? "text-(--color-green)" : ""
+                  }`}
                   style={{ fontSize: "clamp(1.25rem, 5.5vw, 1.75rem)", fontWeight: 400 }}
                 >
                   {link.label}
@@ -320,28 +340,49 @@ function FullScreenMenu({ open, onNavigate }: { open: boolean; onNavigate: () =>
  * The border is white at 18%, which is what gives the edge its lit look rather
  * than a drawn one.
  *
- * Hover inverts the pane rather than tinting the word: a solid white pill
- * arrives behind the link and the lettering goes navy on it, which is the same
- * inversion the CTA and the open MENU button already use. A colour shift alone
- * was the weakest hover state on the page — on glass this dark, a link that
- * merely changed hue barely registered.
+ * Where you are
+ * -------------
+ * The link for the band under the reader expands: it takes wider flanks, a
+ * filled green pill and the navy lettering that always goes on green elsewhere
+ * on this page. Padding and colour are both transitioned, so scrolling from
+ * Services into How It Works reads as the pill *moving* along the row rather
+ * than as one lamp going out and another coming on — the row is a flex line, so
+ * the neighbours slide to make room and the whole capsule breathes with it.
+ *
+ * Green, and not white. A white fill is what the hover state used to be, and a
+ * white pill on this glass is loud enough to read as the thing you are pointing
+ * at even when you are pointing somewhere else — which is precisely the signal
+ * the current band now needs for itself. So hover is a colour shift and only a
+ * colour shift, and the fill belongs to one link at a time.
  */
-function DesktopNav() {
+function DesktopNav({ active }: { active: string }) {
   return (
     <nav
       aria-label="Primary"
       className="bg-navy/55 pointer-events-auto absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-xl border border-(--on-ground)/18 px-2 py-1.5 backdrop-blur-xl backdrop-saturate-150 xl:flex"
     >
-      {navLinks.map((link) => (
-        <a
-          key={link.href}
-          href={link.href}
-          className="font-title hover:bg-paper hover:text-navy rounded-lg px-2.5 py-1.5 whitespace-nowrap text-(--on-ground) no-underline transition-colors"
-          style={{ fontSize: "var(--text-nav)", fontWeight: 400 }}
-        >
-          {link.label}
-        </a>
-      ))}
+      {navLinks.map((link) => {
+        const current = link.href === `#${active}`;
+
+        return (
+          <a
+            key={link.href}
+            href={link.href}
+            // `aria-current="true"` rather than `"page"`: these are bands of one
+            // page, not pages, and a screen reader should say "current" without
+            // claiming the reader has navigated anywhere.
+            aria-current={current ? "true" : undefined}
+            className={`font-title rounded-lg py-1.5 whitespace-nowrap no-underline transition-[background-color,color,padding] duration-300 ease-out ${
+              current
+                ? "bg-(--color-green) px-4 text-(--color-navy)"
+                : "px-2.5 text-(--on-ground) hover:text-(--color-green)"
+            }`}
+            style={{ fontSize: "var(--text-nav)", fontWeight: 400 }}
+          >
+            {link.label}
+          </a>
+        );
+      })}
     </nav>
   );
 }
