@@ -436,3 +436,44 @@
     transform: translate3d(0, 0, 0);
   }
 }
+
+/* The quote dialogue's arrival. The card lifts the last few pixels into place
+   as it fades, and the scrim fades with it — one movement, not two, so the
+   answer reads as having come up out of the form rather than as a panel that
+   was already there being switched on.
+
+   Keyed to `[open]` rather than to a class React toggles: the native element
+   sets that attribute itself when `showModal()` runs, so the animation cannot
+   fall out of step with the dialogue's actual state. There is no exit
+   animation — `close()` removes the element from the top layer in the same
+   frame, and faking a delay around that is how dialogues end up closable twice.
+
+   Capped to a single 0.01ms tick under `prefers-reduced-motion` by the blanket
+   rule above, which leaves the card simply present. */
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1rem, 0) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes dialog-scrim-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.dialog-card[open] {
+  animation: dialog-in 320ms var(--ease-out-expo) both;
+}
+
+.dialog-card[open]::backdrop {
+  animation: dialog-scrim-in 320ms var(--ease-out-expo) both;
+}

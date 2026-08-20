@@ -469,7 +469,8 @@ export const quote = {
     name: "Name",
     phone: "Phone Number",
     email: "Email",
-    address: "Service Address / ZIP Code",
+    address: "Service Address",
+    zip: "ZIP Code",
     service: "What service do you need?",
     quantity: "Approximately how many screens do you need?",
     measurements: "Approximate measurements, if available",
@@ -486,6 +487,38 @@ export const quote = {
     "Not Sure / Need Recommendation",
   ],
   submit: "Submit Request",
+  /** Sits by the button, explaining the mark the five required labels carry. */
+  requiredNote: "Required",
+  /**
+   * What the form says back. Two answers, and which one appears is decided by
+   * the ZIP alone — every other field is checked by the browser before we get
+   * here, so by the time a dialogue opens the only open question is whether we
+   * drive to that address.
+   *
+   * `{phone}` and `{zip}` are filled from what was actually typed. Reading a
+   * person's own number back to them is the cheapest way to catch the digit
+   * they fat-fingered, and naming the ZIP in the refusal is what stops it
+   * reading as a blanket "no".
+   */
+  dialog: {
+    confirmed: {
+      title: "Request received",
+      body: [
+        "Thanks — your details are in. A Screenova specialist will call you on {phone} within one business day with a free quote.",
+        "Nothing else to do for now. If it's urgent, calling us is always faster.",
+      ],
+      dismiss: "Done",
+    },
+    outOfArea: {
+      title: "That ZIP is outside our route",
+      body: [
+        "Screenova serves the Tampa Bay Area, and {zip} sits outside the ground our vans cover today.",
+        "If you're only just past the line, call us — we'll tell you in a minute whether we can make the trip.",
+      ],
+      retry: "Try another ZIP",
+      call: "Call us",
+    },
+  },
   /** The disclosure that holds the three fields most people leave empty. */
   optional: "Add quantity, measurements or photos",
   /** Under the button: the other way to reach us, for anyone who won't fill this in. */
