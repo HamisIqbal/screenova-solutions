@@ -133,7 +133,7 @@ export function Dialog({
             is short and the card below it is quiet: one ornament, once. */}
         <div
           aria-hidden="true"
-          className="relative h-20 sm:h-24"
+          className="h-20 sm:h-24"
           style={{
             backgroundColor: "var(--color-mist)",
             // The weave: a 4px warp and a 4px weft in the tone's own colour,
@@ -146,10 +146,18 @@ export function Dialog({
         <div className="px-6 pb-7 sm:px-8 sm:pb-8">
           {/* Pulled up so it straddles the mesh's lower edge — the one thing on
               the card that crosses a boundary, and the reason the eye lands on
-              it first. */}
+              it first.
+
+              `relative` is what makes the crossing work rather than just
+              overlap: the medallion is in normal flow and the mesh band above
+              it is a sibling, so without a position of its own the medallion
+              loses the paint order to anything positioned and the negative
+              margin buries its top half under the band instead of laying it
+              over. Nothing else here is positioned, so no z-index is needed —
+              being positioned at all is enough. */}
           <span
             aria-hidden="true"
-            className="-mt-8 inline-flex h-16 w-16 items-center justify-center rounded-full ring-6 ring-(--color-paper) sm:-mt-9 sm:h-18 sm:w-18"
+            className="relative -mt-8 inline-flex h-16 w-16 items-center justify-center rounded-full ring-6 ring-(--color-paper) sm:-mt-9 sm:h-18 sm:w-18"
             style={{ backgroundColor: fill, color: on }}
           >
             <svg
