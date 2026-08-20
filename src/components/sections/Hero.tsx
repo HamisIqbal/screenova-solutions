@@ -128,8 +128,11 @@ export function Hero() {
         {/* Three steps of air, widening as they go down: the headline is set
             off from the copy, the copy holds together as one voice, and the
             button is set off from both. `mx-auto` on the paragraphs centres
-            them inside the 27em measure `globals.css` gives them — that measure
-            is what holds each to three lines, so it is centred, never widened. */}
+            them inside the 27em measure `globals.css` gives them — a measure
+            is a reading width, not a length limit, so it is centred, never
+            widened. The first paragraph runs long enough to set the band's
+            height on a phone; if that ever needs reining in, the fix is fewer
+            words, not a wider column. */}
         <div className="mt-9 flex flex-col items-center gap-4 lg:mt-11">
           <p className="mx-auto">{hero.subtitle}</p>
           <p className="mx-auto text-(--on-ground-muted)">{hero.body}</p>

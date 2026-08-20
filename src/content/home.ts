@@ -90,7 +90,7 @@ export const hero = {
   titleLines: heroTitleLines,
   title: heroTitleLines.join(" "),
   subtitle:
-    "Professional window screen replacement, rescreening, and custom screen installation for homes and businesses throughout the Tampa Bay Area.",
+    "Professional window screen replacement, rescreening, and custom screen installation for homes and businesses throughout the Tampa Bay Area. We also provide convenient mobile screen services, bringing expert screen repair and installation directly to your home or business.",
   body: "Whether you need to replace a torn screen, rescreen an existing frame, or have a completely new window screen built, Screenova Solutions makes the process simple.",
   cta: "Get a Free Quote",
 } as const;
