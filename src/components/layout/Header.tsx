@@ -339,8 +339,11 @@ function FullScreenMenu({ open, onNavigate }: { open: boolean; onNavigate: () =>
  * `top-1/2` with a matching translate — so it stays on the middle of the row
  * whatever the row's height, rather than being stretched by the flex row.
  *
- * Hover is a colour shift and nothing else — the word takes the brand green
- * and the glass under it stays as it is. It was a solid white pill before, and
+ * Hover is a colour shift and nothing else — the word takes soft blue and the
+ * glass under it stays as it is. Soft blue rather than green: it is the same
+ * hover the footer's links take, so the two navigation lists on the page behave
+ * identically, and on a pane this dark #6FB6FF is the light end of the brand
+ * blue rather than a second accent colour introduced for one state. It was a solid white pill before, and
  * on a pane this dark that inversion was the loudest thing in the header: it
  * read as a selected item rather than as a pointed-at one. Nothing in the row
  * is marked except the link the mouse is actually on.
@@ -355,7 +358,7 @@ function DesktopNav() {
         <a
           key={link.href}
           href={link.href}
-          className="font-title rounded-md px-2 py-1 whitespace-nowrap text-(--on-ground) no-underline transition-colors duration-300 hover:text-(--color-green)"
+          className="font-title rounded-md px-2 py-1 whitespace-nowrap text-(--on-ground) no-underline transition-colors duration-300 hover:text-(--color-blue-soft)"
           // A notch under `--text-nav`. The capsule is the one place on the
           // page carrying eight items on a single line, and the token's 14px is
           // sized for the standalone MENU button rather than for a run of them.
