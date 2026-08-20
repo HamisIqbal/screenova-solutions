@@ -331,6 +331,14 @@ function FullScreenMenu({ open, onNavigate }: { open: boolean; onNavigate: () =>
  * The border is white at 18%, which is what gives the edge its lit look rather
  * than a drawn one.
  *
+ * It is deliberately small. Eight links on one line is a lot of capsule, and a
+ * bar that spans most of the window stops reading as a floating object over the
+ * photograph and starts reading as the header it was removed to avoid. Tighter
+ * padding, a smaller radius and type a notch under `--text-nav` pull it back to
+ * a pill the eye takes in at once. It is also centred on both axes now —
+ * `top-1/2` with a matching translate — so it stays on the middle of the row
+ * whatever the row's height, rather than being stretched by the flex row.
+ *
  * Hover is a colour shift and nothing else — the word takes the brand green
  * and the glass under it stays as it is. It was a solid white pill before, and
  * on a pane this dark that inversion was the loudest thing in the header: it
@@ -341,14 +349,17 @@ function DesktopNav() {
   return (
     <nav
       aria-label="Primary"
-      className="bg-navy/55 pointer-events-auto absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-xl border border-(--on-ground)/18 px-2 py-1.5 backdrop-blur-xl backdrop-saturate-150 xl:flex"
+      className="bg-navy/55 pointer-events-auto absolute top-1/2 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-0.5 rounded-lg border border-(--on-ground)/18 px-1.5 py-1 backdrop-blur-xl backdrop-saturate-150 xl:flex"
     >
       {navLinks.map((link) => (
         <a
           key={link.href}
           href={link.href}
-          className="font-title rounded-lg px-2.5 py-1.5 whitespace-nowrap text-(--on-ground) no-underline transition-colors duration-300 hover:text-(--color-green)"
-          style={{ fontSize: "var(--text-nav)", fontWeight: 400 }}
+          className="font-title rounded-md px-2 py-1 whitespace-nowrap text-(--on-ground) no-underline transition-colors duration-300 hover:text-(--color-green)"
+          // A notch under `--text-nav`. The capsule is the one place on the
+          // page carrying eight items on a single line, and the token's 14px is
+          // sized for the standalone MENU button rather than for a run of them.
+          style={{ fontSize: "0.8125rem", fontWeight: 400 }}
         >
           {link.label}
         </a>
