@@ -150,9 +150,9 @@ export function Header() {
         {/* `ml-auto` rather than a cell: with the capsule out of the flow, the
             button is the only thing left to push right. */}
         <div className="pointer-events-auto ml-auto hidden items-center xl:flex">
-          {/* "Call Us" is two words on the pill; the number is what a screen
-              reader should hear, so it goes on the label rather than the face. */}
-          <CtaLink href={navCta.href} ariaLabel={`${navCta.label} on ${contact.phone.label}`}>
+          {/* The pill says "Call Us Today!"; the number is what a screen reader
+              should hear, so it goes on the label rather than the face. */}
+          <CtaLink href={navCta.href} ariaLabel={`Call us today on ${contact.phone.label}`}>
             {navCta.label}
           </CtaLink>
         </div>
@@ -300,7 +300,7 @@ function FullScreenMenu({ open, onNavigate }: { open: boolean; onNavigate: () =>
             <CtaLink
               href={navCta.href}
               onClick={onNavigate}
-              ariaLabel={`${navCta.label} on ${contact.phone.label}`}
+              ariaLabel={`Call us today on ${contact.phone.label}`}
             >
               {navCta.label}
             </CtaLink>

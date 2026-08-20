@@ -33,7 +33,7 @@ export const logo = {
  * carry the same one.
  */
 export const navCta: NavLink = {
-  label: "Call Us",
+  label: "Call Us Today!",
   href: contact.phone.href,
 };
 
