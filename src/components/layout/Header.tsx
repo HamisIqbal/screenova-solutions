@@ -108,16 +108,34 @@ export function Header() {
         Utilities sort after the base layer, so the class wins over the
         `[data-ground]` rule without an `!important`.
       */}
+      {/* The header redesign changed one thing about this row: it steps down on
+          scroll, 96px at rest to 72px once the page has moved. A tall header is
+          right when it is the top of a photograph and wrong when it is a bar
+          following you down a page, and the reclaimed 24px is 24px more of
+          whatever is being read.
+
+          The row stays against the window rather than inside the page measure.
+          That was tried and reverted: the nav is centred on this element, and
+          pulling the element in to a 1152px column moves the nav 144px right of
+          where the mark ends on a 1440px display, which is a collision at every
+          width the desktop nav exists at. */}
       <div
         data-ground="sky"
-        className="relative z-10 flex min-h-24 items-center bg-transparent px-6"
+        className={`relative z-10 flex items-center bg-transparent px-6 transition-[min-height] duration-500 ${
+          scrolled ? "min-h-[4.5rem]" : "min-h-24"
+        }`}
       >
         {/* The scroll backdrop. Its own element so it can cross-fade: `-z-10`
             inside this element's stacking context puts it above the row's
-            background and below everything in the row. */}
+            background and below everything in the row.
+
+            The header redesign adds the hairline along its foot. A solid black bar
+            ending in nothing reads as a panel floating over the page; a bar
+            that ends in a line reads as the top edge of a document. It fades in
+            with the backdrop it belongs to. */}
         <div
           aria-hidden="true"
-          className={`absolute inset-0 -z-10 bg-black transition-opacity duration-500 ${
+          className={`absolute inset-0 -z-10 border-b border-white/10 bg-black transition-opacity duration-500 ${
             scrolled ? "opacity-100" : "opacity-0"
           }`}
         />
@@ -143,33 +161,51 @@ export function Header() {
             priority
             // 56px tall, 72px past sm — a step up from the 44/56 it was, so
             // the mark reads as the mark rather than as a third piece of
-            // chrome. The row grew to 96px with it, which keeps the same
-            // optical breathing room above and below; `--header-clearance` is
-            // 120px, so the taller row still clears the page content.
-            className="h-14 w-auto sm:h-18"
+            // chrome. `--header-clearance` is 120px, so the row still clears
+            // the page content at its full height.
+            //
+            // It steps down with the row on scroll, so the optical
+            // breathing room above and below the mark is the same at both
+            // heights rather than the mark suddenly filling a shorter bar.
+            className={`w-auto transition-[height] duration-500 ${
+              scrolled ? "h-11 sm:h-13" : "h-14 sm:h-18"
+            }`}
           />
         </Link>
 
         <DesktopNav />
 
-        {/* `ml-auto` rather than a cell: with the capsule out of the flow, the
-            button is the only thing left to push right. */}
+        {/* `ml-auto` rather than a cell: with the nav out of the flow, the
+            number is the only thing left to push right. */}
         <div className="pointer-events-auto ml-auto hidden items-center xl:flex">
-          {/* The pill *is* the number. It used to say "Call Us Today!" with the
-              digits hidden in the accessible name, which meant the one thing a
-              desktop visitor came here to read was the one thing not on the
-              page — a `tel:` link does nothing useful on a desktop, so the
-              words were an instruction with no way to follow it. The sentence
-              has moved to the accessible name and the digits have taken the
-              face. The icon is decoration; the number beside it is the label. */}
-          <CtaLink
+          {/* The number, and it is written as a number rather than dressed as a
+              button.
+
+              The header redesign takes it out of the white pill. A filled capsule in a
+              header is a product's primary action; a phone number set large and
+              plain, with a rule under it, is how a company that answers the
+              phone puts its number on a page. It is still the same `tel:` link
+              with the same accessible name, and it is now the largest type in
+              the row — which is the correct hierarchy for a business whose best
+              outcome is that you call.
+
+              The icon is decoration; the digits beside it are the label. */}
+          <a
             href={navCta.href}
-            ariaLabel={`Call Screenova today on ${contact.phone.label}`}
-            className="gap-2"
+            aria-label={`Call Screenova today on ${contact.phone.label}`}
+            className="font-title group flex items-center gap-2.5 text-(--on-ground) no-underline"
           >
-            <Phone aria-hidden="true" className="h-4 w-4" />
-            {navCta.label}
-          </CtaLink>
+            <Phone
+              aria-hidden="true"
+              className="h-[1.05rem] w-[1.05rem] shrink-0 transition-colors duration-300 group-hover:text-(--color-green)"
+            />
+            <span
+              className="border-b border-white/25 pb-0.5 tabular-nums transition-colors duration-300 group-hover:border-white/80"
+              style={{ fontSize: "1.0625rem", fontWeight: 500, letterSpacing: "0.005em" }}
+            >
+              {navCta.label}
+            </span>
+          </a>
         </div>
 
         <div className="pointer-events-auto ml-auto flex items-center gap-2 sm:gap-3 xl:hidden">
@@ -182,8 +218,8 @@ export function Header() {
           <a
             href={navCta.href}
             aria-label={`Call Screenova on ${contact.phone.label}`}
-            className="font-title flex h-11 items-center gap-2 rounded-xl px-3 text-(--on-ground) no-underline transition-colors duration-300 hover:text-(--color-blue-soft)"
-            style={{ fontSize: "var(--text-label)", fontWeight: 500 }}
+            className="font-title flex h-11 items-center gap-2 rounded-(--radius-control) px-3 text-(--on-ground) no-underline transition-colors duration-300 hover:text-(--color-green)"
+            style={{ fontSize: "0.8125rem", fontWeight: 500 }}
           >
             <Phone aria-hidden="true" className="h-4 w-4 shrink-0" />
             <span className="hidden whitespace-nowrap sm:inline">{navCta.label}</span>
@@ -194,11 +230,17 @@ export function Header() {
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
             onClick={() => setMenuOpen((value) => !value)}
-            className={`font-title h-11 cursor-pointer rounded-xl px-5 transition-colors duration-300 ${
+            className={`font-title h-11 cursor-pointer rounded-(--radius-control) px-5 transition-colors duration-300 ${
               // Closed, a quiet outline in the ground's own ink. Open, it fills
               // with that ink and takes the ground back as its lettering. Both
               // states are ground roles, so the button follows the overlay's
-              // colour rather than naming one. Its radius matches the capsule's.
+              // colour rather than naming one.
+              //
+              // The header redesign only squares the corner off, from
+              // `rounded-xl` to `--radius-control` — the radius the form fields
+              // already use — so the two controls in the mobile row are the
+              // same shape as each other and as the rest of the site's
+              // controls, rather than a third radius invented for the header.
               menuOpen
                 ? "bg-(--on-ground) text-(--ground)"
                 : "border border-(--on-ground)/35 bg-transparent text-(--on-ground) hover:border-(--on-ground)/70"
@@ -345,8 +387,21 @@ function FullScreenMenu({ open, onNavigate }: { open: boolean; onNavigate: () =>
 }
 
 /**
- * The links, and the one piece of surface left in the header: a glass capsule
- * sitting under them and nothing else.
+ * The links. The header redesign took the glass capsule out from under them.
+ *
+ * The capsule was three effects stacked — a backdrop blur, a saturation boost
+ * and a translucent navy wash — which is the house style of software, not of a
+ * trade. It also made the navigation the second most conspicuous object in the
+ * header after the mark, when navigation is the thing a visitor uses only if
+ * the hero has failed to answer them.
+ *
+ * What is left is the eight words, spaced properly, with a rule that draws
+ * itself under whichever one the pointer is on. Nothing is filled, nothing is
+ * blurred and nothing is highlighted except the link actually being pointed at
+ * — the underline grows from its left edge, which is the same direction the
+ * word is read in.
+ *
+ * The original note on the capsule follows, for whoever reverts this.
  *
  * Centred on the window with `left-1/2 -translate-x-1/2` rather than by the
  * flex row, because the mark and the quote button are different widths — laid
@@ -385,15 +440,36 @@ function DesktopNav() {
   return (
     <nav
       aria-label="Primary"
-      className="bg-navy/55 pointer-events-auto absolute top-1/2 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-0.5 rounded-lg border border-(--on-ground)/18 px-1.5 py-1 backdrop-blur-xl backdrop-saturate-150 xl:flex"
+      // Centred on the window with `left-1/2 -translate-x-1/2`, and pinned to
+      // the middle of the row with `top-1/2 -translate-y-1/2` — so it rides the
+      // row's height as the header steps down on scroll, with nothing to
+      // synchronise.
+      //
+      // The spacing here is the capsule's own, to the pixel: `gap-0.5` with
+      // `px-2` on each link. That is not inertia. Eight links, a 216px mark and
+      // a phone number is very nearly more than a 1280px window holds, and the
+      // capsule's measurements were the ones that fitted. Opening the spacing
+      // is what pushed the nav into the mark; the surface was the thing worth
+      // removing, not the geometry.
+      className="pointer-events-auto absolute top-1/2 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-0.5 xl:flex"
     >
       {navLinks.map((link) => (
         <Link
           key={link.href}
           href={link.href}
-          className="font-title rounded-md px-2 py-1 whitespace-nowrap text-(--on-ground) no-underline transition-colors duration-300 hover:text-(--color-blue-soft)"
-          // A notch under `--text-nav`. The capsule is the one place on the
-          // page carrying eight items on a single line, and the token's 14px is
+          // The rule is an `after` pseudo-element scaled from its left edge, so
+          // it draws itself under the word rather than appearing beneath it,
+          // and it runs the width of the text rather than the padding box.
+          // `bg-current` means it is always the colour of the word above it and
+          // never a second colour to keep in step.
+          //
+          // `after:content-['']` is not optional. Tailwind v4 does not imply a
+          // `content` for `before:`/`after:` variants, and without one the
+          // pseudo-element is never generated — the rule simply never appears,
+          // silently and only on hover, which is the kind of thing that ships.
+          className="font-title relative px-2 py-1 whitespace-nowrap text-(--on-ground)/85 no-underline transition-colors duration-300 after:absolute after:inset-x-2 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:content-[''] hover:text-(--on-ground) hover:after:scale-x-100"
+          // A notch under `--text-nav`. This is the one place on the page
+          // carrying eight items on a single line, and the token's 14px is
           // sized for the standalone MENU button rather than for a run of them.
           style={{ fontSize: "0.8125rem", fontWeight: 400 }}
         >
