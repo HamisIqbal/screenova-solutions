@@ -1,5 +1,6 @@
-import { Section } from "@/components/ui";
+import { CtaLink, Section } from "@/components/ui";
 import { faq } from "@/content/home";
+import { contact } from "@/lib/site";
 
 /**
  * Nine questions as native <details>. No JavaScript, keyboard and screen
@@ -47,6 +48,19 @@ export function Faq() {
             <p className="max-w-3xl pb-6 text-(--on-ground-muted)">{item.answer}</p>
           </details>
         ))}
+      </div>
+
+      {/* Nine answers, and then the way to ask the tenth. The telephone rather
+          than the form: somebody still reading at the bottom of an FAQ has a
+          question the page did not anticipate, and that is a conversation. */}
+      <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-4">
+        <p className="max-w-none font-medium">{faq.ctaIntro}</p>
+        <CtaLink
+          href={contact.phone.href}
+          ariaLabel={`${faq.cta} on ${contact.phone.label}`}
+        >
+          {faq.cta}
+        </CtaLink>
       </div>
     </Section>
   );

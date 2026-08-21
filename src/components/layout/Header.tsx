@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import { Phone } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/animations";
 import { CtaLink } from "@/components/ui";
@@ -120,8 +122,11 @@ export function Header() {
           }`}
         />
 
-        <a
-          href="#hero"
+        {/* `next/link`, not a bare anchor: the mark is on every page in the
+            app, and from a service or city page this is a real navigation back
+            to the home page rather than a jump within the document. */}
+        <Link
+          href="/#hero"
           onClick={() => setMenuOpen(false)}
           aria-label={`${logo.alt} — back to top`}
           className="pointer-events-auto flex shrink-0 items-center no-underline"
@@ -143,21 +148,47 @@ export function Header() {
             // 120px, so the taller row still clears the page content.
             className="h-14 w-auto sm:h-18"
           />
-        </a>
+        </Link>
 
         <DesktopNav />
 
         {/* `ml-auto` rather than a cell: with the capsule out of the flow, the
             button is the only thing left to push right. */}
         <div className="pointer-events-auto ml-auto hidden items-center xl:flex">
-          {/* The pill says "Call Us Today!"; the number is what a screen reader
-              should hear, so it goes on the label rather than the face. */}
-          <CtaLink href={navCta.href} ariaLabel={`Call us today on ${contact.phone.label}`}>
+          {/* The pill *is* the number. It used to say "Call Us Today!" with the
+              digits hidden in the accessible name, which meant the one thing a
+              desktop visitor came here to read was the one thing not on the
+              page — a `tel:` link does nothing useful on a desktop, so the
+              words were an instruction with no way to follow it. The sentence
+              has moved to the accessible name and the digits have taken the
+              face. The icon is decoration; the number beside it is the label. */}
+          <CtaLink
+            href={navCta.href}
+            ariaLabel={`Call Screenova today on ${contact.phone.label}`}
+            className="gap-2"
+          >
+            <Phone aria-hidden="true" className="h-4 w-4" />
             {navCta.label}
           </CtaLink>
         </div>
 
-        <div className="pointer-events-auto ml-auto flex items-center xl:hidden">
+        <div className="pointer-events-auto ml-auto flex items-center gap-2 sm:gap-3 xl:hidden">
+          {/* Below the desktop breakpoint there is no room for the pill beside
+              the mark and the menu button, but the number still has to be one
+              tap away. So it is a bare link rather than a pill: the icon alone
+              on the narrowest phones, icon and digits from `sm` where the row
+              has the width for them. Either way it is the same `tel:` href, and
+              either way its accessible name is the number itself. */}
+          <a
+            href={navCta.href}
+            aria-label={`Call Screenova on ${contact.phone.label}`}
+            className="font-title flex h-11 items-center gap-2 rounded-xl px-3 text-(--on-ground) no-underline transition-colors duration-300 hover:text-(--color-blue-soft)"
+            style={{ fontSize: "var(--text-label)", fontWeight: 500 }}
+          >
+            <Phone aria-hidden="true" className="h-4 w-4 shrink-0" />
+            <span className="hidden whitespace-nowrap sm:inline">{navCta.label}</span>
+          </a>
+
           <button
             type="button"
             aria-expanded={menuOpen}
@@ -278,14 +309,14 @@ function FullScreenMenu({ open, onNavigate }: { open: boolean; onNavigate: () =>
                 }}
                 style={{ opacity: 0 }}
               >
-                <a
+                <Link
                   href={link.href}
                   onClick={onNavigate}
                   className="font-title block py-2 no-underline"
                   style={{ fontSize: "clamp(1.25rem, 5.5vw, 1.75rem)", fontWeight: 400 }}
                 >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -300,8 +331,10 @@ function FullScreenMenu({ open, onNavigate }: { open: boolean; onNavigate: () =>
             <CtaLink
               href={navCta.href}
               onClick={onNavigate}
-              ariaLabel={`Call us today on ${contact.phone.label}`}
+              ariaLabel={`Call Screenova today on ${contact.phone.label}`}
+              className="gap-2"
             >
+              <Phone aria-hidden="true" className="h-4 w-4" />
               {navCta.label}
             </CtaLink>
           </div>
@@ -355,7 +388,7 @@ function DesktopNav() {
       className="bg-navy/55 pointer-events-auto absolute top-1/2 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-0.5 rounded-lg border border-(--on-ground)/18 px-1.5 py-1 backdrop-blur-xl backdrop-saturate-150 xl:flex"
     >
       {navLinks.map((link) => (
-        <a
+        <Link
           key={link.href}
           href={link.href}
           className="font-title rounded-md px-2 py-1 whitespace-nowrap text-(--on-ground) no-underline transition-colors duration-300 hover:text-(--color-blue-soft)"
@@ -365,7 +398,7 @@ function DesktopNav() {
           style={{ fontSize: "0.8125rem", fontWeight: 400 }}
         >
           {link.label}
-        </a>
+        </Link>
       ))}
     </nav>
   );

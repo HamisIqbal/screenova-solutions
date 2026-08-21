@@ -14,6 +14,13 @@ export type ServiceItem = {
   image: string;
   imageAlt: string;
   cta?: string;
+  /**
+   * The dedicated page for this service, where one exists. Only four of the
+   * seven have one — the rest are answered on this page and nowhere else, and
+   * an href pointing at a route that does not exist is a broken link, so leave
+   * it off rather than guessing.
+   */
+  href?: string;
 };
 
 export type Step = {
@@ -89,11 +96,41 @@ export const heroImage = {
 export const hero = {
   titleLines: heroTitleLines,
   title: heroTitleLines.join(" "),
-  subtitle:
-    "Professional window screen replacement, rescreening, and custom screen installation for homes and businesses throughout the Tampa Bay Area. We also provide convenient mobile screen services, bringing expert screen repair and installation directly to your home or business.",
-  body: "Whether you need to replace a torn screen, rescreen an existing frame, or have a completely new window screen built, Screenova Solutions makes the process simple.",
+  /**
+   * The one line directly under the H1. It is supporting hero copy and not a
+   * second heading — it renders as a `<p>`, deliberately, so the page keeps
+   * exactly one H1. The em dash is the real character, not a hyphen.
+   */
+  supporting:
+    "We Come to You — Mobile Window Screen Repair, Replacement & Installation Across Tampa Bay",
+  /**
+   * Under the supporting line: the problems people actually arrive with, in
+   * their own words, before any claim about how we work. Short on purpose —
+   * the hero now carries two buttons and a row of trust marks under it, and
+   * both have to be on screen without scrolling.
+   */
+  body: "Torn mesh, missing screens or bent frames — we measure, build and fit at your door.",
   cta: "Get a Free Quote",
+  callCta: "Call Now",
 } as const;
+
+/**
+ * The six marks under the hero buttons.
+ *
+ * Every one of them is a statement about how the service works, not a claim
+ * about how well it is rated: no counts, no star ratings, no years-in-business,
+ * nothing that would need a source to stand up. If a genuine, verifiable badge
+ * ever exists — a licence number, a review score from a real profile — it
+ * belongs here, but it has to be real before it is written down.
+ */
+export const trustSignals = [
+  "Local Tampa Bay Company",
+  "Free Estimates",
+  "Mobile Service — We Come to You",
+  "Custom-Built Screens",
+  "Quality Materials",
+  "Professional Installation",
+] as const;
 
 /**
  * The six services, in the order the scrolling stage steps through them.
@@ -104,43 +141,60 @@ export const hero = {
  */
 export const services = {
   eyebrow: "Window Screen Services",
-  title: "Window Screen Solutions for Every Home",
+  title: "Window Screen Repair & Replacement in Tampa Bay",
   intro:
-    "From a single damaged screen to an entire home, Screenova Solutions provides professional window screening services throughout the Tampa Bay Area.",
+    "One torn screen or every window in the house — we measure, build, repair and fit screens on site, at your home.",
+  /**
+   * The line under the service list, for the visitor who cannot tell rescreening
+   * from repair from replacement — which is most of them. It points at the one
+   * thing that settles it without a site visit, and the quote form's photo
+   * upload is what makes it a real offer rather than a slogan.
+   */
+  help: "Not sure what you need? Send us a photo and we'll help you determine the best option.",
+  /**
+   * The whole-home line. It appears once, here, under the service list — the
+   * job most worth telling people is possible, and the one people assume needs
+   * several visits. Do not repeat it elsewhere on the page.
+   */
+  wholeHome:
+    "Need screens for the entire house? We can measure, build and install custom screens for multiple windows in one visit.",
   items: [
     {
       id: "new-window-screens",
+      href: "/custom-window-screens/",
       image: "/images/services/new-window-screens.png",
       imageAlt:
         "A newly built black-framed window screen leaning against a stucco wall beside the sliding window it was measured for.",
       title: "New Window Screens",
       body: [
-        "Missing a screen or need a completely new one?",
-        "We build custom window screens to fit your existing window openings. Each screen is measured and fabricated to provide a clean, secure fit using quality aluminum framing and your preferred screen mesh.",
+        "Windows with no screen at all — a house you have just bought, one that blew off in a storm, or an opening that never had one.",
+        "We measure the opening, build the screen to it in aluminum framing, and fit it. No stock sizes, nothing trimmed down to nearly fit.",
       ],
       cta: "Get a Quote",
     },
     {
       id: "window-rescreening",
+      href: "/window-rescreening/",
       image: "/images/services/window-rescreening.png",
       imageAlt:
         "A technician rolling new mesh into the channel of a black window screen frame with a spline roller.",
       title: "Window Rescreening",
       body: [
-        "If your existing aluminum frame is still in good condition but the mesh is torn, loose, faded, or damaged, we can replace the screen mesh without replacing the entire frame.",
-        "Rescreening is an affordable way to restore your existing window screens and keep insects outside while maintaining airflow.",
+        "Frame still straight, mesh torn, sagging or sun-faded? Then the frame stays and only the mesh changes.",
+        "We strip the old mesh and spline, roll in new material, and re-fit the screen — the least expensive of the three answers, which is why we check for it first.",
       ],
       cta: "Get a Quote",
     },
     {
       id: "window-screen-repair",
+      href: "/window-screen-repair/",
       image: "/images/services/window-screen-repair.png",
       imageAlt:
         "A technician cutting away torn mesh around a hole in a screen laid on a workbench, next to fresh spline, pliers, and a screwdriver.",
       title: "Window Screen Repair",
       body: [
-        "Damaged corners, loose spline, torn mesh, and other common screen problems can often be repaired without replacing the entire screen.",
-        "We'll inspect the condition of your existing screen and recommend the most practical solution.",
+        "A split corner, spline working its way out of the channel, a small tear, a screen that will not sit in its track.",
+        "Most of those are a repair rather than a replacement. We look at what is actually wrong and tell you which one it is before any work starts.",
       ],
       cta: "Get a Quote",
     },
@@ -151,8 +205,8 @@ export const services = {
         "A technician rescreening a sliding screen door on a patio, rolling spline into the frame while holding the door steady.",
       title: "Sliding Screen Door Rescreening",
       body: [
-        "A damaged sliding screen door doesn't always require a new door.",
-        "We can replace worn or torn screen mesh on existing sliding screen doors and restore the screened opening.",
+        "The door everyone walks through, so it is the screen that goes first — pushed out at the bottom, torn at pet height, or blown through.",
+        "A damaged slider rarely needs a whole new door. We re-mesh the one you have and put it back on its track.",
       ],
       cta: "Get a Quote",
     },
@@ -163,9 +217,8 @@ export const services = {
         "A dog and a cat sitting calmly behind a heavy pet-resistant screen in a sliding door.",
       title: "Pet-Resistant Screens",
       body: [
-        "Standard fiberglass screen can be easily damaged by dogs and cats.",
-        "Pet-resistant screen mesh provides additional strength and durability for homeowners who need a tougher screening solution.",
-        "Ask us about pet-resistant mesh options for windows and screen doors.",
+        "A dog that leans on the slider or a cat that climbs it goes straight through standard fiberglass — usually more than once.",
+        "Pet-resistant mesh is a heavier, tougher weave built to take that. Available for windows and for sliding screen doors.",
       ],
     },
     {
@@ -175,10 +228,25 @@ export const services = {
         "Two windows fitted with dark solar screens on a sunlit stucco wall, cutting the glare on the glass behind them.",
       title: "Solar Screens",
       body: [
-        "Reduce direct sunlight entering your home with solar screen options.",
-        "Solar screens can help reduce glare and provide additional shade while maintaining ventilation through your windows.",
-        "Contact us to discuss available solar screen options.",
+        "For the windows that take the worst of it — a west-facing wall in the afternoon, or a room nobody can sit in by three o'clock.",
+        "Solar mesh stops a share of the sun before it reaches the glass, cutting glare and heat while the window still breathes.",
       ],
+    },
+    {
+      id: "screen-frame-repair",
+      href: "/window-screen-replacement/",
+      // Reuses the New Window Screens photograph: it is a bare aluminum frame
+      // against a wall, which is as much this service as it is that one. Swap
+      // it for its own picture when one exists.
+      image: "/images/services/new-window-screens.png",
+      imageAlt:
+        "A black aluminum screen frame standing against a stucco wall, its corner joints and spline channel visible.",
+      title: "Screen Frame Repair / Replacement",
+      body: [
+        "Bent or corroded frames, corners pulled apart, a screen gone out of square that no longer sits in the window.",
+        "When the mesh is sound but the frame is not, the frame is what gets replaced — rebuilt to the same opening in new aluminum, with your mesh type carried over or upgraded.",
+      ],
+      cta: "Get a Quote",
     },
   ] satisfies ServiceItem[],
 } as const;
@@ -186,6 +254,13 @@ export const services = {
 export const howItWorks = {
   eyebrow: "How It Works",
   title: "Getting New Screens Is Simple",
+  /**
+   * The band's closing action. Deliberately not "Get a Free Quote" — every
+   * section on the page having the same button is how a page stops being read
+   * as sections. This one names the step the four cards above it just described
+   * as the easy way in.
+   */
+  cta: "Send Us a Photo",
   steps: [
     {
       number: 1,
@@ -267,35 +342,35 @@ export const bandImages = {
 
 export const whyChooseUs = {
   eyebrow: "Why Choose Screenova Solutions?",
-  title: "Simple. Professional. Built to Fit.",
+  title: "Custom Window Screens Built for Your Home",
   intro: [
-    "Your window screens may seem like a small part of your home, but properly fitted screens make a big difference in comfort, ventilation, and appearance.",
-    "Screenova Solutions provides a convenient, professional screening service from measurement through installation.",
+    "A screen that nearly fits rattles, falls out, and lets in exactly what it was bought to keep out. Ours are built to the opening they go in.",
+    "One visit covers measuring, building and fitting — you do not source materials, cut frames, or make a second appointment.",
   ],
   benefits: [
     {
-      title: "Custom Fit",
-      body: "Every new screen is measured and built specifically for your window opening.",
+      title: "Built to Your Opening",
+      body: "Every screen is measured on site and built to that window, not cut down from a stock size.",
     },
     {
       title: "Quality Materials",
       body: "We use quality aluminum framing, screen mesh, spline, corners, and hardware designed for dependable everyday use.",
     },
     {
-      title: "Convenient Service",
-      body: "No need to figure out how to build or repair screens yourself. We handle measuring, fabrication, and installation.",
+      title: "We Come to You",
+      body: "Mobile service across Tampa Bay. Measuring, building and fitting all happen at your home — no hauling screens anywhere.",
     },
     {
       title: "Multiple Screen Options",
       body: "Choose from standard fiberglass mesh, pet-resistant screen, solar screen, and other available screening options depending on your needs.",
     },
     {
-      title: "Local Tampa Bay Service",
-      body: "Screenova Solutions proudly serves homeowners and businesses throughout the Tampa Bay Area.",
+      title: "Local to Tampa Bay",
+      body: "Hillsborough, Pinellas, Pasco and Manatee — from Tampa and St. Petersburg out to Clearwater, Lutz and Bradenton.",
     },
     {
-      title: "Free Quotes",
-      body: "Tell us about your project and we'll help you determine the right screening solution.",
+      title: "Free Estimates",
+      body: "Send a photo and rough sizes and we'll tell you whether it's a repair, a rescreen or a rebuild — before anything is booked.",
     },
   ] satisfies Benefit[],
   cta: "Request Your Free Quote",
@@ -304,6 +379,8 @@ export const whyChooseUs = {
 export const screenOptions = {
   eyebrow: "Screen Options",
   title: "Choose the Right Screen for Your Home",
+  /** Four materials is a decision, and a decision is what a telephone is for. */
+  cta: "Call Screenova",
   intro:
     "Different homes require different screening solutions. We'll help you select an option based on durability, visibility, airflow, pets, sunlight, and budget.",
   options: [
@@ -331,13 +408,12 @@ export const screenOptions = {
 
 export const about = {
   eyebrow: "About Screenova Solutions",
-  title: "Your Local Window Screening Professionals",
+  title: "Mobile Window Screen Service Across Tampa Bay",
   body: [
-    "Screenova Solutions provides custom window screen fabrication, replacement, repair, and installation throughout the Tampa Bay Area.",
-    "Our goal is simple: make replacing or repairing window screens easy for homeowners.",
-    "Instead of dealing with measurements, materials, cutting frames, installing mesh, and trying to achieve the proper fit yourself, our team can handle the entire process.",
-    "Whether you need one screen replaced or screens throughout your property, we approach every project with attention to detail and professional workmanship.",
-    "We believe customers should receive clear communication, straightforward recommendations, and screening solutions built around what their property actually needs.",
+    "Screenova Solutions builds, repairs, rescreens and fits window screens and sliding screen doors for homes across Tampa Bay.",
+    "Screens are the part of a house nobody thinks about until one tears. Then it turns out to be a measuring job, a materials job and a fitting job — which is why most of them stay torn for years.",
+    "We do all three at your door. Measuring, building and installation happen in the same visit, whether that is one screen on a lanai or every window in a house you have just bought.",
+    "You get told which of the three answers your screen actually needs — a repair, a rescreen or a rebuild — and why, before any work is booked.",
   ],
   cta: "Get a Free Quote",
 } as const;
@@ -347,21 +423,33 @@ export const serviceArea = {
   title: "Window Screen Services Throughout Tampa Bay",
   intro:
     "Screenova Solutions proudly provides window screen installation, replacement, rescreening, and repair services throughout the Tampa Bay Area.",
+  /** The band's closing action: the one question this section raises. */
+  cta: "Check Your ZIP Code",
   citiesLabel: "Cities We Serve",
-  /** The four the section shows a picture of. */
+  /**
+   * The four the section shows a picture of.
+   *
+   * `href` is present only where a city page actually exists — three of these
+   * four. Dunedin is served and pictured but has no page of its own, so it has
+   * no link, because a link to a route that does not exist is a broken link.
+   * Add the page first, then the href.
+   */
   featured: [
     {
       name: "Tampa",
+      href: "/tampa-window-screen-repair/",
       src: "/images/cities/Tampa-bay.jpg",
       alt: "The Tampa skyline across the bay",
     },
     {
       name: "St. Petersburg",
+      href: "/st-petersburg-window-screen-repair/",
       src: "/images/cities/st-petersburg.jpg",
       alt: "The St. Petersburg waterfront",
     },
     {
       name: "Clearwater",
+      href: "/clearwater-window-screen-repair/",
       src: "/images/cities/clearwater.jpg",
       alt: "The beach at Clearwater",
     },
@@ -372,6 +460,15 @@ export const serviceArea = {
     },
   ],
   otherCitiesLabel: "Other Cities We Serve",
+  /**
+   * Which of the named cities below link to a page of their own. One entry, and
+   * it will stay a short list: a link per city is how a site ends up with
+   * thirty doorway pages. A name that is not a key here is rendered as plain
+   * text, which is the safe default.
+   */
+  cityLinks: {
+    Lutz: "/lutz-window-screen-repair/",
+  } as Record<string, string | undefined>,
   /** Everywhere else, by name only. */
   cities: [
     "Brandon",
@@ -408,6 +505,9 @@ export const serviceArea = {
 
 export const faq = {
   eyebrow: "Frequently Asked Questions",
+  /** For the question the nine above did not answer. */
+  ctaIntro: "Still not sure which one you need?",
+  cta: "Call Screenova",
   items: [
     {
       question: "Do you make completely new window screens?",
@@ -459,10 +559,10 @@ export const faq = {
 
 export const quote = {
   eyebrow: "Get a Free Quote",
-  title: "Need New Window Screens?",
+  title: "Torn, Missing or Damaged Screens?",
   intro: [
-    "Tell us a little about your project and Screenova Solutions will help you find the right solution.",
-    "Whether you need one damaged screen replaced or new screens throughout your property, we're ready to help.",
+    "Three answers and you're done: your name, a number to reach you on, and your ZIP. Everything else is optional.",
+    "Add a photo if you have one — it is usually the fastest route to an accurate price.",
   ],
   formTitle: "Quote Form",
   fields: {
@@ -473,7 +573,7 @@ export const quote = {
     zip: "ZIP Code",
     service: "What service do you need?",
     quantity: "Approximately how many screens do you need?",
-    measurements: "Approximate measurements, if available",
+    measurements: "Approximate Width × Height (if known)",
     details: "Tell us about your project",
     photos: "Upload Photos",
   },
@@ -499,17 +599,38 @@ export const quote = {
     address: "1204 W Azeele St, Tampa",
     details: "Three torn screens on the lanai, and a slider that won't latch.",
     quantity: "6",
-    measurements: "About 36 x 48 in",
+    measurements: 'Example: 36" × 48"',
   },
+  /**
+   * The seven services plus an eighth answer. "I'm Not Sure" is last and it is
+   * a real option, not a fallback: most people cannot tell rescreening from
+   * repair from replacement, and a required select with no honest answer for
+   * them is a form they abandon rather than a form they get right.
+   */
   serviceOptions: [
     "New Window Screens",
     "Window Rescreening",
     "Window Screen Repair",
+    "Screen Frame Repair / Replacement",
     "Sliding Screen Door Rescreening",
     "Pet-Resistant Screens",
     "Solar Screens",
-    "Not Sure / Need Recommendation",
+    "I'm Not Sure",
   ],
+  /**
+   * The two lines that sit under a field rather than in it. A placeholder
+   * disappears the moment somebody types, so anything a person still needs
+   * while they are answering has to be real text under the control.
+   *
+   * `measurements` is an example of the format, which is the one thing the
+   * label cannot show. `photos` is the reason to bother — the photo upload is
+   * the single most useful thing on this form and it was the only field with
+   * nothing saying so.
+   */
+  helpText: {
+    measurements: 'Example: 36" × 48"',
+    photos: "Photos help us understand your project and may allow us to provide a faster estimate.",
+  },
   submit: "Submit Request",
   /** Sits by the button, explaining the mark the five required labels carry. */
   requiredNote: "Required",
@@ -528,33 +649,121 @@ export const quote = {
     confirmed: {
       title: "Request received",
       body: [
-        "Thanks — your details are in. A Screenova specialist will call you on {phone} within one business day with a free quote.",
-        "Nothing else to do for now. If it's urgent, calling us is always faster.",
+        "A Screenova specialist will contact you within a few hours to discuss your project and provide your free quote.",
+        "We have your number as {phone}. If it's urgent, calling us is always faster.",
       ],
       dismiss: "Done",
     },
     outOfArea: {
       title: "That ZIP is outside our route",
       body: [
-        "Screenova serves the Tampa Bay Area, and {zip} sits outside the ground our vans cover today.",
-        "If you're only just past the line, call us — we'll tell you in a minute whether we can make the trip.",
+        "This ZIP code appears to be outside our standard Tampa Bay service area. Give us a call — depending on your location and project size, we may still be able to help.",
+        "The ZIP we checked was {zip}.",
       ],
       retry: "Try another ZIP",
       call: "Call us",
     },
   },
   /** The disclosure that holds the three fields most people leave empty. */
-  optional: "Add quantity, measurements or photos",
+  optional: "Add quantity or approximate measurements",
   /** Under the button: the other way to reach us, for anyone who won't fill this in. */
   callInstead: "Prefer to talk? Call",
+} as const;
+
+/**
+ * Our Projects.
+ *
+ * The nav has linked to `#projects` for some time with no such section on the
+ * page — this is that section, and the link is no longer broken.
+ *
+ * It ships with **no photographs**, and that is the whole design of it. Every
+ * category below describes a real kind of job Screenova does; none of them
+ * claims to be showing one. When real before/after photography exists, drop
+ * the pair into `before` / `after` on the matching category and the block
+ * renders as a picture pair instead of a labelled placeholder. Nothing else
+ * changes, and nothing here has to be invented in the meantime.
+ *
+ *   before / after — `{ src, alt }`, both or neither. A category with only one
+ *   of the two stays a placeholder: a "before" with no "after" is not a
+ *   project, it is a photograph of a broken screen.
+ */
+export type ProjectCategory = {
+  id: string;
+  title: string;
+  body: string;
+  before?: { src: string; alt: string };
+  after?: { src: string; alt: string };
+};
+
+export const projects = {
+  title: "Before & After",
+  intro:
+    "The four jobs we are called out for most. Photography from real Screenova projects is being added here — nothing on this page is a stock photograph of somebody else's work.",
+  categories: [
+    {
+      id: "torn-to-new",
+      title: "Torn Screen → New Screen",
+      body: "A tear that started small and spread across the panel. Frame sound, mesh replaced.",
+    },
+    {
+      id: "old-frame-to-custom",
+      title: "Old Frame → Custom Frame",
+      body: "A bent, corroded frame that no longer sat square in the opening, rebuilt in new aluminum to the same window.",
+    },
+    {
+      id: "pet-damage",
+      title: "Pet-Damaged Screen → Pet-Resistant Screen",
+      body: "A slider pushed through at dog height, re-meshed in heavier pet-resistant material so it does not happen again.",
+    },
+    {
+      id: "whole-house",
+      title: "Whole-House Screen Replacement",
+      body: "Every window in a property measured, built and fitted in a single visit.",
+    },
+    // `as` rather than `satisfies`: the surrounding `as const` would otherwise
+    // narrow each entry to exactly the keys it has today, and `before`/`after`
+    // — the two keys the whole section exists to receive — would not be part of
+    // the type until somebody happened to fill one in.
+  ] as ProjectCategory[],
+  /** Shown while there is no photography, so the empty state says something. */
+  pending: "Photos coming soon",
+  cta: "Request Screen Service",
+} as const;
+
+/**
+ * Reviews.
+ *
+ * `items` is empty, and it must stay empty until real reviews exist. The
+ * section renders nothing at all while it is — see `Reviews.tsx` — so there is
+ * no placeholder on the page pretending to be feedback, and no invented name,
+ * city or star rating anywhere in this file.
+ *
+ * To publish: copy 3–6 genuine reviews from the Google Business Profile into
+ * `items` in this shape and the section appears on its own.
+ *
+ *   { rating: 5, name: "…", city: "…", body: "…" }
+ *
+ * `rating` is 1–5 and is rendered as stars. Use the reviewer's name exactly as
+ * it appears on the profile.
+ */
+export type Review = {
+  rating: 1 | 2 | 3 | 4 | 5;
+  name: string;
+  city: string;
+  body: string;
+};
+
+export const reviews = {
+  title: "What Tampa Bay Homeowners Say",
+  items: [] as readonly Review[],
 } as const;
 
 export const finalCta = {
   eyebrow: "Final Call to Action",
   title: "Ready to Fix or Replace Your Window Screens?",
   body: [
-    "Get professional window screen service without the hassle of measuring, sourcing materials, and building the screens yourself.",
-    "Contact Screenova Solutions today for a free quote.",
+    "Send us a photo, a rough size, or just your address. We'll tell you what it needs and what it costs.",
+    "Free estimates across Tampa Bay, and no charge for the drive.",
   ],
   primaryCta: "Get a Free Quote",
   secondaryCta: "Call Screenova Solutions",

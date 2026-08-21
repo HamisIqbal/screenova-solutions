@@ -16,20 +16,35 @@ import { isServedZip, ZIP_PATTERN } from "@/lib/serviceArea";
  * is built around a single question: what is the least we can ask for and still
  * be able to answer?
  *
- * Five answers, and that is the whole visible form:
+ * What the form asks for, and what it insists on:
  *
- *   name + phone      who you are and how we reach you
- *   email + zip       where the quote goes and whether we drive there
- *   address           the rest of the address, once the ZIP has cleared
+ *   name              required — who you are
+ *   phone             required — how we reach you
+ *   zip               required — whether we drive there
+ *   email             optional
+ *   address           optional, the rest of the address once the ZIP has cleared
  *   service           one select, not seven chips — a list that long is a
- *                     wrapping block three rows deep, and it is one choice
+ *                     wrapping block three rows deep, and it is one choice.
+ *                     Its last option is "I'm Not Sure", which is a real answer
+ *   photos            optional, and out in the open rather than behind the
+ *                     disclosure — see below
  *   details           three rows, free text, the part that actually varies
  *
- * Everything else — how many, rough sizes, photographs — is real information
- * but almost nobody has it to hand, so it sits in a closed `<details>` under
- * the fields. Shut, it is one line; open, it is the rest of the old form. The
- * cost of the fields people skip is now one line of height instead of three
- * hundred pixels, and nothing was removed to get there.
+ * Three required fields, not five. Email and the service used to be required
+ * too, and neither of them is something we cannot proceed without: we have a
+ * telephone number, and "I'm Not Sure" is the honest answer for most of the
+ * people this form is for. A required field that a visitor cannot answer
+ * truthfully is a visitor who closes the tab.
+ *
+ * Quantity and rough measurements are real information but almost nobody has
+ * them to hand, so they sit in a closed `<details>` under the fields. Shut, it
+ * is one line; open, it is two more fields.
+ *
+ * The photo upload is *not* in there, and that is deliberate. It is the single
+ * most useful thing on this form — a photograph settles repair-versus-rescreen-
+ * versus-rebuild in a way that three paragraphs of description does not — and a
+ * field nobody can see is a field nobody uses. It has a line of help text under
+ * it saying exactly that.
  *
  * The phone number sits beside the button because a form is not the only way to
  * ask, and the person least likely to finish this is the one most likely to
@@ -43,8 +58,8 @@ import { isServedZip, ZIP_PATTERN } from "@/lib/serviceArea";
  * ---------------------------------------------------------------------------
  * What submitting does.
  *
- * Five fields are required — name, phone, email, ZIP and the service — and the
- * browser enforces those itself. `required` is not decoration here: it means
+ * Three fields are required — name, phone and ZIP — and the browser enforces
+ * those itself. `required` is not decoration here: it means
  * the submit handler never runs against an empty field, the message is the
  * platform's own (translated, announced, positioned by the engine), and the
  * page needs no error-state machinery of its own. The ZIP additionally has to
@@ -77,12 +92,22 @@ function Field({
   id,
   label,
   required = false,
+  help,
   className = "",
   children,
 }: {
   id: string;
   label: string;
   required?: boolean;
+  /**
+   * A line under the control. Not a placeholder: a placeholder is gone the
+   * moment somebody types, and both of the two that exist here — the
+   * measurement format and the reason to attach a photo — are things a person
+   * still needs while they are answering. Wired to the field with
+   * `aria-describedby`, so it is announced with the label rather than being
+   * decoration a screen reader never reaches.
+   */
+  help?: string;
   className?: string;
   children: React.ReactNode;
 }) {
@@ -103,6 +128,15 @@ function Field({
         )}
       </label>
       {children}
+      {help && (
+        <p
+          id={`${id}-help`}
+          className="mt-1.5 max-w-none text-(--on-ground-muted)"
+          style={{ fontSize: "var(--text-label)" }}
+        >
+          {help}
+        </p>
+      )}
     </div>
   );
 }
@@ -193,7 +227,10 @@ export function QuoteForm() {
             />
           </Field>
 
-          <Field id="email" label={quote.fields.email} required>
+          {/* Optional. A telephone number is the thing we actually need to
+              get back to somebody; insisting on an address as well is a second
+              hurdle for no second answer. */}
+          <Field id="email" label={quote.fields.email}>
             <input
               className={FIELD}
               id="email"
@@ -201,7 +238,6 @@ export function QuoteForm() {
               type="email"
               autoComplete="email"
               placeholder={quote.hints.email}
-              required
             />
           </Field>
 
@@ -242,8 +278,12 @@ export function QuoteForm() {
               is what a select is for — and it is one line tall. The empty
               option is `disabled`, so with `required` on the select a browser
               treats "Select a service" as no answer rather than as one. */}
-          <Field id="service" label={quote.fields.service} required className="sm:col-span-2">
-            <select className={FIELD} id="service" name="service" defaultValue="" required>
+          {/* Not required, because the list itself now carries the answer for
+              somebody who does not know: "I'm Not Sure" is the last option and
+              it is a real choice, not a cop-out. The empty option stays
+              `disabled` so the prompt cannot be submitted as a value. */}
+          <Field id="service" label={quote.fields.service} className="sm:col-span-2">
+            <select className={FIELD} id="service" name="service" defaultValue="">
               <option value="" disabled>
                 Select a service
               </option>
@@ -257,12 +297,33 @@ export function QuoteForm() {
 
           <Field id="details" label={quote.fields.details} className="sm:col-span-2">
             <textarea
-                className={FIELD}
-                id="details"
-                name="details"
-                rows={3}
-                placeholder={quote.hints.details}
-              />
+              className={FIELD}
+              id="details"
+              name="details"
+              rows={3}
+              placeholder={quote.hints.details}
+            />
+          </Field>
+
+          {/* The most useful optional field on the form, so it is the one
+              optional field that is not folded away. Multiple files, images
+              only, and a line underneath saying what it buys the person
+              filling it in. */}
+          <Field
+            id="photos"
+            label={quote.fields.photos}
+            help={quote.helpText.photos}
+            className="sm:col-span-2"
+          >
+            <input
+              className={FIELD}
+              id="photos"
+              name="photos"
+              type="file"
+              accept="image/*"
+              multiple
+              aria-describedby="photos-help"
+            />
           </Field>
         </div>
 
@@ -292,24 +353,18 @@ export function QuoteForm() {
               />
             </Field>
 
-            <Field id="measurements" label={quote.fields.measurements}>
+            <Field
+              id="measurements"
+              label={quote.fields.measurements}
+              help={quote.helpText.measurements}
+            >
               <input
                 className={FIELD}
                 id="measurements"
                 name="measurements"
                 type="text"
                 placeholder={quote.hints.measurements}
-              />
-            </Field>
-
-            <Field id="photos" label={quote.fields.photos} className="sm:col-span-2">
-              <input
-                className={FIELD}
-                id="photos"
-                name="photos"
-                type="file"
-                accept="image/*"
-                multiple
+                aria-describedby="measurements-help"
               />
             </Field>
           </div>
@@ -333,7 +388,7 @@ export function QuoteForm() {
           </button>
 
           {/* The dot's key. One line, under the button, rather than a note on
-              each of the five labels. */}
+              each of the three required labels. */}
           <p
             className="flex items-center gap-1.5 text-(--on-ground-muted)"
             style={{ fontSize: "var(--text-label)" }}

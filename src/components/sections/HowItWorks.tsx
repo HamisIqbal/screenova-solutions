@@ -1,4 +1,4 @@
-import { Section, SectionHeader } from "@/components/ui";
+import { CtaLink, Section, SectionHeader } from "@/components/ui";
 import { howItWorks } from "@/content/home";
 
 /**
@@ -88,6 +88,12 @@ export function HowItWorks() {
           </li>
         ))}
       </ol>
+
+      {/* The band's own closer, so a reader who has just been told how simple
+          it is does not have to scroll to the foot of the page to start. */}
+      <div className="flex justify-center">
+        <CtaLink href="#quote">{howItWorks.cta}</CtaLink>
+      </div>
     </Section>
   );
 }

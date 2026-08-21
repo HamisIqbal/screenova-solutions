@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { Section, SectionHeader } from "@/components/ui";
+import Link from "next/link";
+import { CtaLink, Section, SectionHeader } from "@/components/ui";
 import { serviceArea } from "@/content/home";
 
 /**
@@ -82,7 +83,23 @@ export function ServiceArea() {
                 picture out. */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
 
-            <h4 className="absolute right-5 bottom-4 left-5 font-bold text-white">{city.name}</h4>
+            {/* The name links to that city's page where one exists, and is
+                plain text where one does not — see `featured` in
+                `content/home.ts`. The link covers the whole block rather than
+                just the words: the picture is what a thumb aims at. */}
+            {"href" in city && city.href ? (
+              <Link
+                href={city.href}
+                className="absolute inset-0 flex items-end no-underline"
+                aria-label={`Window screen repair in ${city.name}`}
+              >
+                <h4 className="px-5 pb-4 font-bold text-white underline decoration-white/40 decoration-2 underline-offset-4">
+                  {city.name}
+                </h4>
+              </Link>
+            ) : (
+              <h4 className="absolute right-5 bottom-4 left-5 font-bold text-white">{city.name}</h4>
+            )}
           </li>
         ))}
       </ul>
@@ -93,14 +110,24 @@ export function ServiceArea() {
           is how a list of names is read — `columns` keeps the reading order in
           the markup and lets the browser balance the three. */}
       <ul className="mt-5 columns-2 gap-x-10 sm:columns-3">
-        {serviceArea.cities.map((city) => (
-          <li key={city} className="py-1 text-(--on-ground-muted)">
-            {city}
-          </li>
-        ))}
+        {serviceArea.cities.map((city) => {
+          const href = serviceArea.cityLinks[city];
+
+          return (
+            <li key={city} className="py-1 text-(--on-ground-muted)">
+              {href ? <Link href={href}>{city}</Link> : city}
+            </li>
+          );
+        })}
       </ul>
 
       <p className="mt-10 max-w-2xl text-(--on-ground-muted)">{serviceArea.outro}</p>
+
+      {/* The question this whole band raises, answered by the one field that
+          settles it. */}
+      <div className="mt-10 flex">
+        <CtaLink href="#quote">{serviceArea.cta}</CtaLink>
+      </div>
     </Section>
   );
 }

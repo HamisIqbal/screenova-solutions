@@ -182,6 +182,12 @@
      with the row's `min-h-22`. */
   --header-clearance: 7.5rem;
 
+  /* The sticky CALL / FREE QUOTE bar at the foot of a phone. One number, used
+     twice: `MobileCtaBar` is exactly this tall, and `globals.css` pads the
+     bottom of the body by the same amount under `lg` so nothing on the page can
+     end up underneath it. Change it here and both follow. */
+  --mobile-cta-height: 3.5rem;
+
   /* Motion — mirrored in `src/animations/tokens.ts` for GSAP/Motion. */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);

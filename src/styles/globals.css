@@ -46,6 +46,26 @@
     color: var(--ground);
   }
 
+  /* The floor the sticky mobile CTA bar stands on.
+
+     The bar is `position: fixed`, so it is out of the flow and would otherwise
+     sit on top of whatever the page ends with — the footer's last line, or the
+     quote form's submit button if somebody scrolls it to the bottom of the
+     window. Padding the body by exactly the bar's own height gives the document
+     that much more to scroll through, so the last of the content clears it.
+
+     Below `lg` only, matching the `lg:hidden` on the bar itself: above that
+     breakpoint there is no bar and this padding would be a dead strip.
+
+     `env(safe-area-inset-bottom)` is added because the bar adds it too — on a
+     phone with a home indicator the bar grows by that much and the floor has to
+     grow with it. */
+  @media (width < 64rem) {
+    body {
+      padding-bottom: calc(var(--mobile-cta-height) + env(safe-area-inset-bottom, 0px));
+    }
+  }
+
   /* Sections run edge to edge so their ground colour can too. The measure is
      re-applied inside by `<Section>`, which owns the container and gutter. */
   main > section {

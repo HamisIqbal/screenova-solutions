@@ -31,19 +31,35 @@ export const logo = {
  * on the action a visitor cannot reach by scrolling. The number lives in
  * `src/lib/site.ts` so the header, the footer, the form and the closer all
  * carry the same one.
+ *
+ * The face used to read "Call Us Today!" with the number hidden in the
+ * accessible name. It is the number now. A phone number in a header is not a
+ * call to action, it is a fact somebody came to the site to find — and on a
+ * desktop, where tapping the pill does nothing useful, the words were the only
+ * thing on the page and the digits were nowhere. So the digits are the label,
+ * and the sentence has become the accessible name instead.
  */
 export const navCta: NavLink = {
-  label: "Call Us Today!",
+  label: contact.phone.label,
   href: contact.phone.href,
 };
 
+/**
+ * Absolute hrefs with a leading `/`, not bare fragments.
+ *
+ * The site is no longer one page: the service and city pages carry the same
+ * header, and `#services` from `/window-screen-repair/` points at a section
+ * that is not on that document. `/#services` resolves to the home page's
+ * section from anywhere, and on the home page itself it is still a
+ * same-document jump — smooth scroll and all, since nothing navigates.
+ */
 export const navLinks: NavLink[] = [
-  { label: "Services", href: "#services" },
-  { label: "How It Works", href: "#how-it-works" },
-  { label: "Why Choose Us", href: "#why-us" },
-  { label: "Screen Options", href: "#screen-options" },
-  { label: "Our Projects", href: "#projects" },
-  { label: "About Us", href: "#about" },
-  { label: "Service Areas", href: "#service-area" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Services", href: "/#services" },
+  { label: "How It Works", href: "/#how-it-works" },
+  { label: "Why Choose Us", href: "/#why-us" },
+  { label: "Screen Options", href: "/#screen-options" },
+  { label: "Our Projects", href: "/#projects" },
+  { label: "About Us", href: "/#about" },
+  { label: "Service Areas", href: "/#service-area" },
+  { label: "FAQ", href: "/#faq" },
 ];

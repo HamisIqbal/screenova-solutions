@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "@/styles/globals.css";
 import { fontVariables } from "@/app/fonts";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
+import { Footer, Header, MobileCtaBar } from "@/components/layout";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -39,6 +38,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <main id="main">{children}</main>
         <Footer />
+        {/* The sticky CALL / FREE QUOTE bar. Last in the DOM and `fixed`, so it
+            sits over the page rather than in it; `lg:hidden` inside means it
+            does not exist at all on a desktop. The body carries a matching
+            bottom padding under the same breakpoint — see `globals.css` — so
+            nothing on any page can end up underneath it. */}
+        <MobileCtaBar />
       </body>
     </html>
   );

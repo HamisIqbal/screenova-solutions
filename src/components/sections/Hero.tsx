@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { CtaLink, Section } from "@/components/ui";
 import { hero, heroImage } from "@/content/home";
+import { contact } from "@/lib/site";
 
 /**
  * Hero. The photograph is the floor now, not an object beside the words: it
@@ -41,36 +42,41 @@ import { hero, heroImage } from "@/content/home";
  *     those multiply out to 1 - (0.45 x 0.55) = 75.25%, and by the edges of the
  *     frame it has fallen back to about 57% and the windows are still windows.
  *
- * The second layer used to be a left-weighted linear gradient, because the copy
- * used to be ranged left in a 62% column. The copy is centred now, so a scrim
- * weighted to one side would have left the right half of every centred line
- * sitting on the thinner end of it. Weighting follows the words: the words
- * moved to the middle, so the weight did too.
- *
  * ---------------------------------------------------------------------------
  * The band declares `data-ground="sky"` — the black chrome ground — so the copy
  * takes a dark ground's roles rather than being hand-painted white: the heading
  * resolves `--hero-ink` to `blue-soft`, body and muted body both go white, and
- * the button inverts to white carrying black. That last one is why the black
- * override this section used to carry is gone: on a dark photograph a black
- * pill is a hole, and the ground already knew what to do.
+ * the button inverts to white carrying black.
  *
  * ---------------------------------------------------------------------------
- * The copy is centred, and stacked with air between its three parts.
+ * What the hero says, in order, and why it is exactly this much.
  *
- * It sits in a centred column rather than a left rail, which is the one change
- * that has to be checked against the type rather than eyeballed: the headline's
- * break was cut to fit a measured width. The binding line is 13.03em, which at
- * the 44px ceiling is 573px — comfortably inside the 768px column it is centred
- * in, so the authored two-line break survives. See `content/home.ts`.
+ *   h1            the page's one H1, two authored lines
+ *   supporting    "We come to you…" — a paragraph, not a second heading
+ *   body          the problems people actually arrive with
+ *   two buttons   the form, and the telephone
  *
- * The paragraphs keep their 27em measure, which is what holds them to three
- * lines each at every viewport; they are only centred within it, not widened.
+ * And nothing else. The requirement that both buttons are on screen without
+ * scrolling is what sets the budget: on a 390x780 phone the band spends about
+ * 120px on header clearance before it starts, and everything above the buttons
+ * has to fit in what is left. That is why the trust marks are *not* in here —
+ * they are their own thin strip immediately below the band (`TrustBar`), which
+ * is still the top of the page but is no longer competing with the buttons for
+ * the first screen. It is also why the two paragraphs are short and the
+ * vertical rhythm steps up rather than starting wide.
  *
- * The block also rides higher in the band than dead centre. The band centres
- * its content, and extra padding at the foot is what lifts it — the copy reads
- * better sitting above the middle of a photograph than straddling it, and the
- * room it gives up is at the bottom of the frame where the floor is.
+ * The headline's lines are authored, and each is rendered as its own block with
+ * a trailing space. The space is not decoration: without it the two blocks
+ * concatenate to "…Screens &Screen Repair…" for anything reading the text
+ * rather than the layout — a screen reader, a search engine, a copy-paste — and
+ * the headline is wrong everywhere it is not being looked at.
+ *
+ * The two buttons sit side by side on a desktop and stack on a phone, which is
+ * `flex-col sm:flex-row`. "Call Now" is the drawn variant rather than a second
+ * filled pill: the form is still the ask, and two equal fills would make the
+ * visitor choose between two identical objects. Its href is the `tel:` form
+ * from `src/lib/site.ts` — the same number the header, the footer, the form and
+ * the closer all carry — so a thumb dials it and a desktop hands it off.
  */
 export function Hero() {
   return (
@@ -81,7 +87,7 @@ export function Hero() {
       // `clip` rather than `hidden`: it holds the cropped edges of the
       // photograph without making a scroll container.
       bandClassName="relative overflow-clip"
-      className="flex min-h-[28rem] flex-col justify-center lg:min-h-[34rem]"
+      className="flex min-h-[26rem] flex-col justify-center lg:min-h-[34rem]"
     >
       {/* The LCP element on the page, so it loads eagerly and declares its box.
           `object-center` keeps the wall of windows — the reason this photograph
@@ -112,33 +118,47 @@ export function Hero() {
       {/* Centred on the band and held to a measure the authored line break
           survives. `pb` is what lifts the block above dead centre — the band
           centres what is in it, so padding at the foot is the lever. */}
-      <div className="relative mx-auto max-w-3xl pb-10 text-center lg:pb-16">
+      <div className="relative mx-auto max-w-3xl pb-6 text-center lg:pb-14">
         <h1 id="hero-title">
           {/* One block per line: the break is authored, not left to the
               browser, and each line is its own element for later staggered
-              animation. Two lines, and the widths they were cut to are
-              recorded next to the copy in `content/home.ts`. */}
-          {hero.titleLines.map((line) => (
+              animation. The trailing space on all but the last is what keeps
+              the *text* of the headline correct — see the note above. Two
+              lines, and the widths they were cut to are recorded next to the
+              copy in `content/home.ts`. */}
+          {hero.titleLines.map((line, i) => (
             <span key={line} className="block">
               {line}
+              {i < hero.titleLines.length - 1 ? " " : ""}
             </span>
           ))}
         </h1>
 
-        {/* Three steps of air, widening as they go down: the headline is set
-            off from the copy, the copy holds together as one voice, and the
-            button is set off from both. `mx-auto` on the paragraphs centres
-            them inside the 27em measure `globals.css` gives them — a measure
-            is a reading width, not a length limit, so it is centred, never
-            widened. The first paragraph runs long enough to set the band's
-            height on a phone; if that ever needs reining in, the fix is fewer
-            words, not a wider column. */}
-        <div className="mt-9 flex flex-col items-center gap-4 lg:mt-11">
-          <p className="mx-auto">{hero.subtitle}</p>
+        <div className="mt-6 flex flex-col items-center gap-3 lg:mt-9 lg:gap-4">
+          {/* The supporting line. A paragraph and not a heading — the page has
+              one H1 and this is not it — but set at the lead size and in the
+              ground's full ink, which is what makes it read as the second
+              thing you take in rather than as body copy. */}
+          <p className="mx-auto font-medium">{hero.supporting}</p>
           <p className="mx-auto text-(--on-ground-muted)">{hero.body}</p>
+        </div>
 
-          <CtaLink href="#quote" className="mt-8 lg:mt-10">
+        {/* Both actions, and both on the first screen. Stacked on a phone in
+            the order they are ranked; side by side from `sm`. */}
+        <div className="mt-7 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-4 lg:mt-9">
+          <CtaLink href="#quote" className="justify-center">
             {hero.cta}
+          </CtaLink>
+
+          {/* The number is in the accessible name as well as the href, so the
+              link announces what it will dial rather than only "call now". */}
+          <CtaLink
+            href={contact.phone.href}
+            variant="outline"
+            className="justify-center"
+            ariaLabel={`${hero.callCta} — call Screenova on ${contact.phone.label}`}
+          >
+            {hero.callCta}
           </CtaLink>
         </div>
       </div>

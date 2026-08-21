@@ -5,7 +5,7 @@
 export const siteConfig = {
   name: "Screenova Solutions",
   description:
-    "Professional window screen replacement, rescreening, and custom screen installation for homes and businesses throughout the Tampa Bay Area.",
+    "Custom window screens, screen repair, rescreening and replacement throughout Tampa Bay. Mobile service — we come to you. Get a free quote from Screenova Solutions.",
   url: "https://screenova.solutions",
 } as const;
 

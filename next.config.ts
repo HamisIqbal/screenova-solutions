@@ -37,6 +37,17 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  /**
+   * The service and city pages are published with a trailing slash —
+   * `/window-screen-repair/`, not `/window-screen-repair` — so that is the
+   * canonical form the whole site uses, and Next redirects the other spelling
+   * to it rather than serving both. One URL per page is the only thing that
+   * matters here; which of the two spellings it is does not.
+   *
+   * Static files and `.well-known` are exempt automatically, so nothing in
+   * `/public` is affected.
+   */
+  trailingSlash: true,
   images: {
     formats: ["image/avif", "image/webp"],
   },

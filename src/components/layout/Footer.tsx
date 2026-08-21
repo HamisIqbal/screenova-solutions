@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+import { cityPages, servicePages } from "@/content/pages";
 import { logo, navLinks, wordmark } from "@/content/nav";
 import { contact, siteConfig, socials } from "@/lib/site";
 
@@ -15,18 +17,24 @@ import { contact, siteConfig, socials } from "@/lib/site";
  * the content rather than letting it trail off on a white band.
  *
  * ---------------------------------------------------------------------------
- * Four columns, reading left to right: the mark, then Contact Us, Navigate, and
- * Join Us. The mark's column is wider than the other three — it is a picture
- * rather than a list and needs the room — and the three list columns are equal,
- * which is what makes their headings line up as a row of labels across the top
- * of the band rather than three unrelated stacks.
+ * Five columns, reading left to right: the mark, then Contact Us, Services,
+ * Areas We Serve, and Navigate. The mark's column is wider than the other four
+ * — it is a picture rather than a list and needs the room — and the four list
+ * columns are equal, which is what makes their headings line up as a row of
+ * labels across the top of the band rather than four unrelated stacks.
  *
  * The order is deliberate. The mark is first because the eye enters at the left
  * and the last thing the page should say is its own name; the lists then run
- * from the most consequential (how to reach a human) to the least (a handle to
- * follow). On narrow screens the grid collapses to two columns and then one,
- * and the mark stays first throughout — a phone reads the sign-off, then the
- * ways to get in touch.
+ * from the most consequential (how to reach a human) outward. On narrow screens
+ * the grid collapses to two columns and then one, and the mark stays first
+ * throughout — a phone reads the sign-off, then the ways to get in touch.
+ *
+ * Services and Areas We Serve are the site's every-page internal links, and
+ * they are generated from `content/pages.ts` rather than typed here: a link in
+ * this footer exists if and only if the route behind it does, which is what
+ * makes a broken internal link impossible to introduce by editing one file and
+ * forgetting the other. The social handles have moved in under Contact Us,
+ * which is where they belong — they are another way to reach a human.
  *
  * The mark's `alt` is empty: the site name is already in the copyright line
  * below, so a second announcement of it here would be noise.
@@ -123,7 +131,7 @@ export function Footer() {
   return (
     <footer data-ground="sky">
       <div className="max-w-page px-gutter mx-auto w-full py-16 lg:py-20">
-        <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))] lg:gap-x-10">
+        <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.3fr)_repeat(4,minmax(0,1fr))] lg:gap-x-8">
           {/* Far left: the mark, at the size it was drawn for. It is the one
               place on the site the logo is large — in the header it is 72px
               tall because it is chrome there, competing with links and a
@@ -164,37 +172,11 @@ export function Footer() {
                 {contact.email.label}
               </a>
             </address>
-          </div>
 
-          {/* Navigate: the map of the page. The same list the header carries,
-              from the same source, stacked here rather than laid in a row — a
-              footer nav is scanned down a column, not read across. */}
-          <nav
-            aria-label="Footer"
-            className={`${DIVIDER} border-t pt-10 sm:border-l sm:pl-8 lg:border-t-0 lg:pt-0 lg:pl-10`}
-          >
-            <ColumnTitle>Navigate</ColumnTitle>
-
-            <ul className="mt-6 space-y-3">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  {/* `min-h-6`: a 17px line of type is a 17px tap target, and
-                      these are stacked list items rather than links inside a
-                      sentence, so the 24px minimum applies to them. */}
-                  <a href={link.href} className={`${LINK} inline-flex min-h-6 items-center`}>
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          {/* Join Us: the handles. Mark and word together rather than a row of
-              bare glyphs — three unlabelled circles is a guessing game, and the
-              column has the width for the words. */}
-          <div className={`${DIVIDER} border-t pt-10 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-10`}>
-            <ColumnTitle>Join Us</ColumnTitle>
-
+            {/* The handles, under the two live channels rather than in a column
+                of their own — they are a fourth way to reach the same people.
+                Mark and word together rather than a row of bare glyphs: three
+                unlabelled circles is a guessing game. */}
             <ul className="mt-6 space-y-3">
               {socials.map((social) => (
                 <li key={social.label}>
@@ -211,6 +193,69 @@ export function Footer() {
               ))}
             </ul>
           </div>
+
+          {/* The four services with a page of their own. Generated from
+              `content/pages.ts`, so this list cannot outlive the routes. */}
+          <nav
+            aria-label="Services"
+            className={`${DIVIDER} border-t pt-10 sm:border-l sm:pl-8 lg:border-t-0 lg:pt-0 lg:pl-8`}
+          >
+            <ColumnTitle>Services</ColumnTitle>
+
+            <ul className="mt-6 space-y-3">
+              {servicePages.map((page) => (
+                <li key={page.href}>
+                  <Link href={page.href} className={`${LINK} inline-flex min-h-6 items-center`}>
+                    {page.metaTitle.replace(" Tampa Bay", "")}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* The four cities with a page of their own. Not every city Screenova
+              serves — see `serviceArea.cities` for that list, and the note above
+              `cityPages` for why this one is deliberately short. */}
+          <nav
+            aria-label="Areas we serve"
+            className={`${DIVIDER} border-t pt-10 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8`}
+          >
+            <ColumnTitle>Areas We Serve</ColumnTitle>
+
+            <ul className="mt-6 space-y-3">
+              {cityPages.map((page) => (
+                <li key={page.href}>
+                  <Link href={page.href} className={`${LINK} inline-flex min-h-6 items-center`}>
+                    {page.city}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Navigate: the map of the page. The same list the header carries,
+              from the same source, stacked here rather than laid in a row — a
+              footer nav is scanned down a column, not read across. */}
+          <nav
+            aria-label="Footer"
+            className={`${DIVIDER} border-t pt-10 sm:border-l sm:pl-8 lg:border-t-0 lg:pt-0 lg:pl-8`}
+          >
+            <ColumnTitle>Navigate</ColumnTitle>
+
+            <ul className="mt-6 space-y-3">
+              {navLinks.map((link) => (
+                <li key={link.href}>
+                  {/* `min-h-6`: a 17px line of type is a 17px tap target, and
+                      these are stacked list items rather than links inside a
+                      sentence, so the 24px minimum applies to them. */}
+                  <Link href={link.href} className={`${LINK} inline-flex min-h-6 items-center`}>
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
         </div>
 
         {/* The closing line. A rule above it because everything above is

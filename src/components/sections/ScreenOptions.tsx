@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Section, SectionHeader } from "@/components/ui";
+import { CtaLink, Section, SectionHeader } from "@/components/ui";
 import { screenOptions } from "@/content/home";
+import { contact } from "@/lib/site";
 
 /**
  * Four mesh options, read one at a time, with the answer to "which one is for
@@ -168,6 +169,19 @@ export function ScreenOptions() {
             </li>
           ))}
         </ol>
+      </div>
+
+      {/* Four materials is a decision, and a decision is the one thing a form
+          is worse at than a two-minute conversation — so this band closes on
+          the telephone rather than on the quote form. */}
+      <div className="mt-[clamp(3rem,8vw,6rem)] flex justify-center">
+        <CtaLink
+          href={contact.phone.href}
+          variant="outline"
+          ariaLabel={`${screenOptions.cta} on ${contact.phone.label}`}
+        >
+          {screenOptions.cta}
+        </CtaLink>
       </div>
     </Section>
   );
