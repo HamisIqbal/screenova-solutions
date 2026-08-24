@@ -14,7 +14,7 @@ import {
   TrustBar,
   WhyChooseUs,
 } from "@/components/sections";
-import { siteConfig } from "@/lib/site";
+import { ogImage, siteConfig } from "@/lib/site";
 
 /**
  * The home page's own title and description, overriding the root layout's
@@ -40,6 +40,11 @@ export const metadata: Metadata = {
     title: "Window Screen Repair & Replacement Tampa Bay | Screenova Solutions",
     description: siteConfig.description,
     url: "/",
+    // Declaring `openGraph` here replaces the layout's object outright rather
+    // than merging into it, so the card has to be named again or the home page
+    // — the most shared URL on the site — unfurls with no picture at all. Same
+    // reason `pageMetadata` repeats it. One source: `ogImage` in `lib/site.ts`.
+    images: [ogImage],
   },
 };
 

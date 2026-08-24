@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { allInfoPages, type InfoPageContent } from "@/content/pages";
+import { ogImage } from "@/lib/site";
 
 /**
  * Look a page's content up by its route, and fail loudly if it is not there.
@@ -35,6 +36,11 @@ export function pageMetadata(href: string): Metadata {
       title: `${metaTitle} | Screenova Solutions`,
       description: metaDescription,
       url: href,
+      // Repeated rather than inherited, and it has to be: a route that declares
+      // `openGraph` replaces the layout's object outright instead of merging
+      // into it, so a page that left this out would unfurl with no picture at
+      // all. `ogImage` is the single source — see `lib/site.ts`.
+      images: [ogImage],
     },
   };
 }

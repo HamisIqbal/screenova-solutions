@@ -3,7 +3,7 @@ import "@/styles/globals.css";
 import { fontVariables } from "@/app/fonts";
 import { Footer, Header, MobileCtaBar } from "@/components/layout";
 import { Intro, introArmingScript } from "@/components/ui";
-import { siteConfig } from "@/lib/site";
+import { ogImage, siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -18,8 +18,32 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
+    images: [ogImage],
+  },
+  /**
+   * X reads the Open Graph tags when these are absent, but only the ones it
+   * recognises — and `summary_large_image` is the difference between the card
+   * being the width of the post and being a thumbnail beside two lines of text.
+   * It is worth the four lines.
+   */
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.name,
+    description: siteConfig.description,
+    images: [ogImage.url],
   },
 };
+
+/**
+ * The tab icon, and the icon iOS puts on a home screen.
+ *
+ * Both are files rather than entries here: `src/app/icon.png` and
+ * `src/app/apple-icon.png` are App Router conventions, and Next writes the
+ * `<link>` tags, the sizes and the cache-busting hashes itself. Both are cut
+ * from the logo by `scripts/brand-assets.mjs` — the emblem only, because the
+ * wordmark beside it is two thirds of a 3:1 image and is illegible the moment
+ * it is 16px wide.
+ */
 
 export const viewport: Viewport = {
   colorScheme: "light",
