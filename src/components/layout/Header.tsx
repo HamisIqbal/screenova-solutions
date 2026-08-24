@@ -151,9 +151,16 @@ export function Header() {
 
         {/* `next/link`, not a bare anchor: the mark is on every page in the
             app, and from a service or city page this is a real navigation back
-            to the home page rather than a jump within the document. */}
+            to the home page rather than a jump within the document.
+
+            The href is the home page itself and not `/#hero`. They land in the
+            same place — the hero is the top of the document — but an anchor
+            leaves `/#hero` in the address bar, which is a fragment nobody
+            typed, cannot be read aloud sensibly, and is what gets copied when
+            somebody shares the page. The mark means "home", so it points at
+            home. */}
         <Link
-          href="/#hero"
+          href="/"
           onClick={() => setMenuOpen(false)}
           aria-label={`${logo.alt} — back to top`}
           className="pointer-events-auto flex shrink-0 items-center no-underline"

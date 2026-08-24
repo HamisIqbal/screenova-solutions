@@ -702,6 +702,18 @@ export const quote = {
  *   before / after — `{ src, alt }`, both or neither. A category with only one
  *   of the two stays a placeholder: a "before" with no "after" is not a
  *   project, it is a photograph of a broken screen.
+ *
+ * PLACEHOLDERS. The eight files in `/public/images/projects/` are free stock
+ * photographs, downloaded from Pexels under its licence (free for commercial
+ * use, no attribution required), standing in until Screenova's own photography
+ * is ready. They are not pictures of Screenova jobs, which is why `intro` above
+ * says so on the page.
+ *
+ * To replace: drop the real photographs into `/public/images/projects/` under
+ * whatever names you like, point the eight `src` values at them, rewrite the
+ * eight `alt` strings to describe what is actually in each frame, and rewrite
+ * `intro` to drop the stand-in sentence. Nothing outside this file needs to
+ * change.
  */
 export type ProjectCategory = {
   id: string;
@@ -714,27 +726,59 @@ export type ProjectCategory = {
 export const projects = {
   title: "Before & After",
   intro:
-    "The four jobs we are called out for most. Photography from real Screenova projects is being added here — nothing on this page is a stock photograph of somebody else's work.",
+    "The four jobs we are called out for most. The photographs below are stand-ins while our own project photography is being prepared — they show the kind of work each pair describes, not the jobs themselves.",
   categories: [
     {
       id: "torn-to-new",
       title: "Torn Screen → New Screen",
       body: "A tear that started small and spread across the panel. Frame sound, mesh replaced.",
+      before: {
+        src: "/images/projects/torn-to-new-before.jpg",
+        alt: "A weathered house window covered by an old insect screen.",
+      },
+      after: {
+        src: "/images/projects/torn-to-new-after.jpg",
+        alt: "A clean black-framed window with clear glass in a bright room.",
+      },
     },
     {
       id: "old-frame-to-custom",
       title: "Old Frame → Custom Frame",
       body: "A bent, corroded frame that no longer sat square in the opening, rebuilt in new aluminum to the same window.",
+      before: {
+        src: "/images/projects/old-frame-before.jpg",
+        alt: "An old wooden window frame, paint worn, set in a textured stucco wall.",
+      },
+      after: {
+        src: "/images/projects/old-frame-after.jpg",
+        alt: "Three evenly spaced windows in new frames across a clean house facade.",
+      },
     },
     {
       id: "pet-damage",
       title: "Pet-Damaged Screen → Pet-Resistant Screen",
       body: "A slider pushed through at dog height, re-meshed in heavier pet-resistant material so it does not happen again.",
+      before: {
+        src: "/images/projects/pet-damage-before.jpg",
+        alt: "A cat resting against the inside of a window screen.",
+      },
+      after: {
+        src: "/images/projects/pet-damage-after.jpg",
+        alt: "A sunroom enclosed by large glass panels, screens intact.",
+      },
     },
     {
       id: "whole-house",
       title: "Whole-House Screen Replacement",
       body: "Every window in a property measured, built and fitted in a single visit.",
+      before: {
+        src: "/images/projects/whole-house-before.jpg",
+        alt: "An older house seen from the garden, every window screened.",
+      },
+      after: {
+        src: "/images/projects/whole-house-after.jpg",
+        alt: "A contemporary house with large, freshly screened windows across its facade.",
+      },
     },
     // `as` rather than `satisfies`: the surrounding `as const` would otherwise
     // narrow each entry to exactly the keys it has today, and `before`/`after`

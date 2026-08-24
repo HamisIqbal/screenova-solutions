@@ -7,22 +7,23 @@ import { projects } from "@/content/home";
  * one existing. `#projects` now resolves.
  *
  * ---------------------------------------------------------------------------
- * It ships with no photographs, and that is the design rather than a gap left
- * to be apologised for.
- *
  * Four categories, each naming a real kind of job — a torn screen replaced, a
  * bent frame rebuilt, a pet-damaged slider re-meshed in heavier material, a
- * whole house done in one visit. None of them claims to be showing one. There
- * is no stock photograph of somebody else's work standing in for Screenova's,
- * because a stock photograph on a page headed "Our Projects" is a lie whatever
- * the caption says.
+ * whole house done in one visit.
  *
- * What is here instead is the structure that real photography drops into. Each
- * category is a before/after pair: give it `before` and `after` in
- * `content/home.ts` and the block renders as two pictures with an arrow between
- * them. Until then the same block renders as two labelled panels — the same
- * shape, the same proportions, the same page — carrying the word "Before" and
- * "After" and nothing else.
+ * The photographs in them are stand-ins, and the section says so in its own
+ * intro line rather than leaving the reader to assume otherwise: a stock
+ * photograph presented as Screenova's own work on a page headed "Our Projects"
+ * is a lie whatever the caption says, so the copy names them as placeholders
+ * and describes what they are — the kind of work each pair is about, not the
+ * jobs themselves. Swap in real project photography and that line goes with it;
+ * both are in `content/home.ts` and neither is in this file.
+ *
+ * Each category is a before/after pair: give it `before` and `after` and the
+ * block renders as two pictures with an arrow between them. Take them away and
+ * the same block renders as two labelled panels — the same shape, the same
+ * proportions, the same page — carrying the word "Before" and "After" and
+ * nothing else.
  *
  * A category needs *both* halves to render as pictures. A "before" with no
  * "after" is a photograph of a broken screen, which is not a project.
