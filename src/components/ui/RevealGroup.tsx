@@ -26,7 +26,11 @@ import { useIsomorphicLayoutEffect, usePrefersReducedMotion } from "@/hooks";
  *     scrim, including the hero's — which is the LCP element on the page and
  *     must never start at zero opacity.
  *   - `aria-hidden` ones, which are decoration by their own admission.
- *   - Anything with no text in it. The brief was text.
+ *   - Anything with neither text nor a picture in it — a spacer, a rule, an
+ *     empty wrapper. Everything a visitor can actually read or look at is
+ *     revealed; a block that carries only a photograph now arrives with the
+ *     same fade the copy does, rather than being the one thing on the page
+ *     that is simply there.
  *   - Anything marked `data-reveal="off"`, and its children. The How It Works
  *     deck is the one that asks: those cards already arrive by covering the one
  *     before them, which is the whole point of the section, and a fade on top of
@@ -83,7 +87,12 @@ export function RevealGroup({
 
         if (style.position === "absolute" || style.position === "fixed") continue;
         if (block.getAttribute("aria-hidden") === "true") continue;
-        if (!block.textContent?.trim()) continue;
+
+        // Text or media. A block with neither is structure, and structure has
+        // nothing to arrive.
+        const hasText = Boolean(block.textContent?.trim());
+        const hasMedia = block.querySelector("img, picture, svg, video, canvas") !== null;
+        if (!hasText && !hasMedia) continue;
         if (block.getBoundingClientRect().top < window.innerHeight) continue;
 
         const sticky = style.position === "sticky";

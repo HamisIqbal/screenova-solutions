@@ -409,6 +409,23 @@
     padding: 0;
   }
 
+  /* The page's entrance, and the only rule on the site that hides content.
+
+     `data-intro-armed` is set on <html> by an inline script at the top of the
+     body — see `Intro` — so anything the entrance owns is already at zero
+     opacity by the time the browser paints it, rather than being painted and
+     then blanked by a layout effect. The attribute exists only while the
+     entrance is pending: the script does not set it under reduced motion or
+     with scripting off, `Intro` removes it as the timeline lands, and the
+     script itself removes it on a three second timer if that never happens. An
+     unarmed page has no rule and every element is simply visible.
+
+     GSAP writes `opacity` inline, which outranks this the moment the entrance
+     starts, so the two never fight over the same element. */
+  html[data-intro-armed] [data-intro] {
+    opacity: 0;
+  }
+
   button {
     font-family: var(--font-body);
     font-size: var(--text-label);

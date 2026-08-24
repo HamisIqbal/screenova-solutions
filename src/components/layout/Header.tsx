@@ -98,7 +98,16 @@ export function Header() {
   }, [menuOpen]);
 
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-50">
+    // The entrance brings the header in on the same frame as the headline —
+    // both are `data-intro-at="0"` — and it comes down from above the window
+    // rather than up from the page, which is the one direction a fixed header
+    // at the top of the document can arrive from without reading as content.
+    <header
+      data-intro
+      data-intro-at="0"
+      data-intro-y="-14"
+      className="pointer-events-none fixed inset-x-0 top-0 z-50"
+    >
       {/* First in the DOM so the row below always paints on top of it. */}
       <FullScreenMenu open={menuOpen} onNavigate={() => setMenuOpen(false)} />
 

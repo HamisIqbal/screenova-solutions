@@ -126,8 +126,12 @@ export function Hero() {
               the *text* of the headline correct — see the note above. Two
               lines, and the widths they were cut to are recorded next to the
               copy in `content/home.ts`. */}
+          {/* The entrance takes the headline a line at a time, 90ms apart,
+              starting on the same frame as the header. Two lines, so the
+              second is barely behind the first — enough that the eye reads a
+              sequence rather than a block appearing. */}
           {hero.titleLines.map((line, i) => (
-            <span key={line} className="block">
+            <span key={line} data-intro data-intro-at={(i * 0.09).toFixed(2)} className="block">
               {line}
               {i < hero.titleLines.length - 1 ? " " : ""}
             </span>
@@ -139,13 +143,25 @@ export function Hero() {
               one H1 and this is not it — but set at the lead size and in the
               ground's full ink, which is what makes it read as the second
               thing you take in rather than as body copy. */}
-          <p className="mx-auto font-medium">{hero.supporting}</p>
-          <p className="mx-auto text-(--on-ground-muted)">{hero.body}</p>
+          <p data-intro data-intro-at="0.26" className="mx-auto font-medium">
+            {hero.supporting}
+          </p>
+          <p data-intro data-intro-at="0.36" className="mx-auto text-(--on-ground-muted)">
+            {hero.body}
+          </p>
         </div>
 
         {/* Both actions, and both on the first screen. Stacked on a phone in
             the order they are ranked; side by side from `sm`. */}
-        <div className="mt-7 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-4 lg:mt-9">
+        {/* The two actions arrive as one object rather than one after the
+            other: they are a pair, and staggering them would make the second
+            read as an afterthought. Last in the sequence, which is where the
+            eye should finish. */}
+        <div
+          data-intro
+          data-intro-at="0.48"
+          className="mt-7 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-4 lg:mt-9"
+        >
           <CtaLink href="#quote" className="justify-center">
             {hero.cta}
           </CtaLink>

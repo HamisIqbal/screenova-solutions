@@ -53,12 +53,24 @@ export function InfoPage({ content }: { content: InfoPageContent | CityPageConte
         bandClassName="bg-navy"
         className="flex min-h-[18rem] flex-col justify-center lg:min-h-[22rem]"
       >
+        {/* The same entrance the home page's hero runs, in the same order and
+            on the same clock — see `Intro`. A service page opens the way the
+            home page does, because arriving on one from a search result is
+            arriving at the site. */}
         <div className="mx-auto max-w-3xl text-center">
-          <h1 id="page-title">{content.title}</h1>
+          <h1 data-intro data-intro-at="0" id="page-title">
+            {content.title}
+          </h1>
 
-          <p className="mx-auto mt-6 lg:mt-8">{content.supporting}</p>
+          <p data-intro data-intro-at="0.14" className="mx-auto mt-6 lg:mt-8">
+            {content.supporting}
+          </p>
 
-          <div className="mt-7 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-4">
+          <div
+            data-intro
+            data-intro-at="0.28"
+            className="mt-7 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-4"
+          >
             <CtaLink href="/#quote" className="justify-center">
               Get a Free Quote
             </CtaLink>
