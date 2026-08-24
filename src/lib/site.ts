@@ -1,12 +1,53 @@
 /**
- * Single source of truth for site-wide metadata. Update the URL before the
- * first production deploy so Open Graph tags resolve correctly.
+ * The domain the site will live on once DNS points at it. It is the fallback
+ * rather than the answer — see `resolveSiteUrl` directly below.
  */
+const INTENDED_DOMAIN = "https://screenova.solutions";
+
+/**
+ * Where this build of the site actually is.
+ *
+ * This matters more than it looks. Every absolute URL the site emits is built
+ * from it — the canonical tags, the sitemap, and `og:image`, which is the one
+ * that fails loudly. A share card's image URL is fetched by WhatsApp, Facebook
+ * or iMessage from their own servers, not from the reader's browser, so it has
+ * to be an absolute URL that resolves from the public internet. Point it at a
+ * domain that does not exist yet and the link unfurls with a title, a
+ * description, and no picture — which is exactly what a hardcoded
+ * `INTENDED_DOMAIN` did while DNS was still unset.
+ *
+ * So it is resolved, in this order:
+ *
+ *   1. `NEXT_PUBLIC_SITE_URL`, if it is set. The override, and the way to pin
+ *      this to something specific from the Vercel dashboard or a local `.env`.
+ *   2. Vercel's own answer. `VERCEL_PROJECT_PRODUCTION_URL` is the project's
+ *      production domain — the custom one once a custom one is attached, and
+ *      the `.vercel.app` one until then, which is the whole point: the site
+ *      unfurls correctly at whatever address it is genuinely reachable at, on
+ *      the day it is deployed rather than on the day DNS is finished.
+ *      `VERCEL_URL` is the per-deployment address and covers previews.
+ *   3. `INTENDED_DOMAIN`, for a local build with neither set.
+ *
+ * All three are read at build time. A change of domain therefore needs a
+ * redeploy, not just a DNS change — and the platforms cache what they fetched,
+ * so see the note on `ogImage` about forcing them to look again.
+ */
+function resolveSiteUrl(): string {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (explicit) return explicit.replace(/\/+$/, "");
+
+  const vercelDomain = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+  if (vercelDomain) return `https://${vercelDomain}`;
+
+  return INTENDED_DOMAIN;
+}
+
+/** Single source of truth for site-wide metadata. */
 export const siteConfig = {
   name: "Screenova Solutions",
   description:
     "Custom window screens, screen repair, rescreening and replacement throughout Tampa Bay. Mobile service — we come to you. Get a free quote from Screenova Solutions.",
-  url: "https://screenova.solutions",
+  url: resolveSiteUrl(),
 } as const;
 
 export type SiteConfig = typeof siteConfig;
@@ -30,6 +71,21 @@ export type SiteConfig = typeof siteConfig;
  * these numbers to reserve the space before the image itself has loaded.
  *
  * 1200x630 is the size every platform crops from rather than to.
+ *
+ * ---------------------------------------------------------------------------
+ * If a link stops showing the card, the cache is usually the reason. WhatsApp,
+ * Facebook and iMessage each fetch a URL's tags once and hold the result for
+ * days, so a fix deployed after somebody has already shared the link does not
+ * reach the copy they are looking at. Two ways round it:
+ *
+ *   - Share the URL with anything appended to it — `?x=1` — which is a
+ *     different string to the cache and is fetched fresh.
+ *   - For Facebook and WhatsApp, which share an index, re-scrape the URL at
+ *     developers.facebook.com/tools/debug/.
+ *
+ * The other reason is the domain: the image URL below is made absolute against
+ * `siteConfig.url`, and a domain that does not resolve yet cannot serve a
+ * picture to anybody's link preview. See `resolveSiteUrl` above.
  */
 export const ogImage = {
   url: "/og.jpg",
