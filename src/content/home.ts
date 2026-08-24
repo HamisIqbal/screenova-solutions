@@ -418,6 +418,23 @@ export const about = {
   cta: "Get a Free Quote",
 } as const;
 
+/**
+ * One of the four cities the service area band shows a picture of.
+ *
+ * `href` is optional, and the type is applied to the array with `as` rather
+ * than inferred from it for exactly that reason: with all four entries carrying
+ * an href today, an inferred type would make `href` required, and the component's
+ * unlinked branch — the one a fifth city needs before its page is written —
+ * would narrow to `never` and stop compiling. The same reason `projects`
+ * declares `ProjectCategory[]` further down.
+ */
+export type FeaturedCity = {
+  name: string;
+  href?: string;
+  src: string;
+  alt: string;
+};
+
 export const serviceArea = {
   eyebrow: "Service Area",
   title: "Window Screen Services Throughout Tampa Bay",
@@ -427,12 +444,24 @@ export const serviceArea = {
   cta: "Check Your ZIP Code",
   citiesLabel: "Cities We Serve",
   /**
-   * The four the section shows a picture of.
+   * The four the section shows a picture of, and all four now have a page.
    *
-   * `href` is present only where a city page actually exists — three of these
-   * four. Dunedin is served and pictured but has no page of its own, so it has
-   * no link, because a link to a route that does not exist is a broken link.
-   * Add the page first, then the href.
+   * Which four is decided by that and nothing else. Dunedin used to hold the
+   * fourth card and had no page behind it, so it was the one city here a
+   * visitor could look at and not click — a picture that raises a question the
+   * section then refuses to answer. Lutz had the opposite problem: a page of
+   * its own, and no presence here beyond its name in the list below. So they
+   * changed places. Dunedin is still served and still named in `cities`; Lutz
+   * is pictured, and the picture goes somewhere.
+   *
+   * `href` is present only where a city page actually exists — a link to a
+   * route that does not exist is a broken link. If a fifth city is pictured
+   * before its page is written, leave the `href` off until the page is there.
+   *
+   * Lutz's photograph is the one from that page's own hero, which is why it is
+   * the only entry pointing at `/images/pages/`: there is no stock photography
+   * of Lutz, so the same suburban Florida house stands in on both, and its
+   * `alt` says that rather than claiming a Lutz street.
    */
   featured: [
     {
@@ -454,27 +483,30 @@ export const serviceArea = {
       alt: "The beach at Clearwater",
     },
     {
-      name: "Dunedin",
-      src: "/images/cities/dunedin.jpg",
-      alt: "The waterfront at Dunedin",
+      name: "Lutz",
+      href: "/lutz-window-screen-repair/",
+      src: "/images/pages/lutz.jpg",
+      alt: "A suburban Florida house behind a lush front garden under a clear blue sky",
     },
-  ],
+  ] as FeaturedCity[],
   otherCitiesLabel: "Other Cities We Serve",
   /**
-   * Which of the named cities below link to a page of their own. One entry, and
-   * it will stay a short list: a link per city is how a site ends up with
-   * thirty doorway pages. A name that is not a key here is rendered as plain
-   * text, which is the safe default.
+   * Which of the named cities below link to a page of their own. Empty today —
+   * the one city that had an entry here, Lutz, is now one of the four pictured
+   * above and links from there instead.
+   *
+   * The mechanism stays because the next city page will need it, and it will
+   * stay a short list: a link per city is how a site ends up with thirty
+   * doorway pages. A name that is not a key here is rendered as plain text,
+   * which is the safe default.
    */
-  cityLinks: {
-    Lutz: "/lutz-window-screen-repair/",
-  } as Record<string, string | undefined>,
+  cityLinks: {} as Record<string, string | undefined>,
   /** Everywhere else, by name only. */
   cities: [
     "Brandon",
     "Riverview",
     "Wesley Chapel",
-    "Lutz",
+    "Dunedin",
     "Palm Harbor",
     "Largo",
     "Safety Harbor",
