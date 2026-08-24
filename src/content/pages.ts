@@ -40,6 +40,22 @@ export type InfoPageContent = {
   title: string;
   /** Supporting copy under it — a paragraph, never a second heading. */
   supporting: string;
+  /**
+   * The photograph behind the page's hero band, and the scrim over it is what
+   * makes the type readable — see `InfoPage`. Optional: a page without one
+   * falls back to the flat navy band the pages shipped with, so a new page is
+   * never blocked on finding a picture.
+   *
+   * PLACEHOLDERS. The eight files in `/public/images/pages/` are free stock
+   * photographs from Pexels (free for commercial use, no attribution required),
+   * standing in until Screenova's own photography is ready. The service pages
+   * carry screened porches and windows; the three city pages carry those
+   * cities, and each `alt` says only what is actually in the frame. Lutz is the
+   * exception and it is deliberate — there is no stock photography of Lutz, so
+   * it carries a suburban Florida house and its `alt` says exactly that rather
+   * than claiming a street it cannot vouch for.
+   */
+  heroImage?: { src: string; alt: string };
   /** `<title>`, before the layout appends the brand. */
   metaTitle: string;
   metaDescription: string;
@@ -57,6 +73,10 @@ export type InfoPageContent = {
 export const servicePages: readonly InfoPageContent[] = [
   {
     href: "/window-screen-repair/",
+    heroImage: {
+      src: "/images/pages/window-screen-repair.jpg",
+      alt: "A screened porch looking out over greenery, its mesh panels intact in their frames.",
+    },
     title: "Window Screen Repair in Tampa Bay",
     supporting:
       "Split corners, loose spline, small tears and screens that won't sit in their track — repaired at your home.",
@@ -107,6 +127,10 @@ export const servicePages: readonly InfoPageContent[] = [
 
   {
     href: "/window-rescreening/",
+    heroImage: {
+      src: "/images/pages/window-rescreening.jpg",
+      alt: "An enclosed porch with furniture, screened wall to wall against the garden outside.",
+    },
     title: "Window Rescreening in Tampa Bay",
     supporting:
       "Keep the frame, change the mesh. The least expensive way to make an old screen new again.",
@@ -166,6 +190,10 @@ export const servicePages: readonly InfoPageContent[] = [
 
   {
     href: "/window-screen-replacement/",
+    heroImage: {
+      src: "/images/pages/window-screen-replacement.jpg",
+      alt: "A bright suburban porch framed in clear glass and new screen panels.",
+    },
     title: "Window Screen & Frame Replacement in Tampa Bay",
     supporting:
       "When the frame is the problem — bent, corroded, or out of square — we rebuild it to your opening.",
@@ -214,6 +242,10 @@ export const servicePages: readonly InfoPageContent[] = [
 
   {
     href: "/custom-window-screens/",
+    heroImage: {
+      src: "/images/pages/custom-window-screens.jpg",
+      alt: "An empty porch under a ceiling fan, screened along its full length and open to the trees.",
+    },
     title: "Custom Window Screens Built for Your Home",
     supporting:
       "Measured to your opening and built in aluminum — for windows with no screen at all, or none that ever fitted.",
@@ -300,6 +332,10 @@ export const cityPages: readonly CityPageContent[] = [
   {
     city: "Tampa",
     href: "/tampa-window-screen-repair/",
+    heroImage: {
+      src: "/images/pages/tampa.jpg",
+      alt: "The downtown Tampa skyline at sunset, seen across the water.",
+    },
     title: "Window Screen Repair in Tampa, FL",
     supporting:
       "Mobile screen repair, rescreening and custom screens across Tampa — we measure, build and fit at your address.",
@@ -366,6 +402,10 @@ export const cityPages: readonly CityPageContent[] = [
   {
     city: "St. Petersburg",
     href: "/st-petersburg-window-screen-repair/",
+    heroImage: {
+      src: "/images/pages/st-petersburg.jpg",
+      alt: "The St. Petersburg waterfront, its skyline behind a palm-lined path.",
+    },
     title: "Window Screen Repair in St. Petersburg, FL",
     supporting:
       "Mobile screen repair, rescreening and custom screens across St. Petersburg and the beaches.",
@@ -421,6 +461,10 @@ export const cityPages: readonly CityPageContent[] = [
   {
     city: "Clearwater",
     href: "/clearwater-window-screen-repair/",
+    heroImage: {
+      src: "/images/pages/clearwater.jpg",
+      alt: "Clearwater Beach under a bright sky, hotels along the sand.",
+    },
     title: "Window Screen Repair in Clearwater, FL",
     supporting:
       "Mobile screen repair, rescreening and custom screens across Clearwater, Largo and Pinellas Park.",
@@ -470,6 +514,10 @@ export const cityPages: readonly CityPageContent[] = [
   {
     city: "Lutz",
     href: "/lutz-window-screen-repair/",
+    heroImage: {
+      src: "/images/pages/lutz.jpg",
+      alt: "A suburban Florida house behind a lush front garden under a clear blue sky.",
+    },
     title: "Window Screen Repair in Lutz, FL",
     supporting:
       "Mobile screen repair, rescreening and custom screens across Lutz and north Hillsborough.",

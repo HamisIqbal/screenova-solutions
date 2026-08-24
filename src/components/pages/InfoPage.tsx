@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { CtaLink, Section, SectionHeader } from "@/components/ui";
 import { TrustBar } from "@/components/sections";
@@ -49,15 +50,48 @@ export function InfoPage({ content }: { content: InfoPageContent | CityPageConte
         labelledBy="page-title"
         // The band's own floor, over the chrome ground's black — the same navy
         // Screen Options uses. Utilities sort after the base layer, so this
-        // wins without an `!important`.
-        bandClassName="bg-navy"
+        // wins without an `!important`. With a photograph over it the navy is
+        // what the band is while the picture loads, which is the right thing to
+        // be waiting under rather than a flash of white.
+        //
+        // `clip` rather than `hidden`: it holds the cropped edges of the
+        // photograph without making a scroll container.
+        bandClassName="bg-navy relative overflow-clip"
         className="flex min-h-[18rem] flex-col justify-center lg:min-h-[22rem]"
       >
+        {/* The photograph, when the page has one, laid the way the home page's
+            hero lays its own: absolutely positioned against the *band* — the
+            measure container is unpositioned, so `inset-0` resolves past it and
+            reaches the window on both sides — with the words `relative` and
+            last in the DOM, which is all they need to sit on top.
+
+            The scrim is a flat 70% black. That is the number the home page
+            measured for this exact case: against a blown-out sky, which every
+            one of these photographs has, it holds the heading's `blue-soft` at
+            4.2:1 and the white supporting line at 9:1. The heading is display
+            type, so 4.2:1 clears the 3:1 its size is held to, and the paragraph
+            that has to meet 4.5:1 is the white one.
+
+            The picture is the page's LCP element, so it loads eagerly and
+            declares its box. */}
+        {content.heroImage && (
+          <>
+            <Image
+              src={content.heroImage.src}
+              alt={content.heroImage.alt}
+              fill
+              priority
+              sizes="100vw"
+              className="absolute inset-0 h-full w-full object-cover object-center"
+            />
+            <div aria-hidden="true" className="absolute inset-0 bg-black/70" />
+          </>
+        )}
         {/* The same entrance the home page's hero runs, in the same order and
             on the same clock — see `Intro`. A service page opens the way the
             home page does, because arriving on one from a search result is
             arriving at the site. */}
-        <div className="mx-auto max-w-3xl text-center">
+        <div className="relative mx-auto max-w-3xl text-center">
           <h1 data-intro data-intro-at="0" id="page-title">
             {content.title}
           </h1>
