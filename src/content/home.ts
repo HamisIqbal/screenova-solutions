@@ -647,6 +647,25 @@ export const quote = {
     formats: "JPG, PNG or HEIC — attach as many as you like",
     more: "Tap to add more, or remove one below",
   },
+  /**
+   * The offer to fill the form in from last time, which only ever appears for
+   * somebody who has completed it once already — see `lib/quoteMemory.ts`.
+   *
+   * `question` is phrased as an offer rather than an announcement, because
+   * that is what it is: nothing has been filled in at the point it is read. The
+   * details themselves are shown beside it, so the answer to "which details?"
+   * is on screen before the button is pressed rather than after.
+   *
+   * `forget` is not a courtesy. The form is the only thing on the site that
+   * keeps anything about a visitor, and the way to make that fair is to put the
+   * way out next to the way in, in the same size of type.
+   */
+  remember: {
+    question: "Fill this in from last time?",
+    use: "Use these details",
+    forget: "Forget these details",
+    applied: "Filled in from last time — check it over before you send it.",
+  },
   submit: "Submit Request",
   /** Sits by the button, explaining the mark the five required labels carry. */
   requiredNote: "Required",

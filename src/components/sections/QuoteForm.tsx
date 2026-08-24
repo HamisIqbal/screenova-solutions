@@ -1,11 +1,19 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useSyncExternalStore } from "react";
 import { ImagePlus, X } from "lucide-react";
 import { Dialog, Section, SectionHeader } from "@/components/ui";
 import { quote } from "@/content/home";
 import { contact } from "@/lib/site";
 import { isServedZip, ZIP_PATTERN } from "@/lib/serviceArea";
+import {
+  forgetContact,
+  getContactSnapshot,
+  getServerContactSnapshot,
+  saveContact,
+  subscribeContact,
+  type QuoteContact,
+} from "@/lib/quoteMemory";
 
 /**
  * The quote request, rebuilt as one short card.
@@ -340,6 +348,20 @@ export function QuoteForm() {
    * plumbing threaded through the component.
    */
   const [formKey, setFormKey] = useState(0);
+  /**
+   * The details of a request that went through on this device before, or
+   * `null` — which is every first visit, and which is also what the server
+   * renders. Read straight from the store rather than copied into state: it is
+   * written by two handlers here and can change in another tab, and
+   * `useSyncExternalStore` covers all of that without an effect.
+   */
+  const remembered = useSyncExternalStore(
+    subscribeContact,
+    getContactSnapshot,
+    getServerContactSnapshot,
+  );
+  /** True once the visitor has taken the offer, so the banner can say so. */
+  const [applied, setApplied] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const zipRef = useRef<HTMLInputElement>(null);
 
@@ -359,9 +381,55 @@ export function QuoteForm() {
 
     // TODO: POST `data` to the quote endpoint. Until that exists, the
     // confirmation below is reporting a completed form and nothing more.
+
+    // The only place anything is written. Past the browser's own checks and
+    // past the ZIP, so what is kept is a set of details that was accepted —
+    // which is the whole basis on which it is offered back. See
+    // `lib/quoteMemory.ts` for what is kept and what is deliberately not.
+    const contact: QuoteContact = {
+      name: String(data.get("name") ?? "").trim(),
+      phone: phone.trim(),
+      email: String(data.get("email") ?? "").trim(),
+      zip: zip.trim(),
+      address: String(data.get("address") ?? "").trim(),
+    };
+    saveContact(contact);
+    setApplied(false);
+
     setAnswer({ kind: "confirmed", phone: phone.trim() });
     formRef.current?.reset();
     setFormKey((key) => key + 1);
+  }
+
+  /**
+   * Take the offer. The fields are uncontrolled — the browser owns their values
+   * and the submit handler reads them out of a `FormData` — so filling them in
+   * means writing to the elements themselves rather than to React state.
+   *
+   * Focus then goes to the service select, which is the first thing the saved
+   * details cannot answer. Somebody who has just filled five fields in one
+   * press should land on the sixth, not at the top of a form that is already
+   * done.
+   */
+  function useRemembered() {
+    const form = formRef.current;
+    const contact = remembered;
+    if (!form || !contact) return;
+
+    for (const [name, value] of Object.entries(contact)) {
+      const field = form.elements.namedItem(name);
+      if (field instanceof HTMLInputElement) field.value = value;
+    }
+
+    setApplied(true);
+    const service = form.elements.namedItem("service");
+    if (service instanceof HTMLSelectElement) service.focus();
+  }
+
+  /** Drop the record, and the offer with it. Nothing is left on the device. */
+  function forgetRemembered() {
+    forgetContact();
+    setApplied(false);
   }
 
   /** Shut the dialogue and put the cursor back on the ZIP, ready to retype. */
@@ -391,6 +459,51 @@ export function QuoteForm() {
         <h3 id="quote-form-title" className="sr-only">
           {quote.formTitle}
         </h3>
+
+        {/* The offer, and only for somebody who has completed this form once
+            already — there is no record to offer otherwise. It sits above the
+            first field because it is about the whole form, and it is a button
+            rather than something that has already happened: nothing is filled
+            in until it is pressed, so nobody arrives to find their name in a
+            box they did not put it in.
+
+            Taken, it becomes a line of confirmation with the same way out still
+            beside it. The confirmation asks the visitor to check the details
+            rather than announcing success, because six-month-old details can be
+            right in every field and still be for the wrong house. */}
+        {remembered && (
+          <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-3 rounded-(--radius-control) bg-(--color-surface) px-4 py-3">
+            {applied ? (
+              <p className="max-w-none" style={{ fontSize: "var(--text-label)" }}>
+                {quote.remember.applied}
+              </p>
+            ) : (
+              <p className="max-w-none" style={{ fontSize: "var(--text-label)" }}>
+                <span className="font-medium">{quote.remember.question}</span>{" "}
+                <span className="text-(--on-ground-muted)">
+                  {remembered.name} · {remembered.phone}
+                </span>
+              </p>
+            )}
+
+            <div className="ml-auto flex items-center gap-3">
+              {!applied && (
+                <button type="button" onClick={useRemembered} className="px-4 py-2">
+                  {quote.remember.use}
+                </button>
+              )}
+              {/* The way out, in the same size of type as the way in. */}
+              <button
+                type="button"
+                onClick={forgetRemembered}
+                className="bg-transparent p-0 text-(--on-ground-muted) underline underline-offset-4 hover:bg-transparent hover:text-(--on-ground)"
+                style={{ fontSize: "var(--text-label)", fontWeight: 400 }}
+              >
+                {quote.remember.forget}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Two across from `sm` and never more: short fields in pairs is the
             whole shape of the thing, and a third column would make them too
