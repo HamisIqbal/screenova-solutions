@@ -458,29 +458,36 @@ export const serviceArea = {
    * route that does not exist is a broken link. If a fifth city is pictured
    * before its page is written, leave the `href` off until the page is there.
    *
-   * Lutz's photograph is the one from that page's own hero, which is why it is
-   * the only entry pointing at `/images/pages/`: there is no stock photography
-   * of Lutz, so the same suburban Florida house stands in on both, and its
-   * `alt` says that rather than claiming a Lutz street.
+   * All four photographs are the ones their own pages open with, and each
+   * `alt` is the same sentence in both places. That is the point: the card is
+   * the door and the hero is the room behind it, and a visitor who taps Tampa
+   * should arrive at the picture they tapped rather than at a different one of
+   * the same city. It also leaves one file per city in the repository instead
+   * of two — see `/public/images/pages/`, which is where all four live.
+   *
+   * Lutz is the one whose `alt` does not name its city, and deliberately:
+   * there is no stock photography of Lutz, so a suburban Florida house stands
+   * in and the `alt` says exactly that rather than claiming a Lutz street. The
+   * heading on the card says Lutz; the description says what is in the frame.
    */
   featured: [
     {
       name: "Tampa",
       href: "/tampa-window-screen-repair/",
-      src: "/images/cities/Tampa-bay.jpg",
-      alt: "The Tampa skyline across the bay",
+      src: "/images/pages/tampa.jpg",
+      alt: "The downtown Tampa skyline at sunset, seen across the water",
     },
     {
       name: "St. Petersburg",
       href: "/st-petersburg-window-screen-repair/",
-      src: "/images/cities/st-petersburg.jpg",
-      alt: "The St. Petersburg waterfront",
+      src: "/images/pages/st-petersburg.jpg",
+      alt: "The St. Petersburg waterfront, its skyline behind a palm-lined path",
     },
     {
       name: "Clearwater",
       href: "/clearwater-window-screen-repair/",
-      src: "/images/cities/clearwater.jpg",
-      alt: "The beach at Clearwater",
+      src: "/images/pages/clearwater.jpg",
+      alt: "Clearwater Beach under a bright sky, hotels along the sand",
     },
     {
       name: "Lutz",
