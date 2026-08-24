@@ -21,8 +21,8 @@ export type SiteConfig = typeof siteConfig;
  */
 export const contact = {
   phone: {
-    label: "(850) 896-3173",
-    href: "tel:+18508963173",
+    label: "(813) 513-0111",
+    href: "tel:+18135130111",
   },
   email: {
     label: "info@screenova.solutions",

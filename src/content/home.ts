@@ -631,6 +631,22 @@ export const quote = {
     measurements: 'Example: 36" × 48"',
     photos: "Photos help us understand your project and may allow us to provide a faster estimate.",
   },
+  /**
+   * The words inside the photo drop zone, which is a control rather than a
+   * field and so carries its own copy.
+   *
+   * `prompt` says what to do with the thing it sits next to — "Tap" rather than
+   * "Click" or "Upload", because a phone is where most of these photographs are
+   * taken and where the tap is most likely to happen. `formats` is the quiet
+   * second line, and `more` replaces it once something has been attached: at
+   * that point the useful thing to say is not what the control accepts but that
+   * it will accept more.
+   */
+  upload: {
+    prompt: "Tap to add photos of your screens",
+    formats: "JPG, PNG or HEIC — attach as many as you like",
+    more: "Tap to add more, or remove one below",
+  },
   submit: "Submit Request",
   /** Sits by the button, explaining the mark the five required labels carry. */
   requiredNote: "Required",

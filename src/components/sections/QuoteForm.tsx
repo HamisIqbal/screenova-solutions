@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { ImagePlus, X } from "lucide-react";
 import { Dialog, Section, SectionHeader } from "@/components/ui";
 import { quote } from "@/content/home";
 import { contact } from "@/lib/site";
@@ -141,6 +142,189 @@ function Field({
   );
 }
 
+/**
+ * The photo upload, which is a labelled drop zone rather than a file input.
+ *
+ * The default control is a small grey "Choose files" button and, next to it,
+ * the words "No file chosen" — the least conspicuous thing on a form whose most
+ * useful field this is. Nothing about it says photographs, nothing about it
+ * invites a tap, and after a tap the only feedback is a filename set in the
+ * browser's own type. So the input is still the input — same name, same
+ * `accept`, same `multiple`, still what the form serialises — and it is made
+ * `sr-only` inside a label that is drawn as the target instead.
+ *
+ * `sr-only` and not `hidden`: the input keeps its place in the tab order, so
+ * the control is reached by keyboard and opens with Space or Enter exactly as a
+ * file input does. The label's own text is `aria-hidden`, because the field's
+ * real label and its help line are supplied by `Field` above and a screen
+ * reader should hear that once rather than three overlapping versions of it.
+ *
+ * ---------------------------------------------------------------------------
+ * What the visitor is told, in the three states this control has.
+ *
+ *   empty     a sunset disc carrying the media mark, the line that says to tap
+ *             it, and the formats. The disc is the affordance: it is the only
+ *             round filled shape in the card, and it reads as something to
+ *             press in a way a dashed rectangle on its own does not.
+ *   dragging  the border goes solid and the whole panel takes a sunset tint, so
+ *             a file held over it is visibly over something that will catch it.
+ *             Anything that is not an image is let go rather than attached.
+ *   chosen    the count in full ink, the panel itself switched to the accent,
+ *             and every filename listed underneath with a way to take it back
+ *             off. This is the half the native control does worst and the half
+ *             that matters most: having tapped, you can see that the tap did
+ *             something, and exactly what it did.
+ *
+ * The list sits in an `aria-live` region so the same fact reaches a screen
+ * reader — a file input that has just been filled announces nothing by itself.
+ *
+ * ---------------------------------------------------------------------------
+ * Drag and drop, and removing one photograph, are the same trick: a `FileList`
+ * cannot be built by hand, but `DataTransfer` produces one and an input's
+ * `files` will accept it. Dropped images are filtered to images, packed into a
+ * carrier and handed to the input — so the form serialises them without any
+ * other part of this file knowing they arrived by drag. Removing is the same in
+ * reverse: everything except the one being taken off is repacked.
+ */
+function PhotoUpload() {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [names, setNames] = useState<string[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const chosen = names.length;
+
+  /** The input is the source of truth; this mirrors it for the display. */
+  const sync = (list: FileList | null) => setNames(Array.from(list ?? []).map((file) => file.name));
+
+  /**
+   * Replace the input's file list with `files`. See the note above.
+   *
+   * Assigning to `input.files` is well supported but not universally, and a
+   * display that disagreed with what the form is actually carrying would be
+   * worse than no display: it is guarded, and on failure the input is emptied
+   * so the two are at least telling the same story.
+   */
+  const commit = (files: File[]) => {
+    const input = inputRef.current;
+    if (!input) return;
+    try {
+      const carrier = new DataTransfer();
+      files.forEach((file) => carrier.items.add(file));
+      input.files = carrier.files;
+    } catch {
+      input.value = "";
+    }
+    sync(input.files);
+  };
+
+  const onDrop = (event: React.DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    setIsDragging(false);
+    const images = Array.from(event.dataTransfer.files).filter((file) =>
+      file.type.startsWith("image/"),
+    );
+    if (images.length > 0) commit(images);
+  };
+
+  const removeAt = (position: number) => {
+    const input = inputRef.current;
+    if (!input?.files) return;
+    commit(Array.from(input.files).filter((_file, i) => i !== position));
+    // Focus returns to the control rather than being lost with the row that has
+    // just gone — a keyboard user must not be dropped at the top of the
+    // document for taking one photograph off.
+    input.focus();
+  };
+
+  return (
+    <div>
+      <label
+        htmlFor="photos"
+        onDragOver={(event) => {
+          event.preventDefault();
+          setIsDragging(true);
+        }}
+        onDragLeave={() => setIsDragging(false)}
+        onDrop={onDrop}
+        className={[
+          "flex w-full cursor-pointer items-center gap-4 rounded-(--radius-control) border border-dashed px-4 py-4",
+          "transition-colors duration-200",
+          // The panel reacts to the input's focus ring rather than the input
+          // drawing one somewhere off screen — `sr-only` puts the real element
+          // out of sight, so the visible control shows focus on its behalf.
+          "has-[:focus-visible]:border-(--spark) has-[:focus-visible]:bg-(--spark)/10",
+          isDragging
+            ? "border-solid border-(--spark) bg-(--spark)/10"
+            : chosen > 0
+              ? "border-(--spark) bg-(--spark)/5 hover:bg-(--spark)/10"
+              : "border-(--color-border) bg-(--color-surface) hover:border-(--spark) hover:bg-(--spark)/5",
+        ].join(" ")}
+      >
+        <input
+          ref={inputRef}
+          className="sr-only"
+          id="photos"
+          name="photos"
+          type="file"
+          accept="image/*"
+          multiple
+          aria-describedby="photos-help"
+          onChange={(event) => sync(event.target.files)}
+        />
+
+        {/* The affordance. A filled disc in the page's accent — the same object
+            the FAQ uses for its markers — so it reads as something to press. */}
+        <span
+          aria-hidden="true"
+          className="grid size-10 shrink-0 place-items-center rounded-full bg-(--spark) text-(--on-spark)"
+        >
+          <ImagePlus className="size-5" />
+        </span>
+
+        <span aria-hidden="true" className="min-w-0">
+          <span className="block font-medium">
+            {chosen > 0
+              ? `${chosen} photo${chosen === 1 ? "" : "s"} attached`
+              : quote.upload.prompt}
+          </span>
+          <span
+            className="mt-0.5 block text-(--on-ground-muted)"
+            style={{ fontSize: "var(--text-label)" }}
+          >
+            {chosen > 0 ? quote.upload.more : quote.upload.formats}
+          </span>
+        </span>
+      </label>
+
+      {/* Always mounted, so the first attachment is a change to a region that
+          already exists and is therefore announced. */}
+      <div aria-live="polite">
+        {chosen > 0 && (
+          <ul className="mt-2 flex flex-wrap gap-1.5">
+            {names.map((name, position) => (
+              <li
+                key={`${name}-${position}`}
+                className="flex max-w-full items-center gap-1.5 rounded-full bg-(--color-surface) py-1 pr-1 pl-3"
+                style={{ fontSize: "var(--text-label)" }}
+              >
+                <span className="truncate">{name}</span>
+                <button
+                  type="button"
+                  onClick={() => removeAt(position)}
+                  aria-label={`Remove ${name}`}
+                  className="grid size-5 shrink-0 place-items-center rounded-full bg-transparent p-0 text-(--on-ground-muted) hover:bg-(--spark) hover:text-(--on-spark)"
+                >
+                  <X className="size-3" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const FIELD = "w-full";
 
 /** Which dialogue is up, if any. `null` is the resting state. */
@@ -148,6 +332,14 @@ type Answer = null | { kind: "confirmed"; phone: string } | { kind: "outOfArea";
 
 export function QuoteForm() {
   const [answer, setAnswer] = useState<Answer>(null);
+  /**
+   * Bumped after a successful submit. `form.reset()` empties the file input
+   * itself, but the list of chosen photographs is React state sitting beside
+   * it, and nothing about a native reset reaches that — so the upload is keyed
+   * on this and a new one is mounted empty. One number, one line, and no reset
+   * plumbing threaded through the component.
+   */
+  const [formKey, setFormKey] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
   const zipRef = useRef<HTMLInputElement>(null);
 
@@ -169,6 +361,7 @@ export function QuoteForm() {
     // confirmation below is reporting a completed form and nothing more.
     setAnswer({ kind: "confirmed", phone: phone.trim() });
     formRef.current?.reset();
+    setFormKey((key) => key + 1);
   }
 
   /** Shut the dialogue and put the cursor back on the ZIP, ready to retype. */
@@ -306,24 +499,14 @@ export function QuoteForm() {
           </Field>
 
           {/* The most useful optional field on the form, so it is the one
-              optional field that is not folded away. Multiple files, images
-              only, and a line underneath saying what it buys the person
-              filling it in. */}
+              optional field that is not folded away. See `PhotoUpload`. */}
           <Field
             id="photos"
             label={quote.fields.photos}
             help={quote.helpText.photos}
             className="sm:col-span-2"
           >
-            <input
-              className={FIELD}
-              id="photos"
-              name="photos"
-              type="file"
-              accept="image/*"
-              multiple
-              aria-describedby="photos-help"
-            />
+            <PhotoUpload key={formKey} />
           </Field>
         </div>
 

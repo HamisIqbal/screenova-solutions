@@ -27,26 +27,35 @@ import { contact } from "@/lib/site";
  *   45%            sRGB 0.95 -> L 0.235            3.7:1          1.4:1
  *   55%            sRGB 0.95 -> L 0.153            5.2:1          2.4:1
  *   70%            sRGB 0.95 -> L 0.066            9.1:1          4.2:1
+ *   75%            sRGB 0.95 -> L 0.050            11.6:1         4.9:1
  *
- * 70% is the number that carries the headline, because `blue-soft` is the
- * binding case rather than the white body copy — a light blue has much less
- * room over a dark ground than white does. Over the more typical wall behind
- * the text (sRGB 0.72) the same 70% gives blue-soft 5.6:1 and white 12:1.
+ * 75% is the number that carries the band, because `blue-soft` is the binding
+ * case rather than the white headline — a light blue has much less room over a
+ * dark ground than white does, and the light blue is now what the two
+ * supporting paragraphs are set in. 70% left them at 4.2:1 against a blown-out
+ * window, under the 4.5:1 body-text floor; 75% clears it. Over the more typical
+ * wall behind the text (sRGB 0.72) the same 75% gives blue-soft 6.4:1 and the
+ * white headline 14:1.
  *
- * It arrives as two layers rather than one flat 70%, because a flat 70%
+ * It arrives as two layers rather than one flat 75%, because a flat 75%
  * everywhere would leave nothing of the photograph worth showing:
  *
- *   below lg — one uniform 70%. The words run the full width here, so there is
+ *   below lg — one uniform 75%. The words run the full width here, so there is
  *     no side of the frame that can be left alone.
  *   lg and up — 55% flat, plus a centred ellipse over it. Behind the words
  *     those multiply out to 1 - (0.45 x 0.55) = 75.25%, and by the edges of the
  *     frame it has fallen back to about 57% and the windows are still windows.
  *
  * ---------------------------------------------------------------------------
- * The band declares `data-ground="sky"` — the black chrome ground — so the copy
- * takes a dark ground's roles rather than being hand-painted white: the heading
- * resolves `--hero-ink` to `blue-soft`, body and muted body both go white, and
- * the button inverts to white carrying black.
+ * The band declares `data-ground="sky"` — the black chrome ground — so the
+ * furniture takes a dark ground's roles: the button inverts to white carrying
+ * black. The type is the one place this band overrides the ground, and it
+ * overrides it by swapping the two roles the ground would hand out. The
+ * heading is white rather than the ground's `--hero-ink` blue, and both
+ * supporting paragraphs are `blue-soft` rather than white. Colour then carries
+ * the same split the sizes already do — one white headline, one blue block of
+ * support beneath it — instead of tinting the loudest element and leaving the
+ * two paragraphs to be told apart by weight alone.
  *
  * ---------------------------------------------------------------------------
  * What the hero says, in order, and why it is exactly this much.
@@ -103,7 +112,7 @@ export function Hero() {
       />
 
       {/* Scrim, part one: the floor under every reading. */}
-      <div aria-hidden="true" className="absolute inset-0 bg-black/70 lg:bg-black/55" />
+      <div aria-hidden="true" className="absolute inset-0 bg-black/75 lg:bg-black/55" />
 
       {/* Scrim, part two: the extra weight behind the words, desktop only, and
           centred because the words are. Over the copy the two layers multiply
@@ -119,7 +128,12 @@ export function Hero() {
           survives. `pb` is what lifts the block above dead centre — the band
           centres what is in it, so padding at the foot is the lever. */}
       <div className="relative mx-auto max-w-3xl pb-6 text-center lg:pb-14">
-        <h1 id="hero-title">
+        {/* White, not the ground's `--hero-ink` blue. The headline is the
+            heaviest thing in the band and white on the scrimmed photograph is
+            the strongest contrast the site has (12:1 over the typical wall,
+            9:1 over a blown-out window); the light blue is spent below instead,
+            where it now marks the two supporting paragraphs as one group. */}
+        <h1 id="hero-title" className="text-(--color-paper)">
           {/* One block per line: the break is authored, not left to the
               browser, and each line is its own element for later staggered
               animation. The trailing space on all but the last is what keeps
@@ -139,8 +153,14 @@ export function Hero() {
               one H1 and this is not it — but set at the lead size and in the
               ground's full ink, which is what makes it read as the second
               thing you take in rather than as body copy. */}
-          <p className="mx-auto font-medium">{hero.supporting}</p>
-          <p className="mx-auto text-(--on-ground-muted)">{hero.body}</p>
+          {/* Both supporting paragraphs in `blue-soft`, the palette's light
+              blue. It is the binding contrast case on this band — a light blue
+              has far less room over a dark ground than white does — which is
+              what sets the mobile scrim at 75% above: worst-case that holds
+              blue-soft at 4.9:1 over even a blown-out window, and desktop's
+              two layers multiply to the same place. */}
+          <p className="mx-auto font-medium text-(--color-blue-soft)">{hero.supporting}</p>
+          <p className="mx-auto text-(--color-blue-soft)">{hero.body}</p>
         </div>
 
         {/* Both actions, and both on the first screen. Stacked on a phone in
