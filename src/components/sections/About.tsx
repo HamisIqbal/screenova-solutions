@@ -1,5 +1,6 @@
 import { CtaLink, Section, SectionHeader } from "@/components/ui";
 import { about } from "@/content/home";
+import { quoteHref } from "@/content/nav";
 
 /**
  * Long-form copy on a blue band, so it splits into two columns: the header
@@ -25,7 +26,7 @@ export function About() {
             ))}
           </div>
 
-          <CtaLink href="#quote" className="mt-10">
+          <CtaLink href={quoteHref} className="mt-10">
             {about.cta}
           </CtaLink>
         </div>

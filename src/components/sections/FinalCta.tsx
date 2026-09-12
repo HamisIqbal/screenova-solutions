@@ -1,5 +1,6 @@
 import { BandPhoto, CtaLink, Section } from "@/components/ui";
 import { bandImages, finalCta } from "@/content/home";
+import { quoteHref } from "@/content/nav";
 import { contact } from "@/lib/site";
 
 /**
@@ -76,7 +77,7 @@ export function FinalCta() {
         </div>
 
         <div className="mt-9 flex flex-wrap items-center justify-center gap-x-4 gap-y-4">
-          <CtaLink href="#quote">{finalCta.primaryCta}</CtaLink>
+          <CtaLink href={quoteHref}>{finalCta.primaryCta}</CtaLink>
 
           {/* The number is in the accessible name as well as the href, so the
               link announces what it will dial rather than only "call us". */}
@@ -98,7 +99,7 @@ export function FinalCta() {
         <p
           className="font-title mt-[clamp(3rem,10vw,7rem)] max-w-none"
           style={{
-            fontSize: "clamp(1rem, 1.9vw, 1.375rem)",
+            fontSize: "clamp(1.125rem, 1.9vw, 1.625rem)",
             fontWeight: 400,
             letterSpacing: "0.01em",
             lineHeight: 1.2,

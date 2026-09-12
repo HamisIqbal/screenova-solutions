@@ -1,5 +1,6 @@
 import { BandPhoto, CtaLink, Section, SectionHeader } from "@/components/ui";
 import { bandImages, whyChooseUs } from "@/content/home";
+import { quoteHref } from "@/content/nav";
 
 /**
  * Six reasons, on a photograph: six white blocks, three and three, each showing
@@ -72,14 +73,14 @@ export function WhyChooseUs() {
               className="transition-[filter,opacity,transform] duration-500 ease-out lg:group-hover/blocks:scale-[0.98] lg:group-hover/blocks:opacity-55 lg:group-hover/blocks:blur-[3px] lg:hover:z-10 lg:hover:scale-[1.06] lg:hover:opacity-100! lg:hover:blur-none!"
             >
               <div data-ground="paper" className="h-full rounded-2xl px-6 py-6">
-                <h3 className="text-lg leading-snug font-bold">{benefit.title}</h3>
+                <h3 className="text-xl leading-snug font-bold">{benefit.title}</h3>
                 <p className="mt-3 text-(--on-ground-muted)">{benefit.body}</p>
               </div>
             </li>
           ))}
         </ul>
 
-        <CtaLink href="#quote" className="mt-14">
+        <CtaLink href={quoteHref} className="mt-14">
           {whyChooseUs.cta}
         </CtaLink>
       </div>

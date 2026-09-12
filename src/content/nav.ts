@@ -4,6 +4,7 @@
  */
 
 import { contact } from "@/lib/site";
+import { services } from "./home";
 
 export type NavLink = {
   label: string;
@@ -45,6 +46,26 @@ export const navCta: NavLink = {
 };
 
 /**
+ * Where every quote and contact action on the site goes: the form on the home
+ * page. One constant, so no button anywhere can drift to a different section.
+ *
+ * Absolute (`/#quote`, not `#quote`) so it resolves from a city or service page
+ * as well as from the home page. Arriving at it is handled by `HashScroll`,
+ * which re-aims the scroll at the form until the page has finished loading —
+ * the browser's own jump fires early and lands wherever the page happened to
+ * be laid out at that instant.
+ */
+export const quoteHref = "/#quote";
+
+/**
+ * The prefix of a hash that asks for one service in the Services carousel —
+ * `/#service-solar-screens`. No element carries these ids: `HashScroll` lands
+ * them on the Services band and the carousel reads the rest of the hash to
+ * bring that service up.
+ */
+export const serviceHashPrefix = "service-";
+
+/**
  * Absolute hrefs with a leading `/`, not bare fragments.
  *
  * The site is no longer one page: the service and city pages carry the same
@@ -52,14 +73,38 @@ export const navCta: NavLink = {
  * that is not on that document. `/#services` resolves to the home page's
  * section from anywhere, and on the home page itself it is still a
  * same-document jump — smooth scroll and all, since nothing navigates.
+ *
+ * Services is not in this list: the header renders it first, as a dropdown of
+ * the seven services — see `serviceMenu` below. Service Areas is not in it
+ * either; the footer still carries it (see `footerLinks`).
  */
 export const navLinks: NavLink[] = [
-  { label: "Services", href: "/#services" },
   { label: "How It Works", href: "/#how-it-works" },
   { label: "Why Choose Us", href: "/#why-us" },
   { label: "Screen Options", href: "/#screen-options" },
   { label: "Our Projects", href: "/#projects" },
   { label: "About Us", href: "/#about" },
-  { label: "Service Areas", href: "/#service-area" },
   { label: "FAQ", href: "/#faq" },
+];
+
+/**
+ * The header's Services dropdown: the seven services from the Services band,
+ * by their own names and in their own order, read from the same list so the
+ * two cannot disagree.
+ *
+ * A service with a page of its own goes to that page. The other three go to
+ * the Services band on the home page with that service brought up in the
+ * carousel.
+ */
+export const serviceMenu: NavLink[] = services.items.map((service) => ({
+  label: service.title,
+  href: "href" in service && service.href ? service.href : `/#${serviceHashPrefix}${service.id}`,
+}));
+
+/** The footer's map of the page — the full list, Services and Service Areas included. */
+export const footerLinks: NavLink[] = [
+  { label: "Services", href: "/#services" },
+  ...navLinks.slice(0, 5),
+  { label: "Service Areas", href: "/#service-area" },
+  ...navLinks.slice(5),
 ];

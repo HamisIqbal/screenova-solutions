@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { Phone } from "lucide-react";
+import { quoteHref } from "@/content/nav";
 import { contact } from "@/lib/site";
 
 /**
- * The sticky bar at the foot of a phone: CALL on the left, FREE QUOTE on the
+ * The sticky bar at the foot of a phone: CALL on the left, TEXT US on the
  * right, and nothing else.
  *
  * Two actions, split down the middle, because those are the only two things
@@ -28,7 +29,7 @@ import { contact } from "@/lib/site";
  * The ground is `sky` — the page's black chrome, the same surface the header
  * takes when it lifts — so the bar reads as furniture rather than as a third
  * brand colour parked at the bottom of the screen. Within it the two halves are
- * ranked rather than equal: FREE QUOTE takes the filled pill's colours (white
+ * ranked rather than equal: TEXT US takes the filled pill's colours (white
  * on this ground, carrying black) because the form is the ask, and CALL is
  * drawn in the ground's own ink beside it. Both are full-height tap targets
  * running the whole half-width, which is the largest either could be.
@@ -45,10 +46,7 @@ export function MobileCtaBar() {
       {/* The row is the token *less* the hairline above it, so the bar's outer
           height — border included — is exactly `--mobile-cta-height` and the
           body's matching bottom padding clears it to the pixel. */}
-      <div
-        className="grid grid-cols-2"
-        style={{ height: "calc(var(--mobile-cta-height) - 1px)" }}
-      >
+      <div className="grid grid-cols-2" style={{ height: "calc(var(--mobile-cta-height) - 1px)" }}>
         {/* Dials the one number in `src/lib/site.ts` — the same one the header,
             the footer, the quote form and the closer all carry. The visible
             word is CALL; the accessible name is the number, so a screen reader
@@ -65,13 +63,16 @@ export function MobileCtaBar() {
 
         {/* Straight to the form. `/#quote` rather than `#quote` so the same bar
             works on the service and city pages, where the form is on the home
-            page and a bare fragment would point at nothing. */}
+            page and a bare fragment would point at nothing. TEXT US because the
+            form is a written message — CALL beside it is the spoken one.
+            `scroll={false}`: `HashScroll` does the landing. */}
         <Link
-          href="/#quote"
+          href={quoteHref}
+          scroll={false}
           className="font-title flex items-center justify-center bg-(--action) text-(--on-action) no-underline"
           style={{ fontSize: "var(--text-label)", fontWeight: 600, letterSpacing: "0.08em" }}
         >
-          FREE QUOTE
+          TEXT US
         </Link>
       </div>
     </div>

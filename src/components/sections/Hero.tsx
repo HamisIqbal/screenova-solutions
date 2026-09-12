@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { CtaLink, Section } from "@/components/ui";
 import { hero, heroImage } from "@/content/home";
+import { quoteHref } from "@/content/nav";
 import { contact } from "@/lib/site";
 
 /**
@@ -162,7 +163,7 @@ export function Hero() {
           data-intro-at="0.48"
           className="mt-7 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-4 lg:mt-9"
         >
-          <CtaLink href="#quote" className="justify-center">
+          <CtaLink href={quoteHref} className="justify-center">
             {hero.cta}
           </CtaLink>
 

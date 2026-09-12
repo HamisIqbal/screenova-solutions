@@ -135,16 +135,26 @@
      Re-solve if the wording, the break or the face changes; the per-line widths
      are recorded beside the copy in `src/content/home.ts`.
 
-       hero   20 -> 44px      h2   26 -> 33.6px     h3   16 -> 18px
-       lead   13 -> 15px      body 14px flat        label 12px  nav 14px */
-  --text-hero: clamp(1.25rem, 7.37vw - 0.221rem, 2.75rem);
+     The whole scale was stepped up a size in one pass, and every role now
+     ramps *up* with the window or holds flat — none of them gets smaller as the
+     screen gets bigger. On top of that the root size itself grows past 1600px
+     (see `html` in globals.css), so a large, ultrawide or zoomed-out window
+     scales the page up rather than leaving it a small island in the middle.
+
+       hero   20 -> 52px      h2   30 -> 50px       h3   19 -> 22px
+       lead   15 -> 19px      body 16 -> 18px       label 14 -> 15px  nav 16px
+
+     The hero's 52px ceiling is still solved rather than chosen: the headline
+     sits in a 48rem column, and 13.03em x 52px = 678px, which clears that
+     column from ~754px up, the first width at which the ramp asks for 52px. */
+  --text-hero: clamp(1.25rem, 7.37vw - 0.221rem, 3.25rem);
   /* The section heading is the largest type in its section — nothing inside a
      band may out-size the line that opens it. That is what sets the ceiling at
      44px: it is the hero title's own cap, so a section heading matches the
      page's loudest voice without exceeding it, and every heading inside a
      section (a service title, a step numeral) is sized under it. */
-  --text-h2: clamp(1.75rem, 1.05rem + 3vw, 2.75rem);
-  --text-h3: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+  --text-h2: clamp(1.875rem, 1.2rem + 3vw, 3.125rem);
+  --text-h3: clamp(1.1875rem, 1.1rem + 0.35vw, 1.375rem);
   /* The hero's two paragraphs, and nothing else. It is a ramp rather than a
      flat size because the requirement on them is a *line count*, not a size:
      three lines each, at every width.
@@ -158,15 +168,15 @@
        27em x 13px = 351px, so 3 lines from a ~400px viewport up
        27em x 15px = 405px, reached at ~453px and flat from there
 
-     Below ~400px the floor takes over and the paragraphs run to four lines.
-     That is a copy length problem, not a layout one: 139 and 162 characters
-     cannot be three lines on a 320px screen at any size a person can read. */
-  --text-lead: clamp(0.8125rem, 3.7vw - 0.111rem, 0.9375rem);
-  --text-body: 0.875rem;
-  --text-label: 0.75rem;
+     Since the type was stepped up, the three-line hold is a desktop and
+     tablet property: 27em x 15px is 405px, so below ~450px the column caps it
+     and the paragraphs run to four lines. Readable size won over line count. */
+  --text-lead: clamp(0.9375rem, 0.85rem + 0.6vw, 1.1875rem);
+  --text-body: clamp(1rem, 0.925rem + 0.25vw, 1.125rem);
+  --text-label: clamp(0.875rem, 0.84rem + 0.12vw, 0.9375rem);
   /* Nav sits a step above `label` rather than with it: the links are the only
      type in the pill and they are read at a glance, not scanned in a block. */
-  --text-nav: 0.875rem;
+  --text-nav: 1rem;
 
   /* Layout */
   --spacing-gutter: 1.5rem;

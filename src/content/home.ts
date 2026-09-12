@@ -13,7 +13,6 @@ export type ServiceItem = {
   /** Placeholder until the real photograph lands — see the note on `services`. */
   image: string;
   imageAlt: string;
-  cta?: string;
   /**
    * The dedicated page for this service, where one exists. Only four of the
    * seven have one — the rest are answered on this page and nowhere else, and
@@ -63,8 +62,8 @@ export type FaqItem = {
  *
  * This is the balanced split of the two available: breaking one word later, at
  * "…& Screen / Repair in Tampa Bay", runs 16.20em and would cost a fifth of the
- * type size. 13.03em is what `--text-hero`'s 44px ceiling is solved from, and
- * what the hero copy column being widened to 62% pays for.
+ * type size. 13.03em is what `--text-hero`'s 52px ceiling is solved from,
+ * against the hero's 48rem copy column.
  *
  * Re-measure and re-solve both together if the wording or the face changes.
  */
@@ -110,7 +109,9 @@ export const hero = {
    * both have to be on screen without scrolling.
    */
   body: "Torn mesh, missing screens or bent frames — we measure, build and fit at your door.",
-  cta: "Get a Free Quote",
+  /** Opens the quote form, which is a written message — so "Text us", beside
+      the call button's "Call Now". */
+  cta: "Text us",
   callCta: "Call Now",
 } as const;
 
@@ -158,6 +159,8 @@ export const services = {
    */
   wholeHome:
     "Need screens for the entire house? We can measure, build and install custom screens for multiple windows in one visit.",
+  /** The one action under the carousel, whichever service is showing. */
+  cta: "Text us",
   items: [
     {
       id: "new-window-screens",
@@ -170,7 +173,6 @@ export const services = {
         "Windows with no screen at all — a house you have just bought, one that blew off in a storm, or an opening that never had one.",
         "We measure the opening, build the screen to it in aluminum framing, and fit it. No stock sizes, nothing trimmed down to nearly fit.",
       ],
-      cta: "Get a Quote",
     },
     {
       id: "window-rescreening",
@@ -183,7 +185,6 @@ export const services = {
         "Frame still straight, mesh torn, sagging or sun-faded? Then the frame stays and only the mesh changes.",
         "We strip the old mesh and spline, roll in new material, and re-fit the screen — the least expensive of the three answers, which is why we check for it first.",
       ],
-      cta: "Get a Quote",
     },
     {
       id: "window-screen-repair",
@@ -196,7 +197,6 @@ export const services = {
         "A split corner, spline working its way out of the channel, a small tear, a screen that will not sit in its track.",
         "Most of those are a repair rather than a replacement. We look at what is actually wrong and tell you which one it is before any work starts.",
       ],
-      cta: "Get a Quote",
     },
     {
       id: "sliding-screen-door-rescreening",
@@ -208,7 +208,6 @@ export const services = {
         "The door everyone walks through, so it is the screen that goes first — pushed out at the bottom, torn at pet height, or blown through.",
         "A damaged slider rarely needs a whole new door. We re-mesh the one you have and put it back on its track.",
       ],
-      cta: "Get a Quote",
     },
     {
       id: "pet-resistant-screens",
@@ -246,7 +245,6 @@ export const services = {
         "Bent or corroded frames, corners pulled apart, a screen gone out of square that no longer sits in the window.",
         "When the mesh is sound but the frame is not, the frame is what gets replaced — rebuilt to the same opening in new aluminum, with your mesh type carried over or upgraded.",
       ],
-      cta: "Get a Quote",
     },
   ] satisfies ServiceItem[],
 } as const;
@@ -373,7 +371,7 @@ export const whyChooseUs = {
       body: "Send a photo and rough sizes and we'll tell you whether it's a repair, a rescreen or a rebuild — before anything is booked.",
     },
   ] satisfies Benefit[],
-  cta: "Request Your Free Quote",
+  cta: "Text us",
 } as const;
 
 export const screenOptions = {
@@ -415,7 +413,7 @@ export const about = {
     "We do all three at your door. Measuring, building and installation happen in the same visit, whether that is one screen on a lanai or every window in a house you have just bought.",
     "You get told which of the three answers your screen actually needs — a repair, a rescreen or a rebuild — and why, before any work is booked.",
   ],
-  cta: "Get a Free Quote",
+  cta: "Text us",
 } as const;
 
 /**
@@ -638,8 +636,30 @@ export const quote = {
     address: "1204 W Azeele St, Tampa",
     details: "Three torn screens on the lanai, and a slider that won't latch.",
     quantity: "6",
-    measurements: 'Example: 36" × 48"',
   },
+  /**
+   * The sample size shown directly under "Approximate Width × Height", so the
+   * format is answered before anybody has to ask it. It follows the service
+   * select: a sliding screen door is a very different shape from a window, and
+   * a sample the wrong shape is worse than none.
+   *
+   * These are ordinary sizes for the thing named, not a promise about any one
+   * house: a standard slider screen is 36" × 80", a full-height solar screen on
+   * a typical Florida window is about 36" × 60", and a window screen 36" × 48".
+   * `default` covers every service not keyed here, and the empty select.
+   */
+  measurementSamples: {
+    default: { size: '36" W × 48" H', note: "a typical window screen" },
+    "Sliding Screen Door Rescreening": {
+      size: '36" W × 80" H',
+      note: "a standard sliding screen door",
+    },
+    "Solar Screens": { size: '36" W × 60" H', note: "a full-height solar screen" },
+    "Pet-Resistant Screens": {
+      size: '36" W × 80" H',
+      note: 'a sliding screen door — a window is nearer 36" × 48"',
+    },
+  } as Record<string, { size: string; note: string }>,
   /**
    * The seven services plus an eighth answer. "I'm Not Sure" is last and it is
    * a real option, not a fallback: most people cannot tell rescreening from
@@ -657,17 +677,15 @@ export const quote = {
     "I'm Not Sure",
   ],
   /**
-   * The two lines that sit under a field rather than in it. A placeholder
+   * The line that sits under a field rather than in it. A placeholder
    * disappears the moment somebody types, so anything a person still needs
    * while they are answering has to be real text under the control.
    *
-   * `measurements` is an example of the format, which is the one thing the
-   * label cannot show. `photos` is the reason to bother — the photo upload is
-   * the single most useful thing on this form and it was the only field with
-   * nothing saying so.
+   * `photos` is the reason to bother — the photo upload is the single most
+   * useful thing on this form and it was the only field with nothing saying
+   * so. The measurement field's example lives in `measurementSamples` above.
    */
   helpText: {
-    measurements: 'Example: 36" × 48"',
     photos: "Photos help us understand your project and may allow us to provide a faster estimate.",
   },
   /**
@@ -883,7 +901,7 @@ export const finalCta = {
     "Send us a photo, a rough size, or just your address. We'll tell you what it needs and what it costs.",
     "Free estimates across Tampa Bay, and no charge for the drive.",
   ],
-  primaryCta: "Get a Free Quote",
+  primaryCta: "Text us",
   secondaryCta: "Call Screenova Solutions",
   tagline: "Serving the Tampa Bay Area",
 } as const;

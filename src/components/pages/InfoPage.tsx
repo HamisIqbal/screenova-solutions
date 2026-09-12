@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CtaLink, Section, SectionHeader } from "@/components/ui";
+import { quoteHref } from "@/content/nav";
 import { TrustBar } from "@/components/sections";
 import type { CityPageContent, InfoPageContent } from "@/content/pages";
 import { isServedZip } from "@/lib/serviceArea";
@@ -105,8 +106,8 @@ export function InfoPage({ content }: { content: InfoPageContent | CityPageConte
             data-intro-at="0.28"
             className="mt-7 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-4"
           >
-            <CtaLink href="/#quote" className="justify-center">
-              Get a Free Quote
+            <CtaLink href={quoteHref} className="justify-center">
+              Text us
             </CtaLink>
             <CtaLink
               href={contact.phone.href}
@@ -189,7 +190,7 @@ export function InfoPage({ content }: { content: InfoPageContent | CityPageConte
           </ul>
 
           <div className="mt-10 flex justify-center">
-            <CtaLink href="/#quote">Check Your ZIP Code</CtaLink>
+            <CtaLink href={quoteHref}>Check Your ZIP Code</CtaLink>
           </div>
         </Section>
       )}
@@ -224,7 +225,7 @@ export function InfoPage({ content }: { content: InfoPageContent | CityPageConte
           </p>
 
           <div className="mt-9 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-4">
-            <CtaLink href="/#quote" className="justify-center">
+            <CtaLink href={quoteHref} className="justify-center">
               Send Us a Photo
             </CtaLink>
             <CtaLink

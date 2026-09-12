@@ -34,6 +34,7 @@ export function Section({
   labelledBy,
   className = "",
   bandClassName = "",
+  reveal = true,
   children,
 }: {
   id: string;
@@ -47,13 +48,18 @@ export function Section({
    * the only one — this is where `relative` and its clip go.
    */
   bandClassName?: string;
+  /**
+   * `false` for a band that should simply be there — no block fades in as it
+   * is reached. How It Works is the one that asks.
+   */
+  reveal?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <section id={id} data-ground={ground} aria-labelledby={labelledBy} className={bandClassName}>
       {/* The measure — and, because it is a `RevealGroup`, the thing that fades
           each block of the band in as you reach it. See `RevealGroup`. */}
-      <RevealGroup className={`max-w-page px-gutter mx-auto w-full ${className}`}>
+      <RevealGroup enabled={reveal} className={`max-w-page px-gutter mx-auto w-full ${className}`}>
         {children}
       </RevealGroup>
     </section>

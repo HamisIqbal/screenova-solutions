@@ -102,6 +102,7 @@ function Field({
   label,
   required = false,
   help,
+  sample,
   className = "",
   children,
 }: {
@@ -110,19 +111,24 @@ function Field({
   required?: boolean;
   /**
    * A line under the control. Not a placeholder: a placeholder is gone the
-   * moment somebody types, and both of the two that exist here — the
-   * measurement format and the reason to attach a photo — are things a person
-   * still needs while they are answering. Wired to the field with
+   * moment somebody types, and the one that exists here — the reason to attach
+   * a photo — is something a person still needs while they are answering. Wired to the field with
    * `aria-describedby`, so it is announced with the label rather than being
    * decoration a screen reader never reaches.
    */
   help?: string;
+  /**
+   * A line directly under the label and above the control — an example of the
+   * answer's shape, read before typing rather than after. Wired up by the
+   * caller with `aria-describedby="{id}-sample"`.
+   */
+  sample?: React.ReactNode;
   className?: string;
   children: React.ReactNode;
 }) {
   return (
     <div className={className}>
-      <label className="mb-1.5 block" htmlFor={id}>
+      <label className={sample ? "block" : "mb-1.5 block"} htmlFor={id}>
         {label}
         {/* The mark is the page's spark colour, which on paper is a fill rather
             than text — so it is drawn as a dot, not as an asterisk in orange.
@@ -132,10 +138,19 @@ function Field({
         {required && (
           <span
             aria-hidden="true"
-            className="ml-1.5 inline-block h-1.5 w-1.5 translate-y-[-1px] rounded-full align-middle bg-(--spark)"
+            className="ml-1.5 inline-block h-1.5 w-1.5 translate-y-[-1px] rounded-full bg-(--spark) align-middle"
           />
         )}
       </label>
+      {sample && (
+        <p
+          id={`${id}-sample`}
+          className="mb-1.5 max-w-none text-(--on-ground-muted) italic"
+          style={{ fontSize: "var(--text-label)" }}
+        >
+          {sample}
+        </p>
+      )}
       {children}
       {help && (
         <p
@@ -362,6 +377,13 @@ export function QuoteForm() {
   );
   /** True once the visitor has taken the offer, so the banner can say so. */
   const [applied, setApplied] = useState(false);
+  /**
+   * The service picked in the select, mirrored only so the measurement field's
+   * sample size can follow it. The select itself stays uncontrolled like every
+   * other field; this is a reading of it, not its value.
+   */
+  const [service, setService] = useState("");
+  const sample = quote.measurementSamples[service] ?? quote.measurementSamples.default!;
   const formRef = useRef<HTMLFormElement>(null);
   const zipRef = useRef<HTMLInputElement>(null);
 
@@ -398,6 +420,7 @@ export function QuoteForm() {
 
     setAnswer({ kind: "confirmed", phone: phone.trim() });
     formRef.current?.reset();
+    setService("");
     setFormKey((key) => key + 1);
   }
 
@@ -589,7 +612,13 @@ export function QuoteForm() {
               it is a real choice, not a cop-out. The empty option stays
               `disabled` so the prompt cannot be submitted as a value. */}
           <Field id="service" label={quote.fields.service} className="sm:col-span-2">
-            <select className={FIELD} id="service" name="service" defaultValue="">
+            <select
+              className={FIELD}
+              id="service"
+              name="service"
+              defaultValue=""
+              onChange={(event) => setService(event.target.value)}
+            >
               <option value="" disabled>
                 Select a service
               </option>
@@ -652,15 +681,19 @@ export function QuoteForm() {
             <Field
               id="measurements"
               label={quote.fields.measurements}
-              help={quote.helpText.measurements}
+              sample={
+                <>
+                  Sample: {sample.size} <span className="not-italic">({sample.note})</span>
+                </>
+              }
             >
               <input
                 className={FIELD}
                 id="measurements"
                 name="measurements"
                 type="text"
-                placeholder={quote.hints.measurements}
-                aria-describedby="measurements-help"
+                placeholder={sample.size}
+                aria-describedby="measurements-sample"
               />
             </Field>
           </div>

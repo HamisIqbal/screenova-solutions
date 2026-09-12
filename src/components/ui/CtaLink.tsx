@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 /**
  * The action pill. Every primary action on the page uses it — hero, section
  * closers, the nav — so the thing you're meant to click always looks the same
@@ -45,17 +47,31 @@ export function CtaLink({
       ? "bg-(--action) text-(--on-action) hover:bg-(--action-hover)"
       : "border border-(--on-ground)/45 text-(--on-ground) hover:border-(--action) hover:bg-(--action) hover:text-(--on-action)";
 
+  const props = {
+    onClick,
+    "aria-label": ariaLabel,
+    className: `font-title inline-flex shrink-0 items-center rounded-full px-6 py-3 whitespace-nowrap no-underline transition-colors ${skin} ${className}`,
+    // Medium, the one thing on the page above Regular other than the h1. A
+    // filled pill in Regular reads as a label someone happened to put a
+    // background behind; half a step of weight is what makes it a control.
+    style: { fontSize: "var(--text-body)", fontWeight: 500 },
+  };
+
+  // `tel:` and anything off-site stay plain anchors. A route on this site —
+  // `/#quote` above all — is a `Link`, so leaving a city page for the form is
+  // a client-side hop rather than a full reload. `scroll={false}` on a hash:
+  // the router's own jump fires before the page below the fold has settled,
+  // and `HashScroll` is what lands it on the section instead.
+  if (href.startsWith("/")) {
+    return (
+      <Link href={href} scroll={href.includes("#") ? false : undefined} {...props}>
+        {children}
+      </Link>
+    );
+  }
+
   return (
-    <a
-      href={href}
-      onClick={onClick}
-      aria-label={ariaLabel}
-      className={`font-title inline-flex shrink-0 items-center rounded-full px-6 py-3 whitespace-nowrap no-underline transition-colors ${skin} ${className}`}
-      // Medium, the one thing on the page above Regular other than the h1. A
-      // filled pill at 14px in Regular reads as a label someone happened to put
-      // a background behind; half a step of weight is what makes it a control.
-      style={{ fontSize: "var(--text-body)", fontWeight: 500 }}
-    >
+    <a href={href} {...props}>
       {children}
     </a>
   );

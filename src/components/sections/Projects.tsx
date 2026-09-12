@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { CtaLink, Section, SectionHeader } from "@/components/ui";
 import { projects } from "@/content/home";
+import { quoteHref } from "@/content/nav";
 
 /**
  * Our Projects — the section the nav has been linking to for some time without
@@ -54,7 +55,7 @@ export function Projects() {
               </div>
 
               <div className="px-5 py-5">
-                <h3 className="text-lg leading-snug font-bold">{category.title}</h3>
+                <h3 className="text-xl leading-snug font-bold">{category.title}</h3>
                 <p className="mt-2 text-(--on-ground-muted)">{category.body}</p>
 
                 {!hasPair && (
@@ -72,7 +73,7 @@ export function Projects() {
       </ul>
 
       <div className="mt-[clamp(3rem,8vw,6rem)] flex justify-center">
-        <CtaLink href="#quote">{projects.cta}</CtaLink>
+        <CtaLink href={quoteHref}>{projects.cta}</CtaLink>
       </div>
     </Section>
   );

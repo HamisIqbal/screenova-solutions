@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cityPages, servicePages } from "@/content/pages";
-import { logo, navLinks, wordmark } from "@/content/nav";
+import { footerLinks, logo, wordmark } from "@/content/nav";
 import { contact, siteConfig, socials } from "@/lib/site";
 
 /**
@@ -233,9 +233,10 @@ export function Footer() {
             </ul>
           </nav>
 
-          {/* Navigate: the map of the page. The same list the header carries,
-              from the same source, stacked here rather than laid in a row — a
-              footer nav is scanned down a column, not read across. */}
+          {/* Navigate: the map of the page, stacked here rather than laid in a
+              row — a footer nav is scanned down a column, not read across. It
+              keeps Services and Service Areas, which the header now handles
+              differently (a dropdown, and nothing) — see `footerLinks`. */}
           <nav
             aria-label="Footer"
             className={`${DIVIDER} border-t pt-10 sm:border-l sm:pl-8 lg:border-t-0 lg:pt-0 lg:pl-8`}
@@ -243,19 +244,24 @@ export function Footer() {
             <ColumnTitle>Navigate</ColumnTitle>
 
             <ul className="mt-6 space-y-3">
-              {navLinks.map((link) => (
+              {footerLinks.map((link) => (
                 <li key={link.href}>
                   {/* `min-h-6`: a 17px line of type is a 17px tap target, and
                       these are stacked list items rather than links inside a
-                      sentence, so the 24px minimum applies to them. */}
-                  <Link href={link.href} className={`${LINK} inline-flex min-h-6 items-center`}>
+                      sentence, so the 24px minimum applies to them.
+                      `scroll={false}`: every one is a `/#section` hash, and
+                      `HashScroll` does the landing. */}
+                  <Link
+                    href={link.href}
+                    scroll={false}
+                    className={`${LINK} inline-flex min-h-6 items-center`}
+                  >
                     {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
           </nav>
-
         </div>
 
         {/* The closing line. A rule above it because everything above is

@@ -111,7 +111,7 @@ export function ScreenOptions() {
 
           {/* One element, changing its words. `key` on the inner span restarts
               the fade on every change without four hidden copies in the DOM. */}
-          <p className="mt-3 min-h-24 text-xl leading-snug">
+          <p className="mt-3 min-h-24 text-2xl leading-snug">
             <span key={current} className="block animate-[best-for-in_420ms_ease-out]">
               {bestFor ?? "Anything the first three do not cover"}
             </span>
@@ -146,7 +146,7 @@ export function ScreenOptions() {
                   {String(i + 1).padStart(2, "0")}
                 </p>
 
-                <h3 className="text-blue-soft mt-3 text-xl font-bold sm:text-2xl">
+                <h3 className="text-blue-soft mt-3 text-2xl font-bold sm:text-[1.75rem]">
                   {option.title}
                 </h3>
 

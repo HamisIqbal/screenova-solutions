@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "@/styles/globals.css";
 import { fontVariables } from "@/app/fonts";
-import { Footer, Header, MobileCtaBar } from "@/components/layout";
+import { Footer, HashScroll, Header, MobileCtaBar } from "@/components/layout";
 import { Intro, introArmingScript } from "@/components/ui";
 import { ogImage, siteConfig } from "@/lib/site";
 
@@ -70,12 +70,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <main id="main">{children}</main>
         <Footer />
-        {/* The sticky CALL / FREE QUOTE bar. Last in the DOM and `fixed`, so it
+        {/* The sticky CALL / TEXT US bar. Last in the DOM and `fixed`, so it
             sits over the page rather than in it; `lg:hidden` inside means it
             does not exist at all on a desktop. The body carries a matching
             bottom padding under the same breakpoint — see `globals.css` — so
             nothing on any page can end up underneath it. */}
         <MobileCtaBar />
+        {/* Lands every `#section` link — `/#quote` from any page above all —
+            on its section once the page has settled. See `HashScroll`. */}
+        <HashScroll />
       </body>
     </html>
   );

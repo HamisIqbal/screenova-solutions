@@ -31,10 +31,9 @@ import { useIsomorphicLayoutEffect, usePrefersReducedMotion } from "@/hooks";
  *     revealed; a block that carries only a photograph now arrives with the
  *     same fade the copy does, rather than being the one thing on the page
  *     that is simply there.
- *   - Anything marked `data-reveal="off"`, and its children. The How It Works
- *     deck is the one that asks: those cards already arrive by covering the one
- *     before them, which is the whole point of the section, and a fade on top of
- *     that was a second arrival for the same card.
+ *   - Anything marked `data-reveal="off"`, and its children — a block that
+ *     should simply be there. A whole band can opt out the same way with
+ *     `<Section reveal={false}>`, which How It Works does.
  *
  * And nothing that is already on screen when you arrive is touched at all: its
  * position is measured once at setup, and a block inside the window keeps the
@@ -42,8 +41,8 @@ import { useIsomorphicLayoutEffect, usePrefersReducedMotion } from "@/hooks";
  * paints, then blanks, then fades back — a flash where there was none. What is
  * above the fold was never hidden; the animation is for what you scroll to.
  *
- * Sticky blocks fade without the rise. The How It Works deck sticks its cards,
- * and a sticky element under a `y` transform fights its own offset.
+ * Sticky blocks fade without the rise: a sticky element under a `y` transform
+ * fights its own offset.
  *
  * Under `prefers-reduced-motion` the effect does not run: nothing is hidden and
  * no trigger is created. The same is true with JavaScript off — the hidden
@@ -57,9 +56,12 @@ const RISE = 24;
 
 export function RevealGroup({
   className = "",
+  enabled = true,
   children,
 }: {
   className?: string;
+  /** Off, the group is a plain container: nothing is hidden, nothing fades. */
+  enabled?: boolean;
   children: React.ReactNode;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -67,7 +69,7 @@ export function RevealGroup({
 
   useIsomorphicLayoutEffect(() => {
     const root = rootRef.current;
-    if (!root || prefersReducedMotion) return;
+    if (!root || !enabled || prefersReducedMotion) return;
 
     // A context so every tween, every `set` and every ScrollTrigger made in
     // here is reverted together — including the opacity, which `revert` puts
@@ -118,7 +120,7 @@ export function RevealGroup({
     }, root);
 
     return () => context.revert();
-  }, [prefersReducedMotion]);
+  }, [enabled, prefersReducedMotion]);
 
   return (
     <div ref={rootRef} className={className}>

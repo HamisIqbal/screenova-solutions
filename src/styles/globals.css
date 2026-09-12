@@ -19,6 +19,20 @@
     scroll-behavior: smooth;
     /* Reserve gutter so pinned/overflow sections don't shift layout. */
     scrollbar-gutter: stable;
+    /* The page's one scale knob, and it only ever turns up.
+
+       Every size on the site is in rem — type, spacing, the measure, the
+       header row and the logo — so the root size is what the whole page is
+       drawn at. Up to 1600px it is the reader's own default (100%, 16px unless
+       they changed it). Past that it grows with the window, reaching 125% at
+       2560px and holding there, so a 1440p, ultrawide or zoomed-out window
+       gets a proportionally larger page instead of the same small one floating
+       in a sea of margin. Zooming out widens the CSS viewport, so this also
+       gives back part of what a zoom-out takes away.
+
+       Media queries are unaffected — they resolve rem against the initial
+       value, not this — so every breakpoint still fires at the same width. */
+    font-size: clamp(100%, calc(100% + (100vw - 100rem) * 0.0041667), 125%);
   }
 
   body {
@@ -383,7 +397,9 @@
   textarea,
   select {
     font-family: var(--font-body);
-    font-size: var(--text-label);
+    /* Body size, not label size: what somebody types should read as easily as
+       the page does, and at 16px and up iOS no longer zooms the page on focus. */
+    font-size: var(--text-body);
     font-weight: 400;
     color: var(--color-foreground);
     background-color: var(--color-surface);

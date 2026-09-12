@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
@@ -8,6 +8,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import { CtaLink, Section, SectionHeader } from "@/components/ui";
 import { services } from "@/content/home";
+import { quoteHref, serviceHashPrefix } from "@/content/nav";
 
 /**
  * Seven services, one at a time, and two different ways of handing them over.
@@ -143,6 +144,43 @@ export function Services() {
    * finger lifts now, so the name row never disagrees with where the strip is
    * about to stop.
    */
+  /**
+   * The header's Services dropdown lands here with `#service-<id>` for the
+   * three services that have no page of their own. The hash is read on arrival
+   * and on every `hashchange` — `HashScroll` announces one even when the same
+   * service is chosen twice — and that service is brought up in whichever
+   * rendering is on screen. A frame late on purpose: the strip has to have its
+   * width before it can be scrolled to a slide.
+   */
+  useEffect(() => {
+    let frame = 0;
+
+    const fromHash = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const id = window.location.hash.slice(1);
+        if (!id.startsWith(serviceHashPrefix)) return;
+        const next = items.findIndex(
+          (service) => service.id === id.slice(serviceHashPrefix.length),
+        );
+        if (next < 0) return;
+
+        setIndex(next);
+        const strip = stripRef.current;
+        if (strip && strip.clientWidth > 0) {
+          strip.scrollTo({ left: next * strip.clientWidth, behavior: "instant" });
+        }
+      });
+    };
+
+    fromHash();
+    window.addEventListener("hashchange", fromHash);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("hashchange", fromHash);
+    };
+  }, []);
+
   const onStripScroll = () => {
     const strip = stripRef.current;
     if (!strip || strip.clientWidth === 0) return;
@@ -198,7 +236,7 @@ export function Services() {
         // never on the photograph. `snap-x snap-mandatory` is the whole gesture.
         // The scrollbar is hidden in both engines — on a touch screen it is an
         // 8px grey line under a photograph and nothing else.
-        className="-mx-gutter [&::-webkit-scrollbar]:hidden flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain lg:hidden"
+        className="-mx-gutter flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain lg:hidden [&::-webkit-scrollbar]:hidden"
         style={{ scrollbarWidth: "none" }}
         tabIndex={0}
         aria-roledescription="carousel"
@@ -234,8 +272,8 @@ export function Services() {
                   painted into the corner. */}
               <span
                 aria-hidden="true"
-                className="font-title absolute top-3 right-3 rounded-full bg-black/35 px-2 py-0.5 tabular-nums text-white/85 backdrop-blur-[2px]"
-                style={{ fontSize: "0.6875rem", letterSpacing: "0.04em" }}
+                className="font-title absolute top-3 right-3 rounded-full bg-black/35 px-2 py-0.5 text-white/85 tabular-nums backdrop-blur-[2px]"
+                style={{ fontSize: "0.8125rem", letterSpacing: "0.04em" }}
               >
                 {i + 1}/{items.length}
               </span>
@@ -243,9 +281,9 @@ export function Services() {
 
             {/* The words, on paper, with the band's gutter given back. */}
             <div className="px-gutter py-6">
-              <h3 className="text-lg leading-tight font-bold sm:text-2xl">{service.title}</h3>
+              <h3 className="text-xl leading-tight font-bold sm:text-3xl">{service.title}</h3>
 
-              <div className="mt-3 flex flex-col gap-1.5 text-[0.8125rem] leading-snug text-(--on-ground-muted) sm:gap-3 sm:text-[length:var(--text-body)] sm:leading-normal">
+              <div className="mt-3 flex flex-col gap-2 leading-snug text-(--on-ground-muted) sm:gap-3 sm:leading-normal">
                 {service.body.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
@@ -256,7 +294,7 @@ export function Services() {
                   whole guard against a broken link. */}
               {service.href && (
                 <p className="mt-4">
-                  <Link href={service.href} style={{ fontSize: "var(--text-label)" }}>
+                  <Link href={service.href} style={{ fontSize: "var(--text-body)" }}>
                     More on {service.title}
                   </Link>
                 </p>
@@ -280,7 +318,7 @@ export function Services() {
         <div className="grid lg:grid-cols-2">
           {/* The picture. Second in the row — the words lead the reading
               order. */}
-          <div className="relative order-2 h-[34rem] w-full">
+          <div className="relative order-2 h-[38rem] w-full">
             <AnimatePresence initial={false}>
               <motion.div
                 key={current.id}
@@ -304,7 +342,7 @@ export function Services() {
           {/* The words. The column is fixed to the card height, the copy is
               top-aligned inside it, and the controls sit at the bottom of the
               space whether or not the copy fills it. */}
-          <div className="order-1 flex h-[34rem] flex-col p-10 xl:p-12">
+          <div className="order-1 flex h-[38rem] flex-col p-10 xl:p-12">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={current.id}
@@ -316,7 +354,7 @@ export function Services() {
                 aria-live="polite"
               >
                 <p
-                  className="font-title tabular-nums text-(--on-ground-muted)"
+                  className="font-title text-(--on-ground-muted) tabular-nums"
                   style={{ fontSize: "var(--text-label)", letterSpacing: "0.16em" }}
                 >
                   {String(index + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
@@ -324,14 +362,14 @@ export function Services() {
 
                 {/* The card is half a viewport of white with room to spare, so
                     the title and the copy are both larger than the page's
-                    defaults — 44px and 17px — which is what makes this read as
+                    defaults — 40px and 19px — which is what makes this read as
                     the section's one big thing rather than a paragraph sitting
                     in a large box. */}
-                <h3 className="mt-4 text-[2rem] leading-tight font-bold xl:text-[2.25rem]">
+                <h3 className="mt-4 text-[2.25rem] leading-tight font-bold xl:text-[2.5rem]">
                   {current.title}
                 </h3>
 
-                <div className="mt-5 flex max-w-lg flex-col gap-3 text-base leading-[1.6] text-(--on-ground-muted) xl:text-[1.0625rem] xl:leading-[1.55]">
+                <div className="mt-5 flex max-w-lg flex-col gap-3 text-[1.125rem] leading-[1.6] text-(--on-ground-muted) xl:text-[1.1875rem] xl:leading-[1.55]">
                   {current.body.map((paragraph) => (
                     <p key={paragraph}>{paragraph}</p>
                   ))}
@@ -339,7 +377,7 @@ export function Services() {
 
                 {current.href && (
                   <p className="mt-5">
-                    <Link href={current.href} style={{ fontSize: "var(--text-label)" }}>
+                    <Link href={current.href} style={{ fontSize: "var(--text-body)" }}>
                       More on {current.title}
                     </Link>
                   </p>
@@ -399,7 +437,7 @@ export function Services() {
             quote form's photo upload is what makes that a real offer. */}
         <p className="mx-auto font-medium">{services.help}</p>
 
-        <CtaLink href="#quote">{current.cta ?? "Get a Quote"}</CtaLink>
+        <CtaLink href={quoteHref}>{services.cta}</CtaLink>
 
         {/* The whole-home line, and the only place on the page it appears. */}
         <p className="mx-auto text-(--on-ground-muted)">{services.wholeHome}</p>

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { CtaLink, Section, SectionHeader } from "@/components/ui";
 import { serviceArea } from "@/content/home";
+import { quoteHref } from "@/content/nav";
 
 /**
  * Blue, continuing the blue of About rather than cutting against it: who we are
@@ -93,12 +94,14 @@ export function ServiceArea() {
                 className="absolute inset-0 flex items-end no-underline"
                 aria-label={`Window screen repair in ${city.name}`}
               >
-                <h4 className="px-5 pb-4 font-bold text-white underline decoration-white/40 decoration-2 underline-offset-4">
+                <h4 className="px-5 pb-4 text-xl font-bold text-white underline decoration-white/40 decoration-2 underline-offset-4">
                   {city.name}
                 </h4>
               </Link>
             ) : (
-              <h4 className="absolute right-5 bottom-4 left-5 font-bold text-white">{city.name}</h4>
+              <h4 className="absolute right-5 bottom-4 left-5 text-xl font-bold text-white">
+                {city.name}
+              </h4>
             )}
           </li>
         ))}
@@ -126,7 +129,7 @@ export function ServiceArea() {
       {/* The question this whole band raises, answered by the one field that
           settles it. */}
       <div className="mt-10 flex">
-        <CtaLink href="#quote">{serviceArea.cta}</CtaLink>
+        <CtaLink href={quoteHref}>{serviceArea.cta}</CtaLink>
       </div>
     </Section>
   );

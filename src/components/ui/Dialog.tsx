@@ -182,7 +182,7 @@ export function Dialog({
           <h2
             id={titleId}
             className="font-title mt-4"
-            style={{ fontSize: "clamp(1.25rem, 1.1rem + 0.7vw, 1.5rem)", fontWeight: 900 }}
+            style={{ fontSize: "clamp(1.5rem, 1.3rem + 0.8vw, 1.75rem)", fontWeight: 900 }}
           >
             {title}
           </h2>
