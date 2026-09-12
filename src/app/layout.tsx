@@ -4,6 +4,7 @@ import { fontVariables } from "@/app/fonts";
 import { Footer, HashScroll, Header, MobileCtaBar } from "@/components/layout";
 import { Intro, introArmingScript } from "@/components/ui";
 import { ogImage, siteConfig } from "@/lib/site";
+import { zoomCompensationScript } from "@/lib/zoomCompensation";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -55,8 +56,14 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={fontVariables}>
+    // `suppressHydrationWarning` because two inline scripts below write to this
+    // element before React hydrates it — the entrance's arming attribute and
+    // the zoom factor — and neither is something React rendered.
+    <html lang="en" className={fontVariables} suppressHydrationWarning>
       <body>
+        {/* Before anything paints: sets `--zoom-k` so a zoomed-out browser
+            draws the page at its 100% size. See `lib/zoomCompensation.ts`. */}
+        <script dangerouslySetInnerHTML={{ __html: zoomCompensationScript }} />
         {/* First thing in the body, and synchronous: it has to arm the
             entrance before the browser has parsed the header, or the rule that
             hides the first screen arrives too late to hide anything. See

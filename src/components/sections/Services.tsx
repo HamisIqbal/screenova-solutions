@@ -308,7 +308,7 @@ export function Services() {
       {/* The desktop card. */}
       <div
         data-ground="paper"
-        className="hidden overflow-hidden rounded-3xl lg:block"
+        className="@container hidden overflow-hidden rounded-3xl lg:block"
         // A slider is one region that swaps its contents, so it is announced as
         // one rather than as seven things that keep appearing and disappearing.
         role="group"
@@ -342,7 +342,7 @@ export function Services() {
           {/* The words. The column is fixed to the card height, the copy is
               top-aligned inside it, and the controls sit at the bottom of the
               space whether or not the copy fills it. */}
-          <div className="order-1 flex h-[38rem] flex-col p-10 xl:p-12">
+          <div className="order-1 flex h-[38rem] flex-col p-10 @min-[70rem]:p-12">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={current.id}
@@ -365,11 +365,11 @@ export function Services() {
                     defaults — 40px and 19px — which is what makes this read as
                     the section's one big thing rather than a paragraph sitting
                     in a large box. */}
-                <h3 className="mt-4 text-[2.25rem] leading-tight font-bold xl:text-[2.5rem]">
+                <h3 className="mt-4 text-[2.25rem] leading-tight font-bold @min-[70rem]:text-[2.5rem]">
                   {current.title}
                 </h3>
 
-                <div className="mt-5 flex max-w-lg flex-col gap-3 text-[1.125rem] leading-[1.6] text-(--on-ground-muted) xl:text-[1.1875rem] xl:leading-[1.55]">
+                <div className="mt-5 flex max-w-lg flex-col gap-3 text-[1.125rem] leading-[1.6] text-(--on-ground-muted) @min-[70rem]:text-[1.1875rem] @min-[70rem]:leading-[1.55]">
                   {current.body.map((paragraph) => (
                     <p key={paragraph}>{paragraph}</p>
                   ))}

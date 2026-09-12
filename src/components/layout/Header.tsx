@@ -65,12 +65,27 @@ const LOGO_WIDTH = Math.round((LOGO_HEIGHT * logo.width) / logo.height);
 /** Type size of the desktop links — the `--text-nav` token less a notch, since seven sit on one line. */
 const DESKTOP_NAV_SIZE = "0.9375rem";
 
+/**
+ * The row width, in rem, at which the desktop links replace the MENU button.
+ *
+ * A container query on the row rather than the `xl` media query, and this is
+ * why: media queries measure the window in CSS pixels, and browser zoom-out
+ * inflates that number — a 1024px window at 75% reports 1365px — while the zoom
+ * compensation (see `lib/zoomCompensation.ts`) draws the header at its full
+ * size. The desktop row needs ~1250px of *drawn* room, and only a container
+ * query, whose rem follows the compensated root size, measures that. 78rem is
+ * a 1248px row at 100%: a 1280px window less its scrollbar, the width `xl`
+ * used to switch at.
+ */
+const DESKTOP_NAV_AT = 78;
+
 /** A `/#section` link lands through `HashScroll`, not through the router's own jump. */
 const scrollFor = (href: string) => (href.includes("#") ? false : undefined);
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const rowRef = useRef<HTMLDivElement>(null);
 
   // A single threshold a few pixels down, so the backdrop is keyed to "the page
   // has moved" and nothing else.
@@ -94,11 +109,14 @@ export function Header() {
       if (event.key === "Escape") setMenuOpen(false);
     };
 
-    // Past xl both the panel and its close button are display:none. Without
-    // this, rotating a tablet mid-menu would leave the page scroll-locked with
-    // nothing left on screen to unlock it.
+    // Once the row has room for the desktop links the MENU button is gone.
+    // Without this, widening the window (or zooming out) mid-menu would leave
+    // the page scroll-locked with nothing left on screen to close it. The test
+    // is the row's own width against the same 78rem its container query uses.
     const onResize = () => {
-      if (window.matchMedia("(min-width: 80rem)").matches) setMenuOpen(false);
+      const row = rowRef.current;
+      const rem = parseFloat(window.getComputedStyle(root).fontSize) || 16;
+      if (row && row.clientWidth >= DESKTOP_NAV_AT * rem) setMenuOpen(false);
     };
 
     window.addEventListener("keydown", onKeyDown);
@@ -135,51 +153,52 @@ export function Header() {
         row used to step down on scroll and take the mark with it; both now
         hold still.
       */}
-      <div
-        data-ground="sky"
-        className="relative z-10 flex min-h-20 items-center gap-4 bg-transparent px-4 sm:min-h-24 sm:px-6 xl:grid xl:grid-cols-[1fr_auto_1fr] xl:gap-6"
-      >
-        {/* The scroll backdrop. Its own element so it can cross-fade: `-z-10`
+      <div ref={rowRef} className="@container relative z-10">
+        <div
+          data-ground="sky"
+          className="relative z-10 flex min-h-20 items-center gap-4 bg-transparent px-4 sm:min-h-24 sm:px-6 @min-[78rem]:grid @min-[78rem]:grid-cols-[1fr_auto_1fr] @min-[78rem]:gap-6"
+        >
+          {/* The scroll backdrop. Its own element so it can cross-fade: `-z-10`
             inside this element's stacking context puts it above the row's
             background and below everything in the row. The hairline along its
             foot fades in with it. */}
-        <div
-          aria-hidden="true"
-          className={`absolute inset-0 -z-10 border-b border-white/10 bg-black transition-opacity duration-500 ${
-            scrolled ? "opacity-100" : "opacity-0"
-          }`}
-        />
+          <div
+            aria-hidden="true"
+            className={`absolute inset-0 -z-10 border-b border-white/10 bg-black transition-opacity duration-500 ${
+              scrolled ? "opacity-100" : "opacity-0"
+            }`}
+          />
 
-        {/* `next/link`, not a bare anchor: the mark is on every page in the
+          {/* `next/link`, not a bare anchor: the mark is on every page in the
             app, and from a service or city page this is a real navigation back
             to the home page rather than a jump within the document. The href
             is the home page itself and not `/#hero`, so no stray fragment ends
             up in the address bar. */}
-        <Link
-          href="/"
-          onClick={() => setMenuOpen(false)}
-          aria-label={`${logo.alt} — back to top`}
-          className="pointer-events-auto flex shrink-0 items-center justify-self-start no-underline"
-        >
-          <Image
-            src={logo.src}
-            // The mark's own pixels are 2172x724. Declaring a rendered box
-            // instead keeps next/image's srcSet to a 1x/2x pair rather than a
-            // ladder up to 3840w — a few KB instead of the 744KB source.
-            width={LOGO_WIDTH}
-            height={LOGO_HEIGHT}
-            alt=""
-            priority
-            // 64px, 76px from `sm`, 80px from `xl` — a fixed size per range,
-            // never tied to scroll position. `max-w-none` so a flex row can
-            // never squeeze the mark narrower than its height asks for.
-            className="h-16 w-auto max-w-none sm:h-19 xl:h-20"
-          />
-        </Link>
+          <Link
+            href="/"
+            onClick={() => setMenuOpen(false)}
+            aria-label={`${logo.alt} — back to top`}
+            className="pointer-events-auto flex shrink-0 items-center justify-self-start no-underline"
+          >
+            <Image
+              src={logo.src}
+              // The mark's own pixels are 2172x724. Declaring a rendered box
+              // instead keeps next/image's srcSet to a 1x/2x pair rather than a
+              // ladder up to 3840w — a few KB instead of the 744KB source.
+              width={LOGO_WIDTH}
+              height={LOGO_HEIGHT}
+              alt=""
+              priority
+              // 64px, 76px from `sm`, 80px from `xl` — a fixed size per range,
+              // never tied to scroll position. `max-w-none` so a flex row can
+              // never squeeze the mark narrower than its height asks for.
+              className="h-16 w-auto max-w-none sm:h-19 @min-[78rem]:h-20"
+            />
+          </Link>
 
-        <DesktopNav />
+          <DesktopNav />
 
-        {/* The number, from `sm` up — a tablet and a desktop both have the
+          {/* The number, from `sm` up — a tablet and a desktop both have the
             room, and on either it is the one thing a visitor is most likely to
             have come to the header for. Set large and plain with a rule under
             it rather than dressed as a button: that is how a company that
@@ -190,42 +209,43 @@ export function Header() {
             pinned to the foot of every screen (`MobileCtaBar`), and a third
             object squeezed between the mark and MENU is exactly the clutter a
             320px row cannot afford. */}
-        <div className="pointer-events-auto ml-auto flex items-center gap-3 justify-self-end sm:gap-5 xl:ml-0">
-          <a
-            href={navCta.href}
-            aria-label={`Call Screenova today on ${contact.phone.label}`}
-            className="font-title group hidden items-center gap-2.5 whitespace-nowrap text-(--on-ground) no-underline sm:flex"
-          >
-            <Phone
-              aria-hidden="true"
-              className="h-[1.125rem] w-[1.125rem] shrink-0 transition-colors duration-300 group-hover:text-(--color-green) xl:h-5 xl:w-5"
-            />
-            <span
-              className="border-b border-white/25 pb-0.5 text-[1.0625rem] tabular-nums transition-colors duration-300 group-hover:border-white/80 xl:text-[1.1875rem]"
-              style={{ fontWeight: 500, letterSpacing: "0.005em" }}
+          <div className="pointer-events-auto ml-auto flex items-center gap-3 justify-self-end sm:gap-5 @min-[78rem]:ml-0">
+            <a
+              href={navCta.href}
+              aria-label={`Call Screenova today on ${contact.phone.label}`}
+              className="font-title group hidden items-center gap-2.5 whitespace-nowrap text-(--on-ground) no-underline sm:flex"
             >
-              {navCta.label}
-            </span>
-          </a>
+              <Phone
+                aria-hidden="true"
+                className="h-[1.125rem] w-[1.125rem] shrink-0 transition-colors duration-300 group-hover:text-(--color-green) @min-[78rem]:h-5 @min-[78rem]:w-5"
+              />
+              <span
+                className="border-b border-white/25 pb-0.5 text-[1.0625rem] tabular-nums transition-colors duration-300 group-hover:border-white/80 @min-[78rem]:text-[1.1875rem]"
+                style={{ fontWeight: 500, letterSpacing: "0.005em" }}
+              >
+                {navCta.label}
+              </span>
+            </a>
 
-          <button
-            type="button"
-            aria-expanded={menuOpen}
-            aria-controls="mobile-menu"
-            onClick={() => setMenuOpen((value) => !value)}
-            className={`font-title h-11 cursor-pointer rounded-(--radius-control) px-5 transition-colors duration-300 xl:hidden ${
-              // Closed, a quiet outline in the ground's own ink. Open, it fills
-              // with that ink and takes the ground back as its lettering. Both
-              // states are ground roles, so the button follows the overlay's
-              // colour rather than naming one.
-              menuOpen
-                ? "bg-(--on-ground) text-(--ground)"
-                : "border border-(--on-ground)/35 bg-transparent text-(--on-ground) hover:border-(--on-ground)/70"
-            }`}
-            style={{ fontSize: "var(--text-nav)", fontWeight: 400, letterSpacing: "0.12em" }}
-          >
-            {menuOpen ? "CLOSE" : "MENU"}
-          </button>
+            <button
+              type="button"
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+              onClick={() => setMenuOpen((value) => !value)}
+              className={`font-title h-11 cursor-pointer rounded-(--radius-control) px-5 transition-colors duration-300 @min-[78rem]:hidden ${
+                // Closed, a quiet outline in the ground's own ink. Open, it fills
+                // with that ink and takes the ground back as its lettering. Both
+                // states are ground roles, so the button follows the overlay's
+                // colour rather than naming one.
+                menuOpen
+                  ? "bg-(--on-ground) text-(--ground)"
+                  : "border border-(--on-ground)/35 bg-transparent text-(--on-ground) hover:border-(--on-ground)/70"
+              }`}
+              style={{ fontSize: "var(--text-nav)", fontWeight: 400, letterSpacing: "0.12em" }}
+            >
+              {menuOpen ? "CLOSE" : "MENU"}
+            </button>
+          </div>
         </div>
       </div>
     </header>
@@ -307,7 +327,7 @@ function FullScreenMenu({ open, onNavigate }: { open: boolean; onNavigate: () =>
       ref={panelRef}
       id="mobile-menu"
       data-ground="sky"
-      className="pointer-events-auto fixed inset-0 z-0 xl:hidden"
+      className="pointer-events-auto fixed inset-0 z-0"
       style={{ visibility: "hidden", clipPath: "inset(0 0 0 100%)" }}
     >
       {/* The panel has to survive a viewport shorter than its own contents — a
@@ -437,7 +457,7 @@ function DesktopNav() {
   return (
     <nav
       aria-label="Primary"
-      className="pointer-events-auto hidden items-center gap-0.5 xl:flex 2xl:gap-2"
+      className="pointer-events-auto hidden items-center gap-0.5 @min-[78rem]:flex"
     >
       <ServicesDropdown />
 

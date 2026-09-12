@@ -31,8 +31,18 @@
        gives back part of what a zoom-out takes away.
 
        Media queries are unaffected — they resolve rem against the initial
-       value, not this — so every breakpoint still fires at the same width. */
-    font-size: clamp(100%, calc(100% + (100vw - 100rem) * 0.0041667), 125%);
+       value, not this — so every breakpoint still fires at the same width.
+
+       `--zoom-k` is the browser-zoom compensation, written by the inline
+       script in the root layout (see `lib/zoomCompensation.ts`): 1 at 100%,
+       1.5 at 67%, and so on. The whole size is multiplied by it, and the
+       window width the ramp reads is divided by it — the width the window
+       would have at 100% — so a zoomed-out page is drawn exactly as the same
+       window draws it at 100%, only with more room around it. */
+    --zoom-k: 1;
+    font-size: calc(
+      clamp(100%, calc(100% + (100vw / var(--zoom-k) - 100rem) * 0.0041667), 125%) * var(--zoom-k)
+    );
   }
 
   body {

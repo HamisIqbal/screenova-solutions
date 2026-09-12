@@ -98,12 +98,11 @@ function SocialIcon({ name }: { name: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
-      width="18"
-      height="18"
       fill="currentColor"
       aria-hidden="true"
-      // Optically centred against the cap height of the label beside it.
-      className="shrink-0 translate-y-px"
+      // Sized in rem, not pixels, so it scales with the page — including under
+      // the zoom compensation. Optically centred against the label's cap height.
+      className="size-[1.125rem] shrink-0 translate-y-px"
     >
       {paths[name]}
     </svg>
