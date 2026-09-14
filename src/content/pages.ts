@@ -70,6 +70,17 @@ export type InfoPageContent = {
 /* Service pages                                                             */
 /* ------------------------------------------------------------------------ */
 
+/**
+ * The floor of the related-services band on every service page: a two-storey
+ * house front, one of Screenova's own photographs. Decorative, so no `alt` —
+ * the band's heading already says what it is. See `InfoPage`.
+ */
+export const relatedPhoto = {
+  src: "/images/bands/home-image-01.jpg",
+  width: 2560,
+  height: 1920,
+} as const;
+
 export const servicePages: readonly InfoPageContent[] = [
   {
     href: "/window-screen-repair/",

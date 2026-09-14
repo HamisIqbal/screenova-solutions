@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CtaLink, Section, SectionHeader } from "@/components/ui";
+import { BandPhoto, CtaLink, Section, SectionHeader } from "@/components/ui";
 import { quoteHref } from "@/content/nav";
 import { TrustBar } from "@/components/sections";
-import type { CityPageContent, InfoPageContent } from "@/content/pages";
+import { relatedPhoto, type CityPageContent, type InfoPageContent } from "@/content/pages";
 import { isServedZip } from "@/lib/serviceArea";
 import { contact } from "@/lib/site";
 
@@ -195,7 +195,18 @@ export function InfoPage({ content }: { content: InfoPageContent | CityPageConte
         </Section>
       )}
 
-      <Section id="related" ground="paper" labelledBy="related-title">
+      {/* On a service page the band's floor is a photograph, so it takes the
+          dark `sky` ground and the scrim `BandPhoto` measured for it. There the
+          cards are outlined in the ground's own rule and tinted on hover rather
+          than filled — `--raised` on `sky` is white, and white type on a white
+          card is no card at all. City pages keep the plain paper band. */}
+      <Section
+        id="related"
+        ground={city ? "paper" : "sky"}
+        labelledBy="related-title"
+        bandClassName={city ? "" : "relative overflow-clip"}
+        floor={city ? undefined : <BandPhoto {...relatedPhoto} />}
+      >
         <SectionHeader title={content.relatedLabel} titleId="related-title" />
 
         <ul className="mx-auto grid max-w-3xl gap-3 sm:grid-cols-2">
@@ -203,7 +214,11 @@ export function InfoPage({ content }: { content: InfoPageContent | CityPageConte
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="block rounded-2xl border border-(--raised-border) px-5 py-4 no-underline transition-colors hover:bg-(--raised)"
+                className={`block rounded-2xl border px-5 py-4 no-underline transition-colors ${
+                  city
+                    ? "border-(--raised-border) hover:bg-(--raised)"
+                    : "border-(--rule)/60 bg-black/25 hover:bg-(--on-ground)/15"
+                }`}
               >
                 <span className="font-title font-medium">{link.label}</span>
               </Link>

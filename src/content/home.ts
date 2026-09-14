@@ -332,7 +332,8 @@ export const bandImages = {
   },
   /** About. A screened room seen from its corner — one of Screenova's own
       jobs. (The house front that used to alternate with it is now the
-      footer's floor; see `footerPhoto` in `content/nav.ts`.) */
+      floor of the service pages' related band; see `relatedPhoto` in
+      `content/pages.ts`.) */
   about: {
     src: "/images/bands/home-image-03.jpg",
     width: 2560,

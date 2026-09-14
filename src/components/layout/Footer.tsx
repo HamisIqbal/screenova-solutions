@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cityPages, servicePages } from "@/content/pages";
-import { footerLinks, footerPhoto, logo, wordmark } from "@/content/nav";
+import { footerLinks, logo, wordmark } from "@/content/nav";
 import { contact, siteConfig, socials } from "@/lib/site";
 
 /**
@@ -128,23 +128,8 @@ const DIVIDER = "border-(--rule)/40";
 
 export function Footer() {
   return (
-    // `clip` rather than `hidden`: it holds the photograph's cropped edges
-    // without making a scroll container.
-    <footer data-ground="sky" className="relative overflow-clip">
-      {/* The floor: a house front at 20% over the black, so it is a texture
-          under the columns rather than a picture competing with them — the
-          white type keeps about 12:1 even on the brightest pixel. Decorative, so
-          no `alt`, and lazy, since the footer is the last thing anyone reaches. */}
-      <Image
-        src={footerPhoto.src}
-        alt=""
-        fill
-        sizes="(max-width: 40rem) 1200px, 1920px"
-        className="pointer-events-none object-cover object-center opacity-20"
-      />
-
-      {/* `relative`, so the content paints above the positioned photograph. */}
-      <div className="max-w-page px-gutter relative mx-auto w-full py-16 lg:py-20">
+    <footer data-ground="sky">
+      <div className="max-w-page px-gutter mx-auto w-full py-16 lg:py-20">
         <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.3fr)_repeat(4,minmax(0,1fr))] lg:gap-x-8">
           {/* Far left: the mark, at the size it was drawn for. It is the one
               place on the site the logo is large — in the header it is 72px
