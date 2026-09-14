@@ -511,6 +511,35 @@
   }
 }
 
+/* The second of two photographs taking turns on a pinned band floor — About's.
+   It fades in over the first, holds, and fades back out, on a slow loop: about
+   six and a half seconds on each picture, with a crossfade of a second and a
+   half between them.
+   Slow on purpose — it is a floor under a column of prose, and anything quicker
+   would be competing with the reading.
+
+   Resting opacity is 0, so under `prefers-reduced-motion` — where the blanket
+   rule above cuts every animation to one 0.01ms tick — the second picture is
+   never seen and the first is simply the floor. */
+@keyframes band-alternate {
+  0%,
+  40% {
+    opacity: 0;
+  }
+  50%,
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.band-alternate {
+  opacity: 0;
+  animation: band-alternate 16s ease-in-out infinite;
+}
+
 /* The quote dialogue's arrival. The card lifts the last few pixels into place
    as it fades, and the scrim fades with it — one movement, not two, so the
    answer reads as having come up out of the form rather than as a panel that

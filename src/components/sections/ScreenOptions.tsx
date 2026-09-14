@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CtaLink, Section, SectionHeader } from "@/components/ui";
-import { screenOptions } from "@/content/home";
+import { BandPhoto, CtaLink, Section, SectionHeader } from "@/components/ui";
+import { bandImages, screenOptions } from "@/content/home";
 import { contact } from "@/lib/site";
 
 /**
@@ -19,9 +19,11 @@ import { contact } from "@/lib/site";
  *
  * It keeps `ground="sky"` for its text roles — a dark ground's white body copy,
  * white focus ring, white action pill — and paints its own navy floor over the
- * ground's black. The photograph that used to be this band's floor is gone with
- * it; four panels of light blue want a plain dark field behind them, not a
- * picture.
+ * ground's black. That navy is what shows while the photograph loads: the
+ * band's floor is a house front under the same measured scrim as every other
+ * photo band, pinned to the window rather than stretched down the band — this
+ * is the tallest band on the page, and see `pinned` in `BandPhoto` for why that
+ * matters on a phone.
  *
  * The scroll, and the thing that sticks
  * -------------------------------------
@@ -82,8 +84,12 @@ export function ScreenOptions() {
       ground="sky"
       labelledBy="screen-options-title"
       // The band's own floor, over the chrome ground's black. Utilities sort
-      // after the base layer, so this wins without an `!important`.
-      bandClassName="bg-navy"
+      // after the base layer, so this wins without an `!important`. `clip`
+      // rather than `hidden` holds the photograph's edges without making a
+      // scroll container — which would stop the pinned frame, and the "Best
+      // for" column, from sticking.
+      bandClassName="relative overflow-clip bg-navy"
+      floor={<BandPhoto {...bandImages.screenOptions} pinned />}
     >
       <SectionHeader
         title={screenOptions.title}

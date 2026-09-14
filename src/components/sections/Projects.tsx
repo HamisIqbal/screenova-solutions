@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { CtaLink, Section, SectionHeader } from "@/components/ui";
-import { projects } from "@/content/home";
+import { projects, type ProjectPhoto } from "@/content/home";
 import { quoteHref } from "@/content/nav";
 
 /**
@@ -12,13 +12,8 @@ import { quoteHref } from "@/content/nav";
  * bent frame rebuilt, a pet-damaged slider re-meshed in heavier material, a
  * whole house done in one visit.
  *
- * The photographs in them are stand-ins, and the section says so in its own
- * intro line rather than leaving the reader to assume otherwise: a stock
- * photograph presented as Screenova's own work on a page headed "Our Projects"
- * is a lie whatever the caption says, so the copy names them as placeholders
- * and describes what they are — the kind of work each pair is about, not the
- * jobs themselves. Swap in real project photography and that line goes with it;
- * both are in `content/home.ts` and neither is in this file.
+ * The photographs are Screenova's own jobs, and like the copy they live in
+ * `content/home.ts` rather than in this file.
  *
  * Each category is a before/after pair: give it `before` and `after` and the
  * block renders as two pictures with an arrow between them. Take them away and
@@ -91,28 +86,46 @@ export function Projects() {
  * placeholder it is the whole content; on the photograph it is what tells you
  * which of the two you are looking at, and it keeps its own dark wash so it
  * reads over any image that lands there.
+ *
+ * Every photograph is shown whole. They come off a phone, most of them upright
+ * and some sideways — several pairs are one of each — so the box is the
+ * upright phone shape and a picture is fitted inside it rather than cropped to
+ * fill it: an upright one fills it exactly, a sideways one sits across the
+ * middle at full width. The room left above and below a sideways one is filled
+ * with the same photograph, blurred and dimmed, so the box reads as one picture
+ * rather than a picture with bars. Cropping instead would cut the screens —
+ * the whole subject — off the edges of half the frames.
  */
-function Half({
-  label,
-  photo,
-  paired,
-}: {
-  label: string;
-  photo?: { src: string; alt: string };
-  paired: boolean;
-}) {
+function Half({ label, photo, paired }: { label: string; photo?: ProjectPhoto; paired: boolean }) {
   const showPhoto = paired && photo;
+  // Anything not already the box's own 3:4 upright shape leaves room around it.
+  const letterboxed = showPhoto && Math.abs(photo.width / photo.height - 3 / 4) > 0.01;
 
   return (
-    <div className="relative aspect-4/3 bg-(--raised)">
+    <div className="relative aspect-3/4 overflow-hidden bg-(--raised)">
       {showPhoto ? (
-        <Image
-          src={photo.src}
-          alt={photo.alt}
-          fill
-          sizes="(min-width: 40rem) 22rem, 50vw"
-          className="object-cover"
-        />
+        <>
+          {letterboxed && (
+            <Image
+              src={photo.src}
+              alt=""
+              aria-hidden="true"
+              fill
+              // Blurred to nothing, so the smallest candidate will do.
+              sizes="64px"
+              className="scale-125 object-cover opacity-70 blur-xl"
+            />
+          )}
+          <Image
+            src={photo.src}
+            alt={photo.alt}
+            fill
+            // A quarter of the row two-up, capped by the measure; half of it
+            // one-up.
+            sizes="(min-width: 80rem) 18rem, (min-width: 40rem) 25vw, 50vw"
+            className="object-contain"
+          />
+        </>
       ) : (
         // The empty state. A hairline cross-hatch of the page's own rule colour
         // at low strength — enough that the panel is visibly a reserved space

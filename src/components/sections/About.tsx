@@ -1,21 +1,35 @@
-import { CtaLink, Section, SectionHeader } from "@/components/ui";
-import { about } from "@/content/home";
+import { BandPhoto, CtaLink, Section, SectionHeader } from "@/components/ui";
+import { about, bandImages } from "@/content/home";
 import { quoteHref } from "@/content/nav";
 
 /**
- * Long-form copy on a blue band, so it splits into two columns: the header
+ * Long-form copy on a photograph, so it splits into two columns: the header
  * holds the left rail and the prose runs down the right at a comfortable
  * measure. It's the only section on the page with a genuinely asymmetric
  * layout, which is what keeps it from reading as another grid of boxes.
  *
- * The prose sits straight on the blue rather than in a white card, because this
- * is the one blue band with a single short column to read. White gives 4.7:1 on
- * blue and no more, which means there is no dimmed secondary tint available
- * here — the body copy is full white and the header does the stepping down.
+ * The floor is two of Screenova's own photographs taking turns — a house front
+ * and a screened room — under the same measured scrim as every other photo
+ * band, which is why the band is `sky` rather than the blue it used to be: a
+ * photograph needs the text roles a dark ground provides, and black is the
+ * right thing to be waiting under while it loads. The prose sits straight on
+ * the picture rather than in a white card, full white at every role.
+ *
+ * The frame is pinned, as Screen Options' is: on a phone this band is taller
+ * than the window, and a landscape photograph covering all of it would be
+ * cropped to a sliver. See `pinned` in `BandPhoto`.
  */
 export function About() {
+  const [first, second] = bandImages.about;
+
   return (
-    <Section id="about" ground="blue" labelledBy="about-title">
+    <Section
+      id="about"
+      ground="sky"
+      labelledBy="about-title"
+      bandClassName="relative overflow-clip"
+      floor={<BandPhoto {...first} alternate={second} pinned />}
+    >
       <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         <SectionHeader title={about.title} titleId="about-title" />
 

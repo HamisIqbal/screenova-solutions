@@ -5,9 +5,8 @@ import { serviceArea } from "@/content/home";
 import { quoteHref } from "@/content/nav";
 
 /**
- * Blue, continuing the blue of About rather than cutting against it: who we are
- * and where we work are one answer, and running them on one ground is what says
- * so. The heading and the white space between them are the break.
+ * Blue, straight after About's photograph: the picture ends and the band turns
+ * to a plain colour, which is the break between who we are and where we work.
  *
  * ---------------------------------------------------------------------------
  * The service area is told twice, because thirty-one cities is two different

@@ -295,7 +295,7 @@ export const howItWorks = {
 } as const;
 
 /**
- * The three photographic bands other than the hero.
+ * The photographic bands other than the hero.
  *
  * Each one is the floor of a whole section rather than a picture inside it, so
  * they are chosen for what they can carry rather than for what they show: a
@@ -321,14 +321,21 @@ export const bandImages = {
     width: 4845,
     height: 2710,
   },
-  /** Screen Options. The one portrait source, which is what recommends it: this
-      is the tallest band on the page and a landscape crop would be pulled to a
-      sliver of itself. */
+  /** Screen Options. A single-storey house front, screened windows along the
+      wall. This is the tallest band on the page, so the photograph is pinned
+      to the window rather than stretched down the band — see `pinned` in
+      `BandPhoto` — and is only ever cropped to the shape of the screen. */
   screenOptions: {
-    src: "/images/dithira-hettiarachchi-house-window-long-image.jpg",
-    width: 3648,
-    height: 5472,
+    src: "/images/bands/home-image-02.jpg",
+    width: 2560,
+    height: 1920,
   },
+  /** About. Two photographs that take turns: a two-storey house front, and a
+      screened room seen from its corner. Both are Screenova's own. */
+  about: [
+    { src: "/images/bands/home-image-01.jpg", width: 2560, height: 1920 },
+    { src: "/images/bands/home-image-03.jpg", width: 2560, height: 1920 },
+  ],
   /** The closer. A gable and a window against open sky — the most upward of the
       three, which is the right note to end the page on. */
   finalCta: {
@@ -775,46 +782,49 @@ export const quote = {
  * renders as a picture pair instead of a labelled placeholder. Nothing else
  * changes, and nothing here has to be invented in the meantime.
  *
- *   before / after — `{ src, alt }`, both or neither. A category with only one
- *   of the two stays a placeholder: a "before" with no "after" is not a
- *   project, it is a photograph of a broken screen.
+ *   before / after — `{ src, alt, width, height }`, both or neither. A
+ *   category with only one of the two stays a placeholder: a "before" with no
+ *   "after" is not a project, it is a photograph of a broken screen.
  *
- * PLACEHOLDERS. The eight files in `/public/images/projects/` are free stock
- * photographs, downloaded from Pexels under its licence (free for commercial
- * use, no attribution required), standing in until Screenova's own photography
- * is ready. They are not pictures of Screenova jobs, which is why `intro` above
- * says so on the page.
+ * `width` and `height` are the file's own pixels. They are there because the
+ * photographs come off a phone in both orientations — some pairs are one of
+ * each — and the block shows every one of them whole rather than cropping it
+ * to a shared shape; see `Half` in `Projects.tsx`.
  *
- * To replace: drop the real photographs into `/public/images/projects/` under
- * whatever names you like, point the eight `src` values at them, rewrite the
- * eight `alt` strings to describe what is actually in each frame, and rewrite
- * `intro` to drop the stand-in sentence. Nothing outside this file needs to
- * change.
+ * The eight files in `/public/images/projects/` are Screenova's own job
+ * photographs. To swap one: drop it into that folder, point `src` at it, set
+ * `width`/`height` to its pixels, and rewrite `alt` to describe what is
+ * actually in the frame. Nothing outside this file needs to change.
  */
+export type ProjectPhoto = { src: string; alt: string; width: number; height: number };
+
 export type ProjectCategory = {
   id: string;
   title: string;
   body: string;
-  before?: { src: string; alt: string };
-  after?: { src: string; alt: string };
+  before?: ProjectPhoto;
+  after?: ProjectPhoto;
 };
 
 export const projects = {
   title: "Before & After",
-  intro:
-    "The four jobs we are called out for most. The photographs below are stand-ins while our own project photography is being prepared — they show the kind of work each pair describes, not the jobs themselves.",
+  intro: "The four jobs we are called out for most.",
   categories: [
     {
       id: "torn-to-new",
       title: "Torn Screen → New Screen",
       body: "A tear that started small and spread across the panel. Frame sound, mesh replaced.",
       before: {
-        src: "/images/projects/torn-to-new-before.jpg",
-        alt: "A weathered house window covered by an old insect screen.",
+        src: "/images/projects/pair-1-before.jpg",
+        alt: "A porch wall of sliding glass doors behind worn, dirty screen mesh.",
+        width: 1086,
+        height: 1448,
       },
       after: {
-        src: "/images/projects/torn-to-new-after.jpg",
-        alt: "A clean black-framed window with clear glass in a bright room.",
+        src: "/images/projects/pair-1-after.jpg",
+        alt: "The same porch doors with new, clear screens across every panel.",
+        width: 1200,
+        height: 1600,
       },
     },
     {
@@ -822,12 +832,16 @@ export const projects = {
       title: "Old Frame → Custom Frame",
       body: "A bent, corroded frame that no longer sat square in the opening, rebuilt in new aluminum to the same window.",
       before: {
-        src: "/images/projects/old-frame-before.jpg",
-        alt: "An old wooden window frame, paint worn, set in a textured stucco wall.",
+        src: "/images/projects/pair-2-before.jpg",
+        alt: "White-framed screens in several sizes leaning against the back of a house.",
+        width: 1600,
+        height: 1200,
       },
       after: {
-        src: "/images/projects/old-frame-after.jpg",
-        alt: "Three evenly spaced windows in new frames across a clean house facade.",
+        src: "/images/projects/pair-2-after.jpg",
+        alt: "A sliding screen door fitted in its white frame beside a stucco wall.",
+        width: 1200,
+        height: 1600,
       },
     },
     {
@@ -835,12 +849,16 @@ export const projects = {
       title: "Pet-Damaged Screen → Pet-Resistant Screen",
       body: "A slider pushed through at dog height, re-meshed in heavier pet-resistant material so it does not happen again.",
       before: {
-        src: "/images/projects/pet-damage-before.jpg",
-        alt: "A cat resting against the inside of a window screen.",
+        src: "/images/projects/pair-3-before.jpg",
+        alt: "New screens in white frames propped against a storage bin on a brick patio.",
+        width: 1600,
+        height: 1200,
       },
       after: {
-        src: "/images/projects/pet-damage-after.jpg",
-        alt: "A sunroom enclosed by large glass panels, screens intact.",
+        src: "/images/projects/pair-3-after.jpg",
+        alt: "A sliding window with a fresh screen fitted in its white aluminum frame.",
+        width: 1200,
+        height: 1600,
       },
     },
     {
@@ -848,12 +866,16 @@ export const projects = {
       title: "Whole-House Screen Replacement",
       body: "Every window in a property measured, built and fitted in a single visit.",
       before: {
-        src: "/images/projects/whole-house-before.jpg",
-        alt: "An older house seen from the garden, every window screened.",
+        src: "/images/projects/pair-4-before.jpg",
+        alt: "A set of new screens, tall to small, leaning against an orange stucco wall.",
+        width: 1200,
+        height: 1600,
       },
       after: {
-        src: "/images/projects/whole-house-after.jpg",
-        alt: "A contemporary house with large, freshly screened windows across its facade.",
+        src: "/images/projects/pair-4-after.jpg",
+        alt: "Three house windows side by side, each fitted with a new screen.",
+        width: 1600,
+        height: 1200,
       },
     },
     // `as` rather than `satisfies`: the surrounding `as const` would otherwise

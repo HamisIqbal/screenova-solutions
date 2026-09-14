@@ -13,16 +13,15 @@
  * instead, which is the one place it is unambiguous.
  *
  * `sky` is the black chrome ground, and every band that uses it is a band whose
- * floor is a photograph: the hero, Why Choose Us, Screen Options and the
- * closer. That is the whole reason the ground exists. A photograph needs the
- * text roles a dark ground provides, and the band colour itself is only ever
- * seen behind the image while it loads — which is also why black is the right
- * thing to be waiting under, rather than a flash of white.
+ * floor is a photograph: the hero, Why Choose Us, Screen Options, About and
+ * the closer. That is the whole reason the ground exists. A photograph needs
+ * the text roles a dark ground provides, and the band colour itself is only
+ * ever seen behind the image while it loads — which is also why black is the
+ * right thing to be waiting under, rather than a flash of white.
  *
- * There are two repeats and both are deliberate. About → ServiceArea share a
- * floor because who we are and where we work are one answer. Why Choose Us →
- * Screen Options share one because they are two different photographs, and the
- * edge between them is the picture changing rather than a colour band ending.
+ * Why Choose Us → Screen Options is a deliberate repeat: they are two different
+ * photographs, and the edge between them is the picture changing rather than a
+ * colour band ending.
  */
 import { RevealGroup } from "./RevealGroup";
 
@@ -35,6 +34,7 @@ export function Section({
   className = "",
   bandClassName = "",
   reveal = true,
+  floor,
   children,
 }: {
   id: string;
@@ -53,13 +53,26 @@ export function Section({
    * is reached. How It Works is the one that asks.
    */
   reveal?: boolean;
+  /**
+   * A band photograph — a pinned `BandPhoto` — rendered outside the measure, so
+   * it sizes itself against the band and not the text column. With one, the
+   * measure is positioned so the content paints above it, while each block
+   * stays a direct child of the measure and still arrives on its own. The band
+   * needs `relative overflow-clip` in `bandClassName`.
+   */
+  floor?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
     <section id={id} data-ground={ground} aria-labelledby={labelledBy} className={bandClassName}>
+      {floor}
+
       {/* The measure — and, because it is a `RevealGroup`, the thing that fades
           each block of the band in as you reach it. See `RevealGroup`. */}
-      <RevealGroup enabled={reveal} className={`max-w-page px-gutter mx-auto w-full ${className}`}>
+      <RevealGroup
+        enabled={reveal}
+        className={`max-w-page px-gutter mx-auto w-full ${floor ? "relative" : ""} ${className}`}
+      >
         {children}
       </RevealGroup>
     </section>
