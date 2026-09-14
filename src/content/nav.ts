@@ -26,6 +26,15 @@ export const logo = {
 } as const;
 
 /**
+ * The footer's floor: a two-storey house front, one of Screenova's own
+ * photographs, shown at a fifth of its strength over the footer's black so it
+ * is texture rather than a picture. Decorative, so no `alt` — see `Footer`.
+ */
+export const footerPhoto = {
+  src: "/images/bands/home-image-01.jpg",
+} as const;
+
+/**
  * The header's one button. It dials rather than scrolling to the form: the
  * quote form is already the destination of every section CTA on the page, and
  * the header — the one thing visible at every scroll position — is better spent

@@ -8,9 +8,9 @@ import { quoteHref } from "@/content/nav";
  * one existing. `#projects` now resolves.
  *
  * ---------------------------------------------------------------------------
- * Four categories, each naming a real kind of job — a torn screen replaced, a
- * bent frame rebuilt, a pet-damaged slider re-meshed in heavier material, a
- * whole house done in one visit.
+ * Four categories, each naming a real kind of job — worn porch screens
+ * replaced, a frame rebuilt, screens built to size, a whole house done in one
+ * visit.
  *
  * The photographs are Screenova's own jobs, and like the copy they live in
  * `content/home.ts` rather than in this file.
@@ -87,45 +87,28 @@ export function Projects() {
  * which of the two you are looking at, and it keeps its own dark wash so it
  * reads over any image that lands there.
  *
- * Every photograph is shown whole. They come off a phone, most of them upright
- * and some sideways — several pairs are one of each — so the box is the
- * upright phone shape and a picture is fitted inside it rather than cropped to
- * fill it: an upright one fills it exactly, a sideways one sits across the
- * middle at full width. The room left above and below a sideways one is filled
- * with the same photograph, blurred and dimmed, so the box reads as one picture
- * rather than a picture with bars. Cropping instead would cut the screens —
- * the whole subject — off the edges of half the frames.
+ * Every half is filled edge to edge. The photographs come off a phone, most of
+ * them upright and some sideways, so the box is the upright phone shape: an
+ * upright one fits it exactly, and a sideways one is cropped to it — keeping
+ * its centre, or whatever part its `focus` names in `content/home.ts`.
  */
 function Half({ label, photo, paired }: { label: string; photo?: ProjectPhoto; paired: boolean }) {
   const showPhoto = paired && photo;
-  // Anything not already the box's own 3:4 upright shape leaves room around it.
-  const letterboxed = showPhoto && Math.abs(photo.width / photo.height - 3 / 4) > 0.01;
 
   return (
     <div className="relative aspect-3/4 overflow-hidden bg-(--raised)">
       {showPhoto ? (
-        <>
-          {letterboxed && (
-            <Image
-              src={photo.src}
-              alt=""
-              aria-hidden="true"
-              fill
-              // Blurred to nothing, so the smallest candidate will do.
-              sizes="64px"
-              className="scale-125 object-cover opacity-70 blur-xl"
-            />
-          )}
-          <Image
-            src={photo.src}
-            alt={photo.alt}
-            fill
-            // A quarter of the row two-up, capped by the measure; half of it
-            // one-up.
-            sizes="(min-width: 80rem) 18rem, (min-width: 40rem) 25vw, 50vw"
-            className="object-contain"
-          />
-        </>
+        <Image
+          src={photo.src}
+          alt={photo.alt}
+          fill
+          // A quarter of the row two-up, capped by the measure; half of it
+          // one-up. A cropped sideways photograph is drawn at the box's height,
+          // so it needs a third more than that — the box is 3:4, the photo 4:3.
+          sizes="(min-width: 80rem) 24rem, (min-width: 40rem) 34vw, 67vw"
+          className="object-cover"
+          style={photo.focus ? { objectPosition: photo.focus } : undefined}
+        />
       ) : (
         // The empty state. A hairline cross-hatch of the page's own rule colour
         // at low strength — enough that the panel is visibly a reserved space

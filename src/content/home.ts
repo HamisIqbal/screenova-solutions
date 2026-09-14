@@ -330,12 +330,14 @@ export const bandImages = {
     width: 2560,
     height: 1920,
   },
-  /** About. Two photographs that take turns: a two-storey house front, and a
-      screened room seen from its corner. Both are Screenova's own. */
-  about: [
-    { src: "/images/bands/home-image-01.jpg", width: 2560, height: 1920 },
-    { src: "/images/bands/home-image-03.jpg", width: 2560, height: 1920 },
-  ],
+  /** About. A screened room seen from its corner — one of Screenova's own
+      jobs. (The house front that used to alternate with it is now the
+      footer's floor; see `footerPhoto` in `content/nav.ts`.) */
+  about: {
+    src: "/images/bands/home-image-03.jpg",
+    width: 2560,
+    height: 1920,
+  },
   /** The closer. A gable and a window against open sky — the most upward of the
       three, which is the right note to end the page on. */
   finalCta: {
@@ -775,28 +777,22 @@ export const quote = {
  * The nav has linked to `#projects` for some time with no such section on the
  * page — this is that section, and the link is no longer broken.
  *
- * It ships with **no photographs**, and that is the whole design of it. Every
- * category below describes a real kind of job Screenova does; none of them
- * claims to be showing one. When real before/after photography exists, drop
- * the pair into `before` / `after` on the matching category and the block
- * renders as a picture pair instead of a labelled placeholder. Nothing else
- * changes, and nothing here has to be invented in the meantime.
+ * Every category describes a real kind of job Screenova does, and each shows
+ * one as a before/after pair of Screenova's own photographs.
  *
- *   before / after — `{ src, alt, width, height }`, both or neither. A
- *   category with only one of the two stays a placeholder: a "before" with no
+ *   before / after — `{ src, alt, focus? }`, both or neither. A category with
+ *   only one of the two renders as a labelled placeholder: a "before" with no
  *   "after" is not a project, it is a photograph of a broken screen.
  *
- * `width` and `height` are the file's own pixels. They are there because the
- * photographs come off a phone in both orientations — some pairs are one of
- * each — and the block shows every one of them whole rather than cropping it
- * to a shared shape; see `Half` in `Projects.tsx`.
+ *   focus — optional CSS `object-position`. Every half is an upright 3:4 box
+ *   filled edge to edge, so a sideways photograph loses its sides; `focus`
+ *   says which part of it to keep. Centre is the default.
  *
- * The eight files in `/public/images/projects/` are Screenova's own job
- * photographs. To swap one: drop it into that folder, point `src` at it, set
- * `width`/`height` to its pixels, and rewrite `alt` to describe what is
+ * The eight files live in `/public/images/projects/`. To swap one: drop it
+ * into that folder, point `src` at it, and rewrite `alt` to describe what is
  * actually in the frame. Nothing outside this file needs to change.
  */
-export type ProjectPhoto = { src: string; alt: string; width: number; height: number };
+export type ProjectPhoto = { src: string; alt: string; focus?: string };
 
 export type ProjectCategory = {
   id: string;
@@ -811,20 +807,16 @@ export const projects = {
   intro: "The four jobs we are called out for most.",
   categories: [
     {
-      id: "torn-to-new",
-      title: "Torn Screen → New Screen",
-      body: "A tear that started small and spread across the panel. Frame sound, mesh replaced.",
+      id: "worn-to-new",
+      title: "Worn Screens → New Screens",
+      body: "A porch wall of sliding doors behind mesh gone grey with dirt and wear. Frames kept, every panel rescreened.",
       before: {
         src: "/images/projects/pair-1-before.jpg",
         alt: "A porch wall of sliding glass doors behind worn, dirty screen mesh.",
-        width: 1086,
-        height: 1448,
       },
       after: {
         src: "/images/projects/pair-1-after.jpg",
         alt: "The same porch doors with new, clear screens across every panel.",
-        width: 1200,
-        height: 1600,
       },
     },
     {
@@ -834,31 +826,25 @@ export const projects = {
       before: {
         src: "/images/projects/pair-2-before.jpg",
         alt: "White-framed screens in several sizes leaning against the back of a house.",
-        width: 1600,
-        height: 1200,
       },
       after: {
         src: "/images/projects/pair-2-after.jpg",
         alt: "A sliding screen door fitted in its white frame beside a stucco wall.",
-        width: 1200,
-        height: 1600,
       },
     },
     {
-      id: "pet-damage",
-      title: "Pet-Damaged Screen → Pet-Resistant Screen",
-      body: "A slider pushed through at dog height, re-meshed in heavier pet-resistant material so it does not happen again.",
+      id: "built-to-size",
+      title: "Custom Screens, Built to Size",
+      body: "Each screen built to the measurements of its own opening, then fitted — here, a sliding window finished with a new, clear screen.",
       before: {
         src: "/images/projects/pair-3-before.jpg",
         alt: "New screens in white frames propped against a storage bin on a brick patio.",
-        width: 1600,
-        height: 1200,
+        // Keeps the frames and the bin rather than the planter on the right.
+        focus: "42% center",
       },
       after: {
         src: "/images/projects/pair-3-after.jpg",
         alt: "A sliding window with a fresh screen fitted in its white aluminum frame.",
-        width: 1200,
-        height: 1600,
       },
     },
     {
@@ -868,14 +854,10 @@ export const projects = {
       before: {
         src: "/images/projects/pair-4-before.jpg",
         alt: "A set of new screens, tall to small, leaning against an orange stucco wall.",
-        width: 1200,
-        height: 1600,
       },
       after: {
         src: "/images/projects/pair-4-after.jpg",
         alt: "Three house windows side by side, each fitted with a new screen.",
-        width: 1600,
-        height: 1200,
       },
     },
     // `as` rather than `satisfies`: the surrounding `as const` would otherwise

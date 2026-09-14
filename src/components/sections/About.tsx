@@ -8,9 +8,9 @@ import { quoteHref } from "@/content/nav";
  * measure. It's the only section on the page with a genuinely asymmetric
  * layout, which is what keeps it from reading as another grid of boxes.
  *
- * The floor is two of Screenova's own photographs taking turns — a house front
- * and a screened room — under the same measured scrim as every other photo
- * band, which is why the band is `sky` rather than the blue it used to be: a
+ * The floor is one of Screenova's own photographs — a screened room seen from
+ * its corner — under the same measured scrim as every other photo band, which
+ * is why the band is `sky` rather than the blue it used to be: a
  * photograph needs the text roles a dark ground provides, and black is the
  * right thing to be waiting under while it loads. The prose sits straight on
  * the picture rather than in a white card, full white at every role.
@@ -20,15 +20,13 @@ import { quoteHref } from "@/content/nav";
  * cropped to a sliver. See `pinned` in `BandPhoto`.
  */
 export function About() {
-  const [first, second] = bandImages.about;
-
   return (
     <Section
       id="about"
       ground="sky"
       labelledBy="about-title"
       bandClassName="relative overflow-clip"
-      floor={<BandPhoto {...first} alternate={second} pinned />}
+      floor={<BandPhoto {...bandImages.about} pinned />}
     >
       <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         <SectionHeader title={about.title} titleId="about-title" />

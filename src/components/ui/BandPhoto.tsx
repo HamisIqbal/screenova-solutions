@@ -67,30 +67,34 @@ import Image from "next/image";
  * stick at all, since a clip does not make a scroll container. A pinned photo
  * goes in the `Section`'s `floor` prop rather than among its children, so the
  * track fills the band and not the text column.
- *
- * `alternate` is a second photograph for a pinned frame, and the two take
- * turns: the second fades in over the first, holds, and fades back out — see
- * `band-alternate` in `globals.css`. Under `prefers-reduced-motion` the fade
- * never runs and the first photograph is simply the floor.
  */
-type Photo = { src: string; width: number; height: number };
-
 export function BandPhoto({
   src,
   width,
   height,
   pinned = false,
-  alternate,
-}: Photo & {
+}: {
+  src: string;
+  width: number;
+  height: number;
   pinned?: boolean;
-  alternate?: Photo;
 }) {
   if (pinned) {
+    // The frame covers the window, so the picture is as wide as the window —
+    // or, on a window narrower than the photograph's shape, as wide as the
+    // window's height stretched to that shape.
+    const ratio = Math.ceil((width / height) * 100);
+
     return (
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div className="sticky top-0 h-svh max-h-full overflow-hidden">
-          <FramePhoto src={src} width={width} height={height} />
-          {alternate && <FramePhoto {...alternate} className="band-alternate" />}
+          <Image
+            src={src}
+            alt=""
+            fill
+            sizes={`(max-aspect-ratio: ${width}/${height}) ${ratio}vh, 100vw`}
+            className="object-cover object-center"
+          />
           <div className="absolute inset-0 bg-black/68" />
         </div>
       </div>
@@ -112,23 +116,5 @@ export function BandPhoto({
 
       <div aria-hidden="true" className="absolute inset-0 bg-black/68" />
     </>
-  );
-}
-
-/** One photograph covering a pinned, window-sized frame. */
-function FramePhoto({ src, width, height, className = "" }: Photo & { className?: string }) {
-  // The frame covers the window, so the picture is as wide as the window — or,
-  // on a window narrower than the photograph's shape, as wide as the window's
-  // height stretched to that shape.
-  const ratio = Math.ceil((width / height) * 100);
-
-  return (
-    <Image
-      src={src}
-      alt=""
-      fill
-      sizes={`(max-aspect-ratio: ${width}/${height}) ${ratio}vh, 100vw`}
-      className={`object-cover object-center ${className}`}
-    />
   );
 }
